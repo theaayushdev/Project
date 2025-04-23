@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+body {
+  font-family: 'Montserrat', sans-serif;
+  
+  margin: 0;
+  padding: 0;
+  
+  background-size: cover;   /* Scales image to cover entire div */
+  background-position: center;  /* Centers the image */
+  background-repeat: no-repeat;  /* Prevents repetition */
+  width: 100vw;  /* Full viewport width */
+  height: 100vh
+}
+
+
+.resource-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+
+.resource-header {
+  padding: 20px 0;
+}
+
+.resource-title {
+  color: #a64b2a;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.resource-description {
+  font-size: 18px;
+  color: #5a5a5a;
+  line-height: 1.5;
+  padding: 0 10px;
+}
+
+
+.resources-section {
+  margin-top: 20px;
+}
+
+.resources-subtitle {
+  font-size: 22px;
+  color: #a64b2a;
+  font-weight: bold;
+}
+
+.resource-links {
+  list-style: none;
+  padding: 0;
+}
+
+.resource-links li {
+  margin: 10px 0;
+}
+
+.resource-links a {
+  text-decoration: none;
+  font-size: 18px;
+  color: #d47f6a;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+.resource-links a:hover {
+  color: #a64b2a;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .resource-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .resource-title {
+    font-size: 24px;
+  }
+
+  .resource-description {
+    font-size: 16px;
+  }
+
+  .resources-subtitle {
+    font-size: 20px;
+  }
+
+  .resource-links a {
+    font-size: 16px;
+  }
+}
+.navbar {
+  background-color: #1e1e2e; /* Dark navy background */
+  color: #ffffff; /* White text */
+  padding: 15px 20px;
+  position: fixed; /* Locks it at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+.nav-list li:hover {
+  color: #ffcc00; /* Highlight color on hover */
+}
+.navbar {
+  background-color: #1e1e2e; /* Dark navy background */
+  color: #ffffff; /* White text */
+  padding: 15px 20px;
+  position: fixed; /* Locks it at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Moves items to opposite ends */
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.left {
+  margin-left: 20px; /* Space from left */
+}
+
+.right {
+  margin-right: 20px; /* Space from right */
+}
+
+.nav-list li {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+.nav-list li:hover {
+  color: #ffcc00; /* Highlight color on hover */
+}
+/* From Uiverse.io by himanshu9682 */ 
+.type--A { --line_color: #555; --back_color: #ffecf6; }
+.type--B { --line_color: #1b1919; --back_color: #e9ecff; }
+.type--C { --line_color: #00135c; --back_color: #defffa; }
+
+.button {
+  position: relative;
+  z-index: 0;
+  width: 200px;
+  height: 48px;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--line_color);
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.button__text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.button::before,
+.button::after,
+.button__text::before,
+.button__text::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  background: var(--line_color);
+  transition: all 0.5s ease;
+}
+
+.button::before, .button__text::before { top: 0; left: 40px; width: calc(100% - 80px); }
+.button::after, .button__text::after { bottom: 0; right: 40px; width: 8px; }
+
+.button__line {
+  position: absolute;
+  top: 0;
+  width: 48px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.button__line::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 100%;
+  border-radius: 50px;
+  border: solid 2px var(--line_color);
+}
+
+.button__line:nth-child(1), .button__line:nth-child(1)::before { left: 0; }
+.button__line:nth-child(2), .button__line:nth-child(2)::before { right: 0; }
+
+.button:hover { letter-spacing: 3px; }
+.button:hover::before, .button:hover .button__text::before { width: 8px; }
+.button:hover::after, .button:hover .button__text::after { width: calc(100% - 80px); }
+
+.button__drow1, .button__drow2 {
+  position: absolute;
+  z-index: -1;
+  border-radius: 10px;
+  transform-origin: center;
+  background: var(--back_color);
+}
+
+.button__drow1 { top: -10px; left: 30px; width: 24px; height: 0; transform: rotate(30deg); }
+.button__drow2 { top: 36px; left: 60px; width: 24px; height: 0; transform: rotate(-127deg); }
+
+.button__drow1::before, .button__drow1::after, .button__drow2::before, .button__drow2::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 24px;
+  border-radius: 10px;
+}
+
+.button__drow1::before { bottom: 0; left: 0; transform: rotate(-60deg); }
+.button__drow1::after { top: -8px; left: 35px; transform: rotate(69deg); }
+.button__drow2::before { bottom: 0; left: 0; transform: rotate(-146deg); }
+.button__drow2::after { bottom: 20px; left: -30px; transform: rotate(-262deg); }
+
+.button:hover .button__drow1 { animation: drow1 0.06s ease-in forwards; }
+.button:hover .button__drow1::before { animation: drow2 0.08s linear 0.06s forwards; }
+.button:hover .button__drow1::after { animation: drow3 0.03s linear 0.14s forwards; }
+.button:hover .button__drow2 { animation: drow4 0.06s linear 0.2s forwards; }
+.button:hover .button__drow2::before { animation: drow3 0.03s linear 0.26s forwards; }
+.button:hover .button__drow2::after { animation: drow5 0.06s linear 0.32s forwards; }
+
+@keyframes drow1 { 0% { height: 0; } 100% { height: 80px; } }
+@keyframes drow2 { 0% { width: 0; opacity: 0; } 100% { width: 100px; opacity: 1; } }
+@keyframes drow3 { 0% { width: 0; } 100% { width: 60px; } }
+@keyframes drow4 { 0% { height: 0; } 100% { height: 100px; } }
+@keyframes drow5 { 0% { width: 0; } 100% { width: 100px; } }
+
+.container {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.button:not(:last-child) { margin-bottom: 40px; }

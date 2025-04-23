@@ -1,0 +1,1 @@
+Layouts define the common structure (e.g., headers, sidebars, footers) shared across pages.

@@ -1,0 +1,54 @@
+.cardx {
+  position: relative;
+  width: 100vw; /* Full width */
+  height: 100vh; /* Full height */
+  background: mediumturquoise;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: bold;
+  border-radius: 0; /* No rounded corners */
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cardx::before,
+.cardx::after {
+  position: absolute;
+  content: "";
+  width: 20%;
+  height: 20%;
+  background-color: lightblue;
+  transition: all 0.5s;
+}
+
+.cardx::before {
+  top: 0;
+  right: 0;
+  border-radius: 0 15px 0 100%;
+}
+
+.cardx::after {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 100%  0 15px;
+}
+
+.cardx:hover::before,
+.cardx:hover::after {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transition: all 0.5s;
+}
+
+.cardx:hover::after {
+  content: "Greetings doctor, Here's the list of chats of your client";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+}

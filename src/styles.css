@@ -1,0 +1,14 @@
+.about-section {
+    background-color: #FFE4E1; /* Misty Rose */
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .about-section h2 {
+    color: #D81B60; /* Vivid Pink */
+  }
+  

@@ -1,0 +1,63 @@
+#pregnancy-sections {
+    margin-bottom: 20px;
+  }
+  
+  .trimester-section,
+  .general-info-section,
+  .interactive-elements-section,
+  .important-notes {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .trimester-section h3,
+  .general-info-section h3,
+  .interactive-elements-section h3,
+  .important-notes h3 {
+    color: #333;
+    margin-top: 0;
+  }
+  
+  .trimester-section ul,
+  .general-info-section ul,
+  .interactive-elements-section ul,
+  .important-notes ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .trimester-section li {
+    margin-bottom: 10px;
+  }
+  
+  .trimester-section li strong {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .general-info-section li a,
+  .interactive-elements-section li a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .general-info-section li a:hover,
+  .interactive-elements-section li a:hover {
+    text-decoration: underline;
+  }
+  
+  .important-notes li {
+    margin-bottom: 8px;
+    color: #777;
+    font-size: 0.9em;
+  }
+  
+  .important-notes li.important strong {
+    font-weight: bold;
+    color: #d32f2f; /* Example emphasis color */
+  }

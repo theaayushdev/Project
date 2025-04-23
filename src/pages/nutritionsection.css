@@ -1,0 +1,40 @@
+.nutrition-section {
+   padding: 20px;
+   max-width: 900px;
+   margin: 0 auto;
+   text-align: center;
+   font-family: Arial, sans-serif;
+ }
+ 
+ .nutrition-section h2 {
+   font-size: 28px;
+   margin-bottom: 20px;
+ }
+ 
+ .cards-container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 20px;
+ }
+ 
+ .nutrition-card {
+   background-color: #f9f9f9;
+   padding: 16px 20px;
+   border-radius: 12px;
+   width: 250px;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+   text-align: left;
+ }
+ 
+ .nutrition-card h3 {
+   font-size: 18px;
+   margin-bottom: 8px;
+   color: #333;
+ }
+ 
+ .nutrition-card p {
+   font-size: 14px;
+   color: #666;
+ }
+ 
