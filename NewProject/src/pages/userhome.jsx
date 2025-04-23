@@ -13,6 +13,7 @@ function Sidebar() {
         <li><Link to="/doctor">Doctor</Link></li>
         <li><Link to="/about">About Us</Link></li>
         <li><Link to="/resources">Resources</Link></li>
+        <li><Link to="/nutrition">NutritionSection</Link></li>
       </ul>
     </aside>
   );
