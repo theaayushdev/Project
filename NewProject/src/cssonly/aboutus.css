@@ -1,0 +1,95 @@
+
+.about-container {
+    background: linear-gradient(to right, #4A90E2, #89CFF0); 
+    padding: 40px 20px; 
+    color: rgb(13, 51, 223); 
+    text-align: center;
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* Header section styling */
+.about-header {
+    display: flex;
+    justify-content: space-around; 
+    flex-wrap: wrap; 
+    margin-bottom: 40px; /
+}
+
+
+.about-section {
+    width: 22%; 
+    text-align: center; 
+    margin: 10px 0; 
+}
+
+
+.icon {
+    font-size: 40px; 
+    margin-bottom: 10px; 
+    color: rgb(3, 43, 173); 
+}
+
+
+h3 {
+    font-size: 18px; 
+    margin-bottom: 10px; 
+    font-weight: 600; 
+}
+
+
+p {
+    font-size: 14px; 
+    line-height: 1.6; 
+    margin: 0; 
+}
+
+
+.about-services {
+    display: flex;
+    justify-content: space-around; /* Space items evenly */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 20px; /* Spacing between service items */
+}
+
+/* Individual service styling */
+.service {
+    width: 20%; /* Fixed width for each service */
+    text-align: center; /* Center-align content */
+    padding: 15px; /* Padding for better spacing */
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.service:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Shadow on hover */
+}
+
+/* Service icon styling */
+.service-icon {
+    font-size: 36px; /* Icon size */
+    margin-bottom: 10px; /* Spacing below the icon */
+    color: rgb(1, 4, 15); /* Icon color */
+}
+
+/* Service heading styling */
+h4 {
+    font-size: 16px; /* Heading size */
+    margin-bottom: 5px; /* Spacing below the heading */
+    font-weight: 600; /* Bold heading */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .about-section, .service {
+        width: 45%; /* Adjust width for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section, .service {
+        width: 100%; /* Full width on very small screens */
+    }
+}

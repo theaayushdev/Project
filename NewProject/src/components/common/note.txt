@@ -1,0 +1,1 @@
+These are shared UI components like buttons, headers, footers, and loaders.

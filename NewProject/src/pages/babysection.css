@@ -1,0 +1,64 @@
+.baby-section-container {
+    background: linear-gradient(to bottom right, #ffe6f0, #e6f7ff); /* pink to light blue */
+    padding: 40px 20px;
+    min-height: 100vh;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .baby-header {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff6fb3; 
+  }
+  
+  .baby-subtext {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6c63ff; 
+    margin-bottom: 30px;
+  }
+  
+  .baby-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+  .baby-title {
+    color: #ff6fb3;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .baby-content {
+    color: #333;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .baby-img {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 15px;
+    max-height: 300px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .baby-list {
+    list-style-type: square;
+    padding-left: 20px;
+  }
+  
+  .baby-list li {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    color: #555;
+  }
+  
+  
