@@ -21,7 +21,7 @@ const NutritionSection = () => {
     },
     {
       title: "Printable Shopping List",
-      description: "Download or print your weekly grocery list.",
+      description: "Download or print your weekly grocery lists.",
     },
   ];
 
