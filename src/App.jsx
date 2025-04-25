@@ -7,8 +7,10 @@ import DoctorModule from "./pages/doctorlogin";
 import Resources from "./pages/resources";
 import Registerlogin from "./pages/register/userregister"; 
 import Parenting from "./pages/parenting";  
-import BabySection from "./pages/babysection";
-import Nutrition from "./pages/nutritionsection";
+
+import BabySection from "./pages/BabySection";
+import Nutrition from "./pages/NutritionSection";
+
 import Preg from "./pages/preg"
 import './App.css';
 
