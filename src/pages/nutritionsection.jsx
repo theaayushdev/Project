@@ -1,5 +1,5 @@
 import React from "react";
-import "./NutritionSection.css";
+import "./nutritionsection.css";
 
 const NutritionSection = () => {
   const items = [
