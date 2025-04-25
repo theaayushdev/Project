@@ -1,23 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar"; // your new sidebar
+import { useNavigate } from "react-router-dom";
 import "../cssonly/userhome.css";
-
-function Sidebar() {
-  return (
-    <aside className="sidebar">
-      <h2 className="sidebar-title">Pregnify</h2>
-      <ul className="sidebar-links">
-        <li><Link to="/pregnancy">Pregnancy</Link></li>
-        <li><Link to="/baby">Baby</Link></li>
-        <li><Link to="/parenting">Parenting</Link></li>
-        <li><Link to="/doctor">Doctor</Link></li>
-        <li><Link to="/about">About Us</Link></li>
-        <li><Link to="/resources">Resources</Link></li>
-        <li><Link to="/nutrition">NutritionSection</Link></li>
-      </ul>
-    </aside>
-  );
-}
 
 function Page() {
   const navigate = useNavigate();
@@ -28,9 +12,9 @@ function Page() {
   const navigateToRegisterLogin = () => navigate("/userregister");
 
   return (
-    <div className="page-content">
+    <div className="page-scroll-content">
       <header className="hero-section">
-        <h1 className="page-title">Welcome to Pregnify, Your Pregnancy Companion</h1>
+        <h1 className="page-title"> Welcome to Pregnify, Your Pregnancy Companion</h1>
         <p className="page-description">
           <b>Your Health is Our Top Priority</b>
         </p>
@@ -47,6 +31,7 @@ function Page() {
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>
+        {/* Add more sections if you want */}
       </div>
     </div>
   );

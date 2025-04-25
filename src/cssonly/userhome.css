@@ -1,22 +1,43 @@
-/* Full page split layout */
+/* Layout */
 .layout-container {
   display: flex;
   height: 100vh;
-  width: 100%;
+  overflow: hidden;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 50%; /* Sidebar takes half of the page */
-  background-color: #f7f7f7;
+  width: 260px;
+  background-color: #111827;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 20px;
-  border-right: 1px solid #ddd;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.sidebar-header {
+  margin-bottom: 20px;
+}
+
+.workspace-dropdown {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .sidebar-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
-  color: #4a4a4a;
+}
+
+.sidebar-nav {
+  flex-grow: 1;
 }
 
 .sidebar-links {
@@ -24,65 +45,112 @@
   padding: 0;
 }
 
-.sidebar-links li {
-  margin: 12px 0;
-}
-
-.sidebar-links a {
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  color: white;
   text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.2s;
 }
 
-.sidebar-links a:hover {
-  color: #007bff;
+.sidebar-link:hover {
+  color: #6366f1;
 }
 
-.page-content {
-  flex-grow: 1;
-  padding: 40px;
-  background-color: #fff;
-  width: 50%; /* Content takes the other half of the page */
-}
-
-.hero-section {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.page-title {
-  font-size: 32px;
-  color: #222;
-}
-
-.page-description {
-  font-size: 18px;
-  color: #555;
-}
-
-.section-card {
-  background: #f9f9f9;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.buttons-container {
+/* Footer */
+.sidebar-footer {
   margin-top: 20px;
 }
 
+.sidebar-footer-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.sidebar-footer-subtext {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
+.pro-version-card {
+  background-color: #1f2937;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.pro-img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.pro-button {
+  display: inline-block;
+  background-color: #6366f1;
+  padding: 8px 12px;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.pro-button:hover {
+  background-color: #4f46e5;
+}
+
+/* Main Content (Page) */
+.page-scroll-content {
+  margin-left: 260px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  background-color: #f9fafb;
+  height: 100vh;
+}
+
+.hero-section {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111827;
+}
+
+.page-description {
+  font-size: 1.2rem;
+  color: #374151;
+}
+
+.page-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.buttons-container {
+  margin-top: 10px;
+}
+
 .club-button {
-  margin: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
+  margin: 5px;
+  background: #6366f1;
   color: white;
   border: none;
-  border-radius: 6px;
+  padding: 10px 15px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
 }
 
 .club-button:hover {
-  background-color: #0056b3;
+  background: #4f46e5;
 }
