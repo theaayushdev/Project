@@ -56,8 +56,13 @@ const Login = () => {
               <button type="button" className="button1" onClick={handleLogin}>
                 Login
               </button>
-              <button type="button" className="button2">Sign Up</button>
-
+              <button
+                type="button"
+                className="button2"
+                onClick={() => navigate("/userregister")}
+              >
+                Sign Up
+              </button>
             </div>
             <button type="button" className="button3">Forgot Password</button>
           </form>
@@ -68,8 +73,7 @@ const Login = () => {
 };
 
 function Head() {
-
-  return <h1 className="headings">Welcome Dear Us</h1>;
+  return <h1 className="headings">Welcome Dear User</h1>;
 }
 
 export default Login;
