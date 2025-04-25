@@ -48,3 +48,6 @@ def register():
     db.session.commit()
 
     return jsonify({'message': 'User registered successfully.'}), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
