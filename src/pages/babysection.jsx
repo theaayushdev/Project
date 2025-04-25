@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import './babysection.css';
 
-const babyNames = ['Aarav', 'Mia', 'Noah', 'Liam', 'Zara', 'hari', 'Ezra', 'Sky','Ashreeya', 'Aanya', 'Riya', 'Aria', 'Zara', 'Isha', 'Nia', 'Kaira', 'Aarvi', 'Anaya', 'Riyaan', 'Vihaan'];
+const babyNames = ['Aarav', 'Abhinab', 'Ayush', 'Sweta', 'Zara', 'Hari', 'Ezra', 'Sky', 'Ashreeya', 'Aanya', 'Riya', 'Aria', 'Isha', 'Nia', 'Kaira', 'Aarvi', 'Anaya', 'Riyaan', 'Vihaan'];
 const genderNeutralNames = ['Alex', 'Riley', 'Jordan', 'Taylor', 'Casey', 'Rowan'];
 
-const babyFacts = [
-  "At 16 weeks, your baby can start to hear your voice!",
-  "Your baby’s heart pumps about 25 quarts of blood each day.",
-  "They’re developing unique fingerprints now!",
-  "Baby can yawn, stretch, and even make faces!"
+const babyFacts = 
+[
+  "👂 At 16 weeks, your baby can start to hear your voice!",
+  "💓 Your baby’s heart pumps about 25 quarts of blood each day.",
+  "👣 They’re developing unique fingerprints now!",
+  "😴 Baby can yawn, stretch, and even make faces!"
 ];
 
-const babyCareChecklist = [
+const babyCareChecklist = 
+[
   "Soft baby clothes",
   "Diapers and wipes",
   "Mild baby soap and shampoo",
@@ -26,48 +29,55 @@ const BabySection = () => {
   const [randomFact, setRandomFact] = useState(babyFacts[Math.floor(Math.random() * babyFacts.length)]);
 
   const handleNewName = () => {
-    const newName = babyNames[Math.floor(Math.random() * babyNames.length)];
+    let newName;
+    do {
+      newName = babyNames[Math.floor(Math.random() * babyNames.length)];
+    } while (newName === randomName);
     setRandomName(newName);
   };
 
   const handleNewFact = () => {
-    const newFact = babyFacts[Math.floor(Math.random() * babyFacts.length)];
+    let newFact;
+    do {
+      newFact = babyFacts[Math.floor(Math.random() * babyFacts.length)];
+    } while (newFact === randomFact);
     setRandomFact(newFact);
   };
 
   return (
-    <div className="baby-section p-6 rounded-2xl shadow-md bg-pink-50 max-w-xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-4 text-center">👶 Baby Section</h2>
+    <div className="baby-container">
+      <h2 className="baby-title">👶 Baby Bliss Section</h2>
+      <p className="baby-subtitle">Explore names, facts, and helpful mom tips!</p>
 
-      <div className="mb-4">
-        <h3 className="font-semibold text-lg">Random Baby Name:</h3>
-        <p className="text-pink-700 text-xl">{randomName}</p>
-        <button onClick={handleNewName} className="mt-2 bg-pink-300 px-3 py-1 rounded hover:bg-pink-400">Get Another</button>
+      <div className="baby-card">
+        <h3>📛 Random Baby Name</h3>
+        <p className="highlight-name">{randomName}</p>
+        <button onClick={handleNewName}>🔄 New Name</button>
       </div>
 
-      <div className="mb-4">
-        <h3 className="font-semibold text-lg">📏 Baby Growth Tracker</h3>
+      <div className="baby-card">
+        <h3>📏 Baby Growth Tracker</h3>
         <p>Week 16: Your baby is the size of an avocado 🥑!</p>
       </div>
 
-      <div className="mb-4">
-        <h3 className="font-semibold text-lg">🧠 Cute Baby Fact</h3>
+      <div className="baby-card">
+        <h3>🧠 Cute Baby Fact</h3>
         <p>{randomFact}</p>
-        <button onClick={handleNewFact} className="mt-2 bg-pink-300 px-3 py-1 rounded hover:bg-pink-400">New Fact</button>
+        <button onClick={handleNewFact}>💡 New Fact</button>
       </div>
 
-      <div className="mb-4">
-        <h3 className="font-semibold text-lg">🍼 Gender-Neutral Name Suggestions:</h3>
-        <ul className="list-disc ml-5">
+      <div className="baby-card">
+        <h3>🍼 Gender-Neutral Name Suggestions</h3>
+        <ul>
           {genderNeutralNames.map((name, index) => (
-            <li key={index}>{name}</li>
+            <li key={index}>⭐ {name}</li>
           ))}
         </ul>
       </div>
 
-      <div>
-        <h3 className="font-semibold text-lg">✅ Baby Care Checklist for New Moms:</h3>
-        <ul className="list-check ml-5">
+      <div className="baby-card">
+        <h3>✅ Baby Care Checklist for New Moms</h3>
+        <ul>
           {babyCareChecklist.map((item, index) => (
             <li key={index}>🍼 {item}</li>
           ))}
@@ -78,4 +88,3 @@ const BabySection = () => {
 };
 
 export default BabySection;
-

@@ -1,64 +1,100 @@
-.baby-section-container {
-    background: linear-gradient(to bottom right, #ffe6f0, #e6f7ff); /* pink to light blue */
-    padding: 40px 20px;
-    min-height: 100vh;
-    color: #333;
-    font-family: 'Segoe UI', sans-serif;
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #fff8f9;
+  color: #333;
+}
+
+.baby-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.baby-title {
+  font-size: 2.5rem;
+  color: #e11d48;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.baby-subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+}
+
+.baby-card {
+  background: #fff0f3;
+  padding: 25px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(233, 30, 99, 0.1);
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.baby-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(233, 30, 99, 0.15);
+}
+
+.baby-card h3 {
+  color: #be123c;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+}
+
+.highlight-name {
+  font-size: 1.6rem;
+  color: #db2777;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #f9a8d4;
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #ec4899;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul li {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .baby-container {
+    padding: 20px 10px;
   }
-  
-  .baby-header {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #ff6fb3; 
-  }
-  
-  .baby-subtext {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #6c63ff; 
-    margin-bottom: 30px;
-  }
-  
-  .baby-card {
-    background-color: white;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    max-width: 800px;
-  }
-  
+
   .baby-title {
-    color: #ff6fb3;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 2rem;
   }
-  
-  .baby-content {
-    color: #333;
-    font-size: 1.1rem;
-    line-height: 1.6;
+
+  .baby-card {
+    padding: 20px;
   }
-  
-  .baby-img {
-    width: 100%;
-    border-radius: 12px;
-    margin-top: 15px;
-    max-height: 300px;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  
-  .baby-list {
-    list-style-type: square;
-    padding-left: 20px;
-  }
-  
-  .baby-list li {
-    margin-bottom: 10px;
-    font-size: 1.05rem;
-    color: #555;
-  }
-  
-  
+}

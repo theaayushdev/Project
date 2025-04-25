@@ -18,13 +18,14 @@ function Sidebar() {
       <nav className="sidebar-nav">
         <ul className="sidebar-links">
           <li><Link to="/pregnancy" className="sidebar-link"><FaHeartbeat /> Overview</Link></li>
-          <li><Link to="/baby" className="sidebar-link"><FaUsers /> Customers</Link></li>
+          <li><Link to="/" className="sidebar-link"><FaUsers /> Customers</Link></li>
           <li><Link to="/parenting" className="sidebar-link"><FaCogs /> Parental Guide</Link></li>
+          <li><Link to="/baby" className="sidebar-link"><FaBook /> Baby Section</Link></li>
           <li><Link to="/settings" className="sidebar-link"><FaCogs /> Settings</Link></li>
           <li><Link to="/doctorlogin" className="sidebar-link"><FaUserMd /> Doctor</Link></li>
           <li><Link to="/resources" className="sidebar-link"><FaBook /> Resources</Link></li>
           <li><Link to="/nutrition" className="sidebar-link"><FaHeartbeat /> Nutrition</Link></li>
-          <li><Link to="/error" className="sidebar-link"><FaSignInAlt /> Error</Link></li>
+          <li><Link to="/error" className="sidebar-link"><FaSignInAlt /> Log out</Link></li>
         </ul>
       </nav>
 
