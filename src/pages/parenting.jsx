@@ -1,5 +1,5 @@
 import React from "react";
-import "./parenting.css";
+import "../cssonly/parenting.css";
 
 import { MdChildFriendly, MdLocalDining, MdFavorite, MdTimeline, MdPsychology, MdOutlineLocalLibrary, MdGroups } from "react-icons/md";
 

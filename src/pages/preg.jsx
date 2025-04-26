@@ -1,5 +1,5 @@
 import React from 'react';
-import './preg.css';
+import '../cssonly/preg.css';
 
 function PregnancySection() {
   const sections = [

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Sidebar.css";
+import "../cssonly/Sidebar.css";
 import { FaUsers, FaCogs, FaSignInAlt, FaUserMd, FaBook, FaHeartbeat } from "react-icons/fa"; // icons
 
 function Sidebar() {

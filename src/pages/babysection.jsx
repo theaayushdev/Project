@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './babysection.css';
+import '../cssonly/babysection.css';
 
 const babyNames = ['Aarav', 'Abhinab', 'Ayush', 'Sweta', 'Zara', 'Hari', 'Ezra', 'Sky', 'Ashreeya', 'Aanya', 'Riya', 'Aria', 'Isha', 'Nia', 'Kaira', 'Aarvi', 'Anaya', 'Riyaan', 'Vihaan'];
 const genderNeutralNames = ['Alex', 'Riley', 'Jordan', 'Taylor', 'Casey', 'Rowan'];
