@@ -17,6 +17,8 @@ migrate = Migrate(app, db)
 @app.route('/')
 def home():
     return "Welcome to Pregnify!"
+
+# Register route
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -48,6 +50,23 @@ def register():
     db.session.commit()
 
     return jsonify({'message': 'User registered successfully.'}), 201
+
+# Login route
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    contact = data.get('contact')
+    password = data.get('password')
+
+    if not contact or not password:
+        return jsonify({'error': 'Contact and password are required.'}), 400
+
+    user = User.query.filter_by(contact=contact, password=password).first()
+
+    if user:
+        return jsonify({'message': 'Login successful.'}), 200
+    else:
+        return jsonify({'error': 'Invalid contact or password.'}), 401
 
 if __name__ == '__main__':
     app.run(debug=True)
