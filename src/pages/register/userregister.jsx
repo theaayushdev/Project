@@ -1,4 +1,7 @@
+import React from "react";
 import { useState } from "react";
+import "../../cssonly/userregister.css";
+
 
 const Registerlogin = () => {
   const [formData, setFormData] = useState({
@@ -43,26 +46,58 @@ const Registerlogin = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "500px" }}>
-      <h2>Register</h2>
-      {[
-        "firstname", "lastname", "contact", "location", "age",
-        "guardian_name", "guardian_contact", "bloodtype", "email", "password"
-      ].map((field) => (
-        <div key={field} style={{ marginBottom: "10px" }}>
-          <label>{field.replace("_", " ")}:</label><br />
-          <input
-            type={field === "password" ? "password" : "text"}
-            name={field}
-            value={formData[field]}
-            onChange={handleChange}
-            required
-          />
+    <div className="container">
+      <h2 className="heading">Register</h2>
+      <form className="form" onSubmit={handleSubmit}>
+        {[
+          "firstname",
+          "lastname",
+          "contact",
+          "location",
+          "age",
+          "guardian_name",
+          "guardian_contact",
+          "bloodtype",
+          "email",
+          "password",
+        ].map((field) => (
+          <div key={field}>
+            <input
+              className="input"
+              type={field === "password" ? "password" : "text"}
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              placeholder={field.replace("_", " ")}
+              required
+            />
+          </div>
+        ))}
+        <button type="submit" className="login-button">
+          Register
+        </button>
+        {message && <p>{message}</p>}
+        <div className="forgot-password">
+          <a href="#">Forgot password?</a>
         </div>
-      ))}
-      <button type="submit">Register</button>
-      {message && <p>{message}</p>}
-    </form>
+      </form>
+
+      <div className="social-account-container">
+        <span className="title">Or register with</span>
+        <div className="social-accounts">
+          <button className="social-button">
+            <svg className="svg" width="20" height="20" fill="currentColor">
+              <path d="M10 0c-5.522 0-10 4.478-10 10s4.478 10 10 10 10-4.478 10-10-4.478-10-10-10zm1.8 15h-3.6v-6h3.6v6zm-1.8-7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-6c-.7 0-1.3.3-1.8.8-.5-.5-1.2-.8-1.8-.8-1.7 0-3 1.3-3 3s1.3 3 3 3c.7 0 1.3-.3 1.8-.8.5.5 1.2.8 1.8.8 1.7 0 3-1.3 3-3s-1.3-3-3-3z"/>
+            </svg>
+          </button>
+          {/* Add other social buttons here */}
+        </div>
+      </div>
+
+      <div className="agreement">
+        <a href="#">By signing up, you agree to our terms and conditions</a>
+      </div>
+    </div>
   );
 };
 
