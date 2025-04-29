@@ -61,7 +61,7 @@ def login():
     if not contact or not password:
         return jsonify({'error': 'Contact and password are required.'}), 400
 
-    user = User.query.filter_by(contact=contact, password=password)
+    user = User.query.filter_by(contact=contact, password=password).first()
 
     if user:
         return jsonify({'message': 'Login successful.'}), 200
