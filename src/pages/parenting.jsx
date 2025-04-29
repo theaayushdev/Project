@@ -6,7 +6,7 @@ import { MdChildFriendly, MdLocalDining, MdFavorite, MdTimeline, MdPsychology, M
 const Parenting = () => {
   return (
     <div className="parenting-container">
-      <h1 style={{ color: "red" }}>Parenting Page Loaded!</h1>
+      
       <h2>Parenting Features</h2>
       <p>Support and resources for every step of your parenting journey.</p>
 
