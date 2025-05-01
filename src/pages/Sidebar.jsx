@@ -33,7 +33,7 @@ function Sidebar() {
         <p className="sidebar-footer-text">Need more features?</p>
         <p className="sidebar-footer-subtext">Check out our Pro solution .</p>
         <div className="pro-version-card">
-          {/* You can replace this with an actual image later */}
+          
           <img src="/path-to-your-illustration.png" alt="Premium version" className="pro-img" />
           <Link to="/pro-version" className="pro-button">Pro version</Link>
         </div>
