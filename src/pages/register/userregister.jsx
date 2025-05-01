@@ -44,25 +44,122 @@ const Registerlogin = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "500px" }}>
-      <h2>Register</h2>
-      {[
-        "firstname", "lastname", "contact", "location", "age",
-        "guardian_name", "guardian_contact", "bloodtype", "email", "password"
-      ].map((field) => (
-        <div key={field} style={{ marginBottom: "10px" }}>
-          <label>{field.replace("_", " ")}:</label><br />
-          <input
-            type={field === "password" ? "password" : "text"}
-            name={field}
-            value={formData[field]}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      ))}
-      <button type="submit">Register</button>
-      {message && <p>{message}</p>}
-    </form>
+  <h2>Register</h2>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>First Name:</label><br />
+    <input
+      type="text"
+      name="firstname"
+      value={formData.firstname}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Last Name:</label><br />
+    <input
+      type="text"
+      name="lastname"
+      value={formData.lastname}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Contact:</label><br />
+    <input
+      type="text"
+      name="contact"
+      value={formData.contact}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Location:</label><br />
+    <input
+      type="text"
+      name="location"
+      value={formData.location}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Age:</label><br />
+    <input
+      type="text"
+      name="age"
+      value={formData.age}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Guardian Name:</label><br />
+    <input
+      type="text"
+      name="guardian_name"
+      value={formData.guardian_name}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Guardian Contact:</label><br />
+    <input
+      type="text"
+      name="guardian_contact"
+      value={formData.guardian_contact}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Blood Type:</label><br />
+    <input
+      type="text"
+      name="bloodtype"
+      value={formData.bloodtype}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Email:</label><br />
+    <input
+      type="text"
+      name="email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div style={{ marginBottom: "10px" }}>
+    <label>Password:</label><br />
+    <input
+      type="password"
+      name="password"
+      value={formData.password}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <button type="submit">Register</button>
+  {message && <p>{message}</p>}
+</form>
+
   );
 };
 
