@@ -1,5 +1,6 @@
 import React from "react";
-import Sidebar from "./Sidebar"; // your new sidebar
+import Sidebar from "./Sidebar";
+import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
 import "../cssonly/userhome.css";
 
@@ -41,6 +42,7 @@ const Top = () => {
   return (
     <div className="layout-container">
       <Sidebar />
+      <ImageComponent /> 
       <Page />
     </div>
   );

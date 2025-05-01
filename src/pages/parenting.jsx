@@ -1,4 +1,5 @@
 import React from "react";
+import Grown from "../cssonly/images/grown.jpg"; 
 import "../cssonly/parenting.css";
 
 import { MdChildFriendly, MdLocalDining, MdFavorite, MdTimeline, MdPsychology, MdOutlineLocalLibrary, MdGroups } from "react-icons/md";
@@ -7,9 +8,10 @@ const Parenting = () => {
   return (
     <div className="parenting-container">
       
-      <h2>Parenting Features</h2>
-      <p>Support and resources for every step of your parenting journey.</p>
-
+      
+      <h2>✨ Parenting Features ✨</h2>
+      <p><b>Support and resources for every step of your parenting journey.</b></p>
+      <ImageComponent />
       <div className="features-grid">
       <div className="feature-card">
   <MdOutlineLocalLibrary className="icon" />
@@ -74,5 +76,15 @@ const Parenting = () => {
   );
 };
 
+
+
+const ImageComponent = () => {
+  return (
+    <div className="image-container3" >
+      <img src={Grown} alt="New" className="image3" />
+      
+    </div>
+  );
+};
 export default Parenting;
 

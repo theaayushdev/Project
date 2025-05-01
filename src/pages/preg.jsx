@@ -1,4 +1,6 @@
 import React from 'react';
+
+import Cycle from "../cssonly/images/cycle.jpg"; 
 import '../cssonly/preg.css';
 
 function PregnancySection() {
@@ -42,9 +44,12 @@ function PregnancySection() {
   ];
 
   return (
-    <div className="pregnancy-container">
-      <h1 className="pregnancy-title">🌿 Your Pregnancy Journey</h1>
-      <p className="pregnancy-subtitle">Everything you need to know, trimester by trimester.</p>
+      <div className="pregnancy-container">
+        
+    
+        <h1 className="pregnancy-title">🌿 Your Pregnancy Journey</h1>
+        <p className="pregnancy-subtitle">Everything you need to know, trimester by trimester.</p>
+        <ImageComponent />
 
       {sections.map((section, idx) => (
         <div className="trimester-card" key={idx}>
@@ -69,5 +74,13 @@ function PregnancySection() {
     </div>
   );
 }
+
+const ImageComponent = () => {
+  return (
+    <div className="image-container">
+      <img src={Cycle} alt="New" className="image1" />
+    </div>
+  );
+};
 
 export default PregnancySection;
