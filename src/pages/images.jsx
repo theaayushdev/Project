@@ -1,12 +1,11 @@
 import React from "react";
-import newImage from "../cssonly/images/new.jpg"; 
-import Cycle from "../cssonly/images/cycle.jpg"; 
+import newImage from "../cssonly/images/new.png"; 
+import '../cssonly/images.css';
 
 const ImageComponent = () => {
   return (
-    <div className="image-container2" >
-      <img src={newImage} alt="New" className="image2" />
-      
+    <div className="image-wrapper">
+      <img src={newImage} alt="Parenting" className="image-centered" />
     </div>
   );
 };

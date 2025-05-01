@@ -1,103 +1,13 @@
 /* Layout */
+/* yesle lock handai cha page */
 .layout-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 260px;
-  background-color: #111827;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-}
 
-.sidebar-header {
-  margin-bottom: 20px;
-}
 
-.workspace-dropdown {
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-.sidebar-title {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.sidebar-nav {
-  flex-grow: 1;
-}
-
-.sidebar-links {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  color: white;
-  text-decoration: none;
-}
-
-.sidebar-link:hover {
-  color: #6366f1;
-}
-
-/* Footer */
-.sidebar-footer {
-  margin-top: 20px;
-}
-
-.sidebar-footer-text {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.sidebar-footer-subtext {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 10px;
-}
-
-.pro-version-card {
-  background-color: #1f2937;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.pro-img {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.pro-button {
-  display: inline-block;
-  background-color: #6366f1;
-  padding: 8px 12px;
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-}
-
-.pro-button:hover {
-  background-color: #4f46e5;
-}
 
 /* Main Content (Page) */
 .page-scroll-content {

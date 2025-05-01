@@ -32,7 +32,7 @@ function Page() {
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>
-        {/* Add more sections if you want */}
+        
       </div>
     </div>
   );
