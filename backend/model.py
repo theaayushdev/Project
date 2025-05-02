@@ -38,3 +38,4 @@ class Doctor(db.Model):
     medical_license_number = db.Column(db.String(50), unique=True)
     specialty = db.Column(db.String(100))
     department = db.Column(db.String(100))
+    

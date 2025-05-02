@@ -1,13 +1,18 @@
 import "../cssonly/doctorhome.css";
+import AddDoctorForm from './AddDoctorform';
+
 
 
 function DoctorModule()
 {
   return(
     <>
-      <div className="cardx">
-        Welcome Doctor !!
-      </div>
+      
+      <div>
+  <h2>Add a New Doctor</h2>
+  <AddDoctorForm />
+</div>
+
     </>
   )
 }

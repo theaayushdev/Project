@@ -11,7 +11,14 @@ import BabySection from "./pages/babysection";
 import Nutrition from "./pages/nutritionsection";
 import Preg from "./pages/preg";
 import Dashboard from "./pages/dashboard"; 
+
 import DueDateCalculator from "./pages/duedatecalc";
+
+
+import AddDoctorForm  from "./pages/AddDoctorform";
+
+
+
 import './App.css';
 
 const App = () => {
@@ -30,7 +37,16 @@ const App = () => {
         <Route path="/pregnancy" element={<Preg />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/dashboard" element={<Dashboard />} />
+
         <Route path="/duedatecalc" element={<DueDateCalculator />} />
+
+
+        <Route path="/doctorlogin" element={<DoctorModule />} /> {/* Add this route */}
+
+ 
+
+
+
       </Routes>
     </Router>
   );

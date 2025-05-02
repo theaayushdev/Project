@@ -9,7 +9,7 @@ function Page() {
 
   const navigateToLogin = () => navigate("/login");
   const navigateToDoctorLogin = () => navigate("/doctorlogin");
-  const navigateToRes = () => navigate("/resources");
+
   const navigateToRegisterLogin = () => navigate("/userregister");
 
   return (
@@ -28,7 +28,7 @@ function Page() {
           <div className="buttons-container">
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
-            <button className="club-button" onClick={navigateToRes}>Resources</button>
+         
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>

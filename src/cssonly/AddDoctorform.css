@@ -1,0 +1,35 @@
+.doctor-form {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   max-width: 400px;
+   margin: 20px auto;
+   padding: 20px;
+   border: 1px solid #ccc;
+   border-radius: 8px;
+   background-color: #f9f9f9;
+ }
+ 
+ .doctor-form input,
+ .doctor-form select,
+ .doctor-form button {
+   padding: 10px;
+   font-size: 16px;
+ }
+ 
+ .doctor-form button {
+   background-color: #007bff;
+   color: white;
+   border: none;
+   cursor: pointer;
+   border-radius: 4px;
+ }
+ 
+ .doctor-form button:hover {
+   background-color: #0056b3;
+ }
+ body {
+   background-color: yellow; /* Just to test if CSS loads */
+ }
+ 
+ 
