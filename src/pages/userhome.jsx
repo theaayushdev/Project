@@ -1,5 +1,6 @@
 import React from "react";
-import Sidebar from "./Sidebar"; // your new sidebar
+import Sidebar from "./Sidebar";
+import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
 import "../cssonly/userhome.css";
 
@@ -8,7 +9,7 @@ function Page() {
 
   const navigateToLogin = () => navigate("/login");
   const navigateToDoctorLogin = () => navigate("/doctorlogin");
-  const navigateToRes = () => navigate("/resources");
+
   const navigateToRegisterLogin = () => navigate("/userregister");
 
   return (
@@ -27,11 +28,11 @@ function Page() {
           <div className="buttons-container">
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
-            <button className="club-button" onClick={navigateToRes}>Resources</button>
+         
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>
-        {/* Add more sections if you want */}
+        
       </div>
     </div>
   );
@@ -41,6 +42,7 @@ const Top = () => {
   return (
     <div className="layout-container">
       <Sidebar />
+      <ImageComponent /> 
       <Page />
     </div>
   );
