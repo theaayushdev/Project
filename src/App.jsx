@@ -11,11 +11,10 @@ import BabySection from "./pages/babysection";
 import Nutrition from "./pages/nutritionsection";
 import Preg from "./pages/preg";
 import Dashboard from "./pages/dashboard"; 
-<<<<<<< HEAD
-import AddDoctorForm  from "./pages/AddDoctorform";
-=======
 
->>>>>>> 58a496f91d48b2f594a2231dd1316713839172c8
+import AddDoctorForm  from "./pages/AddDoctorform";
+
+
 import './App.css';
 
 const App = () => {
@@ -34,12 +33,12 @@ const App = () => {
         <Route path="/pregnancy" element={<Preg />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/dashboard" element={<Dashboard />} />
-<<<<<<< HEAD
+
         <Route path="/doctorlogin" element={<DoctorModule />} /> {/* Add this route */}
-=======
+
  
 
->>>>>>> 58a496f91d48b2f594a2231dd1316713839172c8
+
       </Routes>
     </Router>
   );

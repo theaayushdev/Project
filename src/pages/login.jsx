@@ -88,7 +88,7 @@ const Login = () => {
 };
 
 function Head() {
-  return <h1 className="headings">Welcome Dear User</h1>;
+  return <h1 className="headings">Welcome Dear Users</h1>;
 }
 
 export default Login;
