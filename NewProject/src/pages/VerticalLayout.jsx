@@ -1,0 +1,70 @@
+import React from 'react';
+
+const VerticalLayout = ({ children }) => {
+  return (
+    <>
+      {/* Loader */}
+      <div className="loader">
+        {<div class="loader-bg">
+  <div class="loader-track">
+    <div class="loader-fill"></div>
+  </div>
+</div>
+  }
+      </div>
+
+      {/* Sidebar */}
+      <nav className="sidebar">
+        {<!-- [ Sidebar Menu ] start -->
+<nav class="pc-sidebar">
+  <div class="navbar-wrapper">
+    <div class="m-header">
+      <a href="../dashboard/index.html" class="b-brand text-primary">
+        <!-- ========   Change your logo from here   ============ -->
+        <img src="../assets/images/logo-white.svg" class="img-fluid logo-lg" alt="logo" />
+      </a>
+    </div>
+    <div class="navbar-content">
+      <ul class="pc-navbar">
+        @@include('./menu-list.html')
+      </ul>
+      <div class="card pc-user-card my-3 bg-white bg-opacity-10">
+        <div class="card-body text-center">
+          <img src="../assets/images/application/img-coupon.png" alt="img" class="img-fluid w-50" />
+          <h5 class="mb-0 text-white mt-1">Datta Able</h5>
+          <p class="text-white">Checkout pro features</p>
+          <a href="https://codedthemes.com/item/datta-able-bootstrap-admin-template/" target="_blank" class="btn btn-warning">
+            <svg class="pc-icon me-2">
+              <use xlink:href="#custom-logout-1-outline"></use>
+            </svg>
+            Upgrade to Pro
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- [ Sidebar Menu ] end -->
+}
+      </nav>
+
+      {/* Topbar */}
+      <header className="topbar">
+        {
+<!-- [ Header Topbar ] start -->
+<header class="pc-header">
+  <div class="header-wrapper"> @@include('./header-content.html') </div>
+</header>
+<!-- [ Header ] end -->
+}
+      </header>
+
+      {/* Main Content */}
+      <main>
+        {children}
+      </main>
+    </>
+  );
+};
+
+export default VerticalLayout;

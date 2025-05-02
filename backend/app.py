@@ -2,11 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
-from model import User
+from model import User, Doctor  # Make sure you import Doctor model too
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174"]}})
-
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Pregnify.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -18,7 +17,6 @@ migrate = Migrate(app, db)
 def home():
     return "Welcome to Pregnify!"
 
-# Register route
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -51,7 +49,6 @@ def register():
 
     return jsonify({'message': 'User registered successfully.'}), 201
 
-# Login route
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -67,6 +64,25 @@ def login():
         return jsonify({'message': 'Loginsuccessful.'}), 200
     else:
         return jsonify({'error': 'Invalid contact or password.'}), 401
+
+
+@app.route('/add-doctor', methods=['POST'])
+def add_doctor():
+    data = request.get_json()
+    doctor = Doctor(
+        firstname=data['firstname'],
+        lastname=data['lastname'],
+        phone_number=data['phone_number'],
+        gender=data['gender'],
+        email=data['email'],
+        medical_license_number=data['medical_license_number'],
+        specialty=data['specialty'],
+        department=data['department']
+    )
+    db.session.add(doctor)
+    db.session.commit()
+    return jsonify({'message': 'Doctor added successfully'}), 201
+
 
 if __name__ == '__main__':
     app.run(debug=True)
