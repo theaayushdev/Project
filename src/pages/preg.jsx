@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from "react-router-dom";
 import Cycle from "../cssonly/images/cycle.jpg"; 
 import '../cssonly/preg.css';
 
@@ -65,7 +65,7 @@ function PregnancySection() {
       <div className="extra-links">
         <h2>✨ More Resources</h2>
         <div className="grid-links">
-          <a href="/due-date-calculator">🗓️ Due Date Calculator</a>
+        <Link to="/duedatecalc">🗓️ Due Date Calculator</Link>
           <a href="/symptom-tracker">📋 Symptom Tracker</a>
           <a href="/nutrition-during-pregnancy">🥗 Nutrition Guide</a>
           <a href="/mental-health-pregnancy">🧠 Mental Health</a>
