@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
+import DoctorSidebar from "./doctordashboard"; // your new sidebar
 import "../cssonly/userhome.css";
 
 function Page() {
@@ -11,6 +12,7 @@ function Page() {
   const navigateToDoctorLogin = () => navigate("/doctorlogin");
 
   const navigateToRegisterLogin = () => navigate("/userregister");
+  const navigateToDoctorPanel = () => navigate("/doctordashboard");
 
   return (
     <div className="page-scroll-content">
@@ -29,7 +31,7 @@ function Page() {
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
-         
+            <button className="club-button" onClick={navigateToDoctorPanel}>Doctor Panel</button>
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>

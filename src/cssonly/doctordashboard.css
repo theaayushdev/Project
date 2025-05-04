@@ -1,0 +1,147 @@
+/* General Styles */
+.dashboard-container {
+  display: flex;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  background: linear-gradient(to right, #f4f7fb, #dbe2ef);
+}
+
+/* Sidebar */
+.patient-sidebar {
+  width: 260px;
+  background: linear-gradient(135deg, #008f9c, #005f73);
+  color: white;
+  padding: 20px;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-link {
+  display: block;
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 6px;
+  font-size: 18px;
+  text-align: center;
+  transition: background 0.3s ease-in-out, transform 0.2s;
+}
+
+.sidebar-link:hover {
+  background: #0093b2;
+  transform: scale(1.05);
+}
+
+/* Main Dashboard */
+.dashboard-main {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.dashboard-header {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #008f9c;
+  text-transform: uppercase;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  flex: 1;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Appointment List */
+.dashboard-section.list ul {
+  padding-left: 25px;
+  font-size: 16px;
+}
+
+.dashboard-section.list li {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-section.list li:last-child {
+  border-bottom: none;
+}
+
+/* Status Button Styling */
+.status-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+}
+
+.status-confirmed {
+  background-color: green;
+  color: white;
+}
+
+.status-pending {
+  background-color: orange;
+  color: white;
+}
+
+.status-btn:hover {
+  opacity: 0.8;
+}
+
+/* Calendar Styling */
+.calendar .react-calendar {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  background: linear-gradient(to right, #005f73, #008f9c);
+  color: white;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.calendar .react-calendar__tile:hover {
+  background: #0093b2;
+  transform: scale(1.05);
+}
+
+.calendar .react-calendar__tile--active {
+  background: #ff6b6b;
+  color: white;
+  font-weight: bold;
+}

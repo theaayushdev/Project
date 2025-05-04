@@ -13,6 +13,7 @@ import Nutrition from "./pages/nutritionsection";
 import Preg from "./pages/preg";
 import AdminDashboard from "./pages/admindashboard";
 import AddDoctorForm from "./pages/AddDoctorform"; 
+import DoctorSidebar from "./pages/doctordashboard"; // your new sidebar
 
 import './App.css';
 
@@ -32,7 +33,8 @@ const App = () => {
         <Route path="/pregnancy" element={<Preg />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
-        <Route path="/AddDoctorform" element={<AddDoctorForm />} /> {/* ✅ This enables routing to the form */}
+        <Route path="/AddDoctorform" element={<AddDoctorForm />} /> 
+        <Route path="/doctordashboard" element={<DoctorSidebar />} />{/* ✅ This enables routing to the form */}
       </Routes>
     </Router>
   );
