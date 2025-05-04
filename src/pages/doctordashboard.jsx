@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import '../cssonly/doctordashboard.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 
 const PatientSidebar = ({ onSelect }) => {
   return (
@@ -18,7 +18,6 @@ const PatientSidebar = ({ onSelect }) => {
           <li className="sidebar-link" onClick={() => onSelect('messages')}>Messages</li>
           <li className="sidebar-link" onClick={() => onSelect('profile')}>Profile</li>
           <li className="sidebar-link" onClick={() => onSelect('userhome')}>Logout</li>
-
         </ul>
       </nav>
     </div>
@@ -28,8 +27,8 @@ const PatientSidebar = ({ onSelect }) => {
 const AppointmentList = () => {
   const [appointments, setAppointments] = useState([
     { date: "May 6, 2025", doctor: "Dr. Scarrlet", patient: "Ayush", status: "Confirmed" },
-    { date: "May 12, 2025", doctor: "Dr. johnson", patient: "Abhinab", status: "Pending" },
-    { date: "May 12, 2025", doctor: "Dr. Gwen", patient: "Ashreeya", status: "Pending" },
+    { date: "May 12, 2025", doctor: "Dr. johnson", patient: "Abhinab", status: "Confirmed" },
+    { date: "May 12, 2025", doctor: "Dr. Gwen", patient: "Ashreeya", status: "Confirmed" },
   ]);
 
   const handleStatusChange = (index) => {
@@ -77,8 +76,13 @@ const PatientDashboardMain = () => {
 };
 
 const PatientDashboard = () => {
+  const navigate = useNavigate(); // 
+
   const handleSelect = (section) => {
-    console.log("Navigate to:", section);
+    if (section === 'userhome') {
+      navigate('/userhome'); 
+    }
+    // You can handle other sections here later if needed
   };
 
   return (
