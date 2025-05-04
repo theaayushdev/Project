@@ -28,6 +28,7 @@ function Page() {
           <div className="buttons-container">
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
+            <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
          
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>

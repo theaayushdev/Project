@@ -1,35 +1,82 @@
+.admin-dashboard {
+  display: flex;
+  height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-wrapper {
+  flex: 1;
+  padding: 40px 60px;
+  background-color: #fff;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
 .doctor-form {
-   display: flex;
-   flex-direction: column;
-   gap: 10px;
-   max-width: 400px;
-   margin: 20px auto;
-   padding: 20px;
-   border: 1px solid #ccc;
-   border-radius: 8px;
-   background-color: #f9f9f9;
- }
- 
- .doctor-form input,
- .doctor-form select,
- .doctor-form button {
-   padding: 10px;
-   font-size: 16px;
- }
- 
- .doctor-form button {
-   background-color: #007bff;
-   color: white;
-   border: none;
-   cursor: pointer;
-   border-radius: 4px;
- }
- 
- .doctor-form button:hover {
-   background-color: #0056b3;
- }
- body {
-   background-color: yellow; /* Just to test if CSS loads */
- }
- 
- 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 900px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+input,
+select {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fff;
+  width: 100%;
+  transition: border 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #0d6efd;
+  outline: none;
+}
+
+.primary-btn {
+  background-color: #0d6efd;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+
+.primary-btn:hover {
+  background-color: #084298;
+}

@@ -1,0 +1,152 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .admin-dashboard {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .content-header {
+    margin-bottom: 20px;
+  }
+  
+  .content-header h1 {
+    margin: 0;
+    color: #343a40;
+    font-size: 1.8rem;
+  }
+  
+  .entries-info {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #495057;
+    margin-right: 5px;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.2s;
+  }
+  
+  .tab:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+  }
+  
+  .tab.active {
+    color: #007bff;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-bottom: 1px solid #f8f9fa;
+    margin-bottom: -1px;
+  }
+  
+  /* Table */
+  .table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .pagination button:hover:not(:disabled) {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+  
+  /* Footer */
+  .footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
