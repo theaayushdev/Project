@@ -14,7 +14,8 @@ import Preg from "./pages/preg";
 import AdminDashboard from "./pages/admindashboard";
 import AddDoctorForm from "./pages/AddDoctorform"; 
 import DoctorSidebar from "./pages/doctordashboard"; // your new sidebar
-
+import MoodTracker from "./pages/moodtracker";
+import HydrationTracker from "./pages/hydration";
 import './App.css';
 import PregnancyDashboard from "./pages/PregnancyDashboard";
 import UserSidebar from "./pages/UserSidebar";
@@ -39,7 +40,8 @@ const App = () => {
         <Route path="/doctordashboard" element={<DoctorSidebar />} />{/* ✅ This enables routing to the form */}
         
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
-
+        <Route path="/mood" element={<MoodTracker />} /> 
+        <Route path="/hydration" element={<HydrationTracker />} />
       </Routes>
     </Router>
   );

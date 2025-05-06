@@ -1,49 +1,88 @@
-.dashboard-wrapper {
+/* Dashboard Container */
+.dashboard-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  background: #f7f9fc;
 }
 
-.dashboard-body {
+/* Layout */
+.dashboard-layout {
   display: flex;
   flex: 1;
 }
 
+/* Dashboard Content */
 .dashboard-content {
   flex: 1;
   padding: 20px;
-  background: #fff0f5;
-  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-content h2 {
-  color: #8b005d;
+/* Header */
+.dashboard-header {
+  text-align: center;
   margin-bottom: 20px;
 }
 
+.dashboard-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.dashboard-header p {
+  color: #777;
+}
+
+/* Grid Layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
 
-.card {
-  background: white;
+/* Widgets */
+.widget {
   padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  text-align: center;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.card h3 {
-  margin-bottom: 10px;
+.widget h3 {
   font-size: 18px;
+  margin-bottom: 15px;
 }
 
-.card.pink { background-color: #ffe4ec; }
-.card.blue { background-color: #e0f7fa; }
-.card.green { background-color: #e6f9e6; }
-.card.purple { background-color: #f3e5f5; }
-.card.yellow { background-color: #fff9c4; }
-.card.peach { background-color: #ffe0b2; }
-.card.sky { background-color: #cceeff; }
+.widget ul {
+  list-style: none;
+  padding: 0;
+}
+
+.widget ul li {
+  font-size: 16px;
+  padding: 5px 0;
+}
+
+.widget img {
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  margin: auto;
+}
+
+.widget button {
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.widget button:hover {
+  background-color: #357abd;
+}

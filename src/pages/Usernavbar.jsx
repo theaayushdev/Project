@@ -1,13 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../cssonly/usernavbar.css";  // Assuming CSS is inside the src/cssonly folder
+import "../cssonly/usernavbar.css";
 
 function UserNavbar() {
   const navigate = useNavigate();
 
+  const navLinks = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Nutrition", path: "/nutrition" },
+    { label: "Parenting", path: "/parenting" },
+    { label: "Due Date Calculator", path: "/duedatecalc" },
+  ];
+
   const handleLogout = () => {
-    // Clear user session or token if needed
-    navigate("/login");  // Navigate back to login page after logout
+    navigate("/login");
   };
 
   return (
@@ -16,11 +22,14 @@ function UserNavbar() {
         <h1>Pregnancy Tracker</h1>
       </div>
       <ul className="nav-links">
-        <li><button onClick={() => navigate("/dashboard")}>Dashboard</button></li>
-        <li><button onClick={() => navigate("/nutrition")}>Nutrition</button></li>
-        <li><button onClick={() => navigate("/parenting")}>Parenting</button></li>
-        <li><button onClick={() => navigate("/duedatecalc")}>Due Date Calculator</button></li>
-        <li><button onClick={handleLogout}>Logout</button></li>
+        {navLinks.map((link, index) => (
+          <li key={index}>
+            <button onClick={() => navigate(link.path)}>{link.label}</button>
+          </li>
+        ))}
+        <li>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </li>
       </ul>
     </nav>
   );

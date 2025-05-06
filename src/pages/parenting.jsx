@@ -1,90 +1,51 @@
 import React from "react";
-import Grown from "../cssonly/images/grown.jpg"; 
-import "../cssonly/parenting.css";
+import UserNavbar from "./UserNavbar";
+import UserSidebar from "./UserSidebar";
+import "../cssonly/pregnancydashboard.css";
 
-import { MdChildFriendly, MdLocalDining, MdFavorite, MdTimeline, MdPsychology, MdOutlineLocalLibrary, MdGroups } from "react-icons/md";
-
-const Parenting = () => {
+function PregnancyDashboard() {
   return (
-    <div className="parenting-container">
-      
-      
-      <h2>✨ Parenting Features ✨</h2>
-      <p><b>Support and resources for every step of your parenting journey.</b></p>
-      <ImageComponent />
-      <div className="features-grid">
-      <div className="feature-card">
-  <MdOutlineLocalLibrary className="icon" />
-  <h4>Parenting Guidelines</h4>
-  <p>Easy-to-follow daily routines, bonding activities, and expert advice for all stages of your child’s growth.</p>
-</div>
+    <div className="dashboard-container">
+      <UserNavbar />
+      <div className="dashboard-layout">
+        <UserSidebar />
+        <main className="dashboard-content">
+          <header className="dashboard-header">
+            <h2>Pregnancy Tracker Dashboard</h2>
+            <p>Monitor your progress, health, and upcoming appointments</p>
+          </header>
 
-        <div className="feature-card">
-          <MdChildFriendly className="icon" />
-          <h4>Sleep Tips</h4>
-          <p>Help your baby get better sleep with expert-backed routines.</p>
-        </div>
+          <section className="dashboard-grid">
+            <div className="widget progress-chart">
+              <h3>Pregnancy Progress</h3>
+              <img src="chart-placeholder.png" alt="Pregnancy Progress Chart" />
+            </div>
 
-        <div className="feature-card">
-          <MdLocalDining className="icon" />
-          <h4>Baby Nutrition</h4>
-          <p>From breastfeeding to solids — what to feed and when.</p>
-        </div>
+            <div className="widget health-overview">
+              <h3>Health Overview</h3>
+              <ul>
+                <li>Gestation Age: <span>16 weeks, 3 days</span></li>
+                <li>Due Date: <span>November 15, 2025</span></li>
+                <li>Weight: <span>65 kg</span></li>
+                <li>Water Intake: <span>6/8 glasses</span></li>
+              </ul>
+            </div>
 
-        <div className="feature-card">
-          <MdFavorite className="icon" />
-          <h4>Parenting Styles</h4>
-          <p>Explore gentle parenting, mindful discipline, and more.</p>
-        </div>
+            <div className="widget upcoming-appointments">
+              <h3>Upcoming Appointments</h3>
+              <p>Next Visit: <span>May 8, 2025</span></p>
+              <button>View Details</button>
+            </div>
 
-        <div className="feature-card">
-          <MdTimeline className="icon" />
-          <h4>Milestone Tracker</h4>
-          <p>Track your baby’s development month by month.</p>
-        </div>
-
-        <div className="feature-card">
-          <MdPsychology className="icon" />
-          <h4>Parent Mental Health</h4>
-          <p>Resources to help you stay strong and supported.</p>
-        </div>
-
-        <div className="feature-card">
-          <MdOutlineLocalLibrary className="icon" />
-          <h4>Parenting Guides</h4>
-          <p>Download helpful PDFs and ebooks for new parents.</p>
-        </div>
-
-        <div className="feature-card">
-          <MdGroups className="icon" />
-          <h4>Community Support</h4>
-          <p>Join parenting groups and share experiences with others.</p>
-        </div>
+            <div className="widget mood-tracker">
+              <h3>Today's Mood</h3>
+              <p>Feeling: <span>Happy 😊</span></p>
+            </div>
+          </section>
+        </main>
       </div>
-      <div className="guidelines-section">
-  <h3>Parenting Guidelines</h3>
-  <ul>
-    <li>💡 Maintain consistent routines for meals, sleep, and playtime.</li>
-    <li>🗣️ Encourage open communication and active listening.</li>
-    <li>📚 Spend quality time reading and engaging in learning activities.</li>
-    <li>🌱 Promote positive discipline with patience and love.</li>
-    <li>💖 Take care of your own mental health to be the best for your child.</li>
-  </ul>
-</div>
-
     </div>
   );
-};
+}
 
-
-
-const ImageComponent = () => {
-  return (
-    <div className="image-container3" >
-      <img src={Grown} alt="New" className="image3" />
-      
-    </div>
-  );
-};
-export default Parenting;
-
+export default PregnancyDashboard;

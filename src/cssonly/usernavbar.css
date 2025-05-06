@@ -1,0 +1,45 @@
+/* Navbar */
+.user-navbar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background: linear-gradient(135deg, #ff85c0, #ffafd5);
+   padding: 15px 30px;
+   box-shadow: 0 4px 10px rgba(255, 133, 192, 0.3);
+   position: sticky;
+   top: 0;
+   z-index: 1000;
+ }
+ 
+ /* Logo */
+ .logo h1 {
+   font-size: 26px;
+   font-weight: bold;
+   color: #fff;
+   font-family: "Pacifico", cursive;
+ }
+ 
+ /* Navigation */
+ .nav-links {
+   display: flex;
+   gap: 15px;
+   list-style: none;
+ }
+ 
+ .nav-links li button {
+   background: transparent;
+   border: 2px solid #fff;
+   font-size: 16px;
+   color: #fff;
+   padding: 8px 15px;
+   cursor: pointer;
+   border-radius: 20px;
+   transition: 0.3s;
+ }
+ 
+ .nav-links li button:hover {
+   background-color: #fff;
+   color: #ff69b4;
+   transform: scale(1.1);
+ }
+ 

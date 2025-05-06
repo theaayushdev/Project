@@ -1,20 +1,31 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import "../cssonly/usersidebar.css";
 
 function UserSidebar() {
+  const navigate = useNavigate();
+
+  const sidebarLinks = [
+    { label: "Dashboard", icon: "fa-home", path: "/dashboard" },
+    { label: "Hydration", icon: "fa-tint", path: "/hydration" },
+    { label: "Sleep", icon: "fa-bed", path: "/sleep" },
+    { label: "Exercise", icon: "fa-dumbbell", path: "/exercise" },
+    { label: "Mood", icon: "fa-smile", path: "/mood" },  // ✅ Mood route linked properly
+    { label: "Appointments", icon: "fa-calendar-check", path: "/appointments" },
+    { label: "Logout", icon: "fa-sign-out-alt", path: "/logout" },
+  ];
+
   return (
-   <aside className="user-sidebar">
-   <ul>
-     <li><i className="fas fa-home"></i> Dashboard</li>
-     <li><i className="fas fa-tint"></i> Hydration</li>
-     <li><i className="fas fa-bed"></i> Sleep</li>
-     <li><i className="fas fa-dumbbell"></i> Exercise</li>
-     <li><i className="fas fa-smile"></i> Mood</li>
-     <li><i className="fas fa-calendar-check"></i> Appointments</li>
-     <li><i className="fas fa-sign-out-alt"></i> Logout</li>
-   </ul>
- </aside>
- 
+    <aside className="user-sidebar">
+      <ul>
+        {sidebarLinks.map((link, index) => (
+          <li key={index} onClick={() => navigate(link.path)}>
+            <i className={`fas ${link.icon}`}></i> {link.label}
+          </li>
+        ))}
+      </ul>
+    </aside>
   );
 }
 
