@@ -22,7 +22,7 @@ const Login = () => {
         setMessage("✅ Login Successful!");
         setTimeout(() => {
           setMessage("");
-          navigate("/dashboard");
+          navigate("/pregnancydashboard");
         }, 1500);
       } else {
         setMessage(`⚠️ ${data.error}`);

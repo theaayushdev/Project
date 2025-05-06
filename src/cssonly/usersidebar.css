@@ -1,0 +1,25 @@
+.user-sidebar {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  width: 220px;
+  height: 100vh;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-sidebar li {
+  margin: 1rem 0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-sidebar li:hover {
+  color: #6366f1;
+  transform: translateX(5px);
+}

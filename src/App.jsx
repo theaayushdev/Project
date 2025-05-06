@@ -16,7 +16,9 @@ import AddDoctorForm from "./pages/AddDoctorform";
 import DoctorSidebar from "./pages/doctordashboard"; // your new sidebar
 
 import './App.css';
-
+import PregnancyDashboard from "./pages/PregnancyDashboard";
+import UserSidebar from "./pages/UserSidebar";
+import UserNavbar from "./pages/UserNavbar"; // your new sidebar
 const App = () => {
   return (
     <Router>
@@ -35,6 +37,9 @@ const App = () => {
         <Route path="/dashboard" element={<AdminDashboard />} />
         <Route path="/AddDoctorform" element={<AddDoctorForm />} /> 
         <Route path="/doctordashboard" element={<DoctorSidebar />} />{/* ✅ This enables routing to the form */}
+        
+        <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
+
       </Routes>
     </Router>
   );

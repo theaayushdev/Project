@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
 import DoctorSidebar from "./doctordashboard"; // your new sidebar
+import UserSidebar from "./UserSidebar"; // your new sidebar
 import "../cssonly/userhome.css";
 
 function Page() {
@@ -13,6 +14,7 @@ function Page() {
 
   const navigateToRegisterLogin = () => navigate("/userregister");
   const navigateToDoctorPanel = () => navigate("/doctordashboard");
+  const navigateToPregnancy = () => navigate("/pregnancydashboard");
 
   return (
     <div className="page-scroll-content">
@@ -32,6 +34,7 @@ function Page() {
             <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
             <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
             <button className="club-button" onClick={navigateToDoctorPanel}>Doctor Panel</button>
+            <button className="club-button" onClick={navigateToPregnancy}>USER</button>
             <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
           </div>
         </div>
