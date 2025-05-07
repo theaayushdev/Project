@@ -1,0 +1,332 @@
+/* Modern Login Form - Beautiful and Attractive Design */
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Wrapper to cover the full screen with animated gradient background */
+.login1-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated floating particles */
+.login1-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 35%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 75% 44%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 46% 65%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 27% 89%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 74% 82%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 85% 12%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 10% 14%, rgba(255, 255, 255, 0.3) 0%, transparent 2%),
+    radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 2%);
+  pointer-events: none;
+}
+
+/* Background animation */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Additional floating orbs */
+.login1-wrapper::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: 
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at 65% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 25%);
+  filter: blur(20px);
+  z-index: 1;
+  animation: float 20s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(-5px) translateX(-5px);
+  }
+  100% {
+    transform: translateY(5px) translateX(5px);
+  }
+}
+
+/* Heading with glow effect */
+.login1-headings {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: fadeIn 1s ease;
+  position: relative;
+  z-index: 2;
+}
+
+/* Card container with glassmorphism effect */
+.login1-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: slideUp 0.7s ease;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Add shimmering effect to card */
+.login1-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 8s linear infinite;
+  z-index: -1;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(30deg);
+  }
+}
+
+.login1-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+.login1-card2 {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Heading inside form */
+#heading {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* Form and fields */
+.login1-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login1-field {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.login1-input {
+  padding: 15px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  outline: none;
+  transition: all 0.3s ease;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login1-input::placeholder {
+  color: #777;
+  font-weight: 300;
+}
+
+.login1-input:focus {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.btn {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.bun1,
+.bun2,
+.bun3 {
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.bun1 {
+  background: linear-gradient(135deg, #42b883, #347474);
+  color: #fff;
+}
+
+.bun1:hover {
+  background: linear-gradient(135deg, #3ca676, #2d6363);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(66, 184, 131, 0.4);
+}
+
+.bun2 {
+  background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+  color: #fff;
+}
+
+.bun2:hover {
+  background: linear-gradient(135deg, #5d7df8, #3a5ce5);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(74, 108, 247, 0.4);
+}
+
+.bun3 {
+  background: linear-gradient(135deg, #ffb347, #ffcc33);
+  color: #333;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.bun3:hover {
+  background: linear-gradient(135deg, #ffa426, #ffbc00);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(255, 179, 71, 0.4);
+}
+
+/* Popup message */
+.login1-popup {
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease;
+  margin-bottom: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login1-popup:empty {
+  display: none;
+}
+
+/* Success message */
+.login1-popup:has(text="✅") {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #fff;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* Error message */
+.login1-popup:has(text="⚠️") {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #fff;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .login1-card {
+    padding: 30px 20px;
+  }
+  
+  .login1-headings {
+    font-size: 28px;
+  }
+  
+  #heading {
+    font-size: 24px;
+  }
+  
+  .btn {
+    flex-direction: column;
+  }
+  
+  .bun1, .bun2, .bun3 {
+    width: 100%;
+  }
+}

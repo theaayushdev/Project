@@ -1,147 +1,1070 @@
-/* General Styles */
-.dashboard-container {
-  display: flex;
-  font-family: 'Segoe UI', sans-serif;
-  height: 100vh;
-  background: linear-gradient(to right, #f4f7fb, #dbe2ef);
+/* Doctor Dashboard - Modern Medical Interface
+   A comprehensive CSS for a professional medical dashboard
+   with responsive design and clean aesthetics */
+
+/* ======= GLOBAL STYLES ======= */
+:root {
+  --primary-color: #4d79ff;
+  --primary-dark: #3056cc;
+  --primary-light: #e6ecff;
+  --secondary-color: #5fcda7;
+  --secondary-dark: #45b690;
+  --accent-color: #ff6b6b;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --info-color: #2196f3;
+  --danger-color: #f44336;
+  --dark-color: #333;
+  --text-color: #444;
+  --text-muted: #888;
+  --light-text: #666;
+  --bg-light: #f9fbfd;
+  --bg-white: #ffffff;
+  --border-color: #e3e8f1;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --transition: all 0.3s ease;
+  --sidebar-width: 260px;
 }
 
-/* Sidebar */
-.patient-sidebar {
-  width: 260px;
-  background: linear-gradient(135deg, #008f9c, #005f73);
-  color: white;
-  padding: 20px;
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.sidebar-nav {
-  list-style: none;
+* {
+  margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-.sidebar-link {
-  display: block;
-  margin: 12px 0;
-  padding: 14px;
-  border-radius: 6px;
-  font-size: 18px;
-  text-align: center;
-  transition: background 0.3s ease-in-out, transform 0.2s;
-}
-
-.sidebar-link:hover {
-  background: #0093b2;
-  transform: scale(1.05);
-}
-
-/* Main Dashboard */
-.dashboard-main {
-  flex: 1;
-  padding: 25px;
-  overflow-y: auto;
-}
-
-.dashboard-header {
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #008f9c;
-  text-transform: uppercase;
-}
-
-.dashboard-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  justify-content: center;
-}
-
-/* Dashboard Sections */
-.dashboard-section {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  flex: 1;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.dashboard-section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Appointment List */
-.dashboard-section.list ul {
-  padding-left: 25px;
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-light);
+  color: var(--text-color);
+  line-height: 1.6;
   font-size: 16px;
 }
 
-.dashboard-section.list li {
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
 }
 
-.dashboard-section.list li:last-child {
+button {
+  cursor: pointer;
+  font-family: var(--font-main);
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+/* ======= LAYOUT ======= */
+.doc1-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.doc1-content-wrapper {
+  flex: 1;
+  background-color: var(--bg-light);
+  position: relative;
+  margin-left: var(--sidebar-width);
+  transition: var(--transition);
+}
+
+.doc1-main-content {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.doc1-section-content {
+  padding: 2rem;
+}
+
+/* ======= SIDEBAR ======= */
+.doc1-sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--bg-white);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+
+.doc1-sidebar-logo {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.doc1-sidebar-logo i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  background: var(--primary-light);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doc1-sidebar-logo h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.doc1-sidebar-title {
+  padding: 1.5rem 1.5rem 1rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.doc1-sidebar-nav {
+  flex: 1;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+}
+
+.doc1-sidebar-link {
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--light-text);
+  font-weight: 500;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.doc1-sidebar-link:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.doc1-sidebar-link.active {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-left: 3px solid var(--primary-color);
+}
+
+.doc1-sidebar-link i {
+  font-size: 1.2rem;
+  width: 22px;
+  text-align: center;
+}
+
+.doc1-sidebar-footer {
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+/* ======= PAGE HEADER ======= */
+.doc1-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.doc1-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.doc1-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doc1-search-bar {
+  position: relative;
+}
+
+.doc1-search-bar input {
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  width: 280px;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.doc1-search-bar input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(77, 121, 255, 0.15);
+}
+
+.doc1-search-bar i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.doc1-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doc1-notification-icon {
+  position: relative;
+  cursor: pointer;
+}
+
+.doc1-notification-icon i {
+  font-size: 1.2rem;
+  color: var(--light-text);
+}
+
+.doc1-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doc1-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ======= WELCOME SECTION ======= */
+.doc1-dashboard-welcome {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border-radius: var(--radius-md);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.doc1-dashboard-welcome h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.doc1-dashboard-welcome p {
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+/* ======= STATS CARDS ======= */
+.doc1-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc1-card {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.doc1-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.doc1-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.doc1-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.doc1-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.doc1-card-icon.appointments {
+  background-color: var(--primary-color);
+}
+
+.doc1-card-icon.patients {
+  background-color: var(--secondary-color);
+}
+
+.doc1-card-icon.revenue {
+  background-color: var(--accent-color);
+}
+
+.doc1-card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.doc1-card-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.doc1-card-trend {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.doc1-trend-up {
+  color: var(--success-color);
+}
+
+.doc1-trend-down {
+  color: var(--danger-color);
+}
+
+.doc1-card-trend i {
+  font-size: 0.75rem;
+}
+
+/* ======= RESPONSIVE GRID ======= */
+.doc7-responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc7-responsive-item {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.doc7-responsive-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--dark-color);
+  margin-bottom: 1.25rem;
+}
+
+.doc7-responsive-title i {
+  color: var(--primary-color);
+}
+
+/* ======= PATIENT LIST ======= */
+.doc8-patients-list {
+  margin-bottom: 1.25rem;
+}
+
+.doc8-patient-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.doc8-patient-item:last-child {
   border-bottom: none;
 }
 
-/* Status Button Styling */
-.status-btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 14px;
+.doc8-patient-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.doc8-patient-info {
+  flex: 1;
+}
+
+.doc8-patient-name {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.doc8-patient-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.doc8-patient-condition {
+  padding: 0.15rem 0.5rem;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.doc8-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 120px;
+}
+
+.doc8-progress-bar {
+  flex: 1;
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.doc8-progress-fill {
+  height: 100%;
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+}
+
+.doc8-progress-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  min-width: 36px;
+}
+
+/* ======= MESSAGES LIST ======= */
+.doc5-messages-list {
+  margin-bottom: 1.25rem;
+}
+
+.doc5-message-item {
+  display: flex;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
-  border: none;
-  transition: 0.3s;
+  transition: var(--transition);
 }
 
-.status-confirmed {
-  background-color: green;
+.doc5-message-item:hover {
+  background-color: var(--bg-light);
+}
+
+.doc5-message-item:last-child {
+  border-bottom: none;
+}
+
+.doc5-message-item.doc5-unread .doc5-message-text {
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.doc5-message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-weight: 600;
+  position: relative;
 }
 
-.status-pending {
-  background-color: orange;
-  color: white;
+.doc5-unread-indicator {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  border: 2px solid var(--bg-white);
 }
 
-.status-btn:hover {
+.doc5-message-content {
+  flex: 1;
+}
+
+.doc5-message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.doc5-sender-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.doc5-message-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.doc5-message-text {
+  font-size: 0.9rem;
+  color: var(--light-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ======= DASHBOARD ROW/COLUMN ======= */
+.doc1-dashboard-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doc1-dashboard-col {
+  flex: 1;
+  min-width: 0; /* Prevents flex item overflow */
+}
+
+/* ======= APPOINTMENT SECTION ======= */
+.doc2-appointment-section {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.doc2-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.doc2-section-title {
+  font-size: 1.1rem;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.doc2-appointment-list {
+  margin-bottom: 1rem;
+}
+
+.doc2-appointment-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1rem;
+}
+
+.doc2-appointment-item:last-child {
+  border-bottom: none;
+}
+
+.doc2-appointment-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.doc2-patient-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.doc2-patient-details {
+  min-width: 0;
+}
+
+.doc2-patient-name {
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc2-appointment-purpose {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.doc2-appointment-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.doc2-appointment-time i {
+  color: var(--primary-color);
+}
+
+.doc2-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.doc2-status-confirmed {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success-color);
+}
+
+.doc2-status-pending {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--warning-color);
+}
+
+.doc2-status-badge:hover {
   opacity: 0.8;
 }
 
-/* Calendar Styling */
-.calendar .react-calendar {
-  width: 100%;
-  max-width: 400px;
+.doc2-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.doc2-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   border: none;
-  background: linear-gradient(to right, #005f73, #008f9c);
-  color: white;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
 }
 
-.calendar .react-calendar__tile:hover {
-  background: #0093b2;
-  transform: scale(1.05);
+.doc2-edit-btn {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
 }
 
-.calendar .react-calendar__tile--active {
-  background: #ff6b6b;
-  color: white;
-  font-weight: bold;
+.doc2-cancel-btn {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--danger-color);
 }
+
+.doc2-action-btn:hover {
+  opacity: 0.8;
+}
+
+/* ======= CALENDAR WIDGET ======= */
+.doc6-calendar-widget {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.doc6-widget-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--dark-color);
+  margin-bottom: 1.25rem;
+}
+
+.doc6-widget-title i {
+  color: var(--primary-color);
+}
+
+.doc6-calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Override react-calendar default styles */
+.doc6-calendar {
+  width: 100% !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-main) !important;
+}
+
+.doc6-calendar .react-calendar__navigation {
+  margin-bottom: 0.5rem !important;
+}
+
+.doc6-calendar .react-calendar__tile {
+  padding: 0.5rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.9rem !important;
+}
+
+.doc6-calendar .react-calendar__navigation button {
+  min-width: 40px !important;
+  background: none !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.doc6-calendar .react-calendar__navigation button:hover,
+.doc6-calendar .react-calendar__navigation button:focus {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+}
+
+.doc6-calendar .react-calendar__tile--active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.doc6-calendar .react-calendar__tile--now {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+}
+
+.doc6-calendar .react-calendar__tile--now.react-calendar__tile--active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.doc6-calendar .react-calendar__tile:hover {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+}
+
+.doc6-calendar .react-calendar__tile.doc6-event-day {
+  position: relative;
+  font-weight: 600;
+}
+
+.doc6-calendar .react-calendar__tile.doc6-event-day::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+}
+
+.doc6-events-list {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.doc6-events-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.doc6-event-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.doc6-event-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--primary-light);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.doc6-event-item i {
+  color: var(--primary-color);
+}
+
+.doc6-no-events {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ======= BUTTONS ======= */
+.doc10-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.doc10-btn i {
+  font-size: 0.9rem;
+}
+
+.doc10-btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.doc10-btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.doc10-btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.doc10-btn-outline:hover {
+  background-color: var(--primary-light);
+}
+
+/* ======= TOAST NOTIFICATIONS ======= */
+.doc9-toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.doc9-toast {
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--bg-white);
+  border-left: 4px solid;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  width: 300px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  opacity: 1;
+}
+
+.doc9-toast-info {
+  border-color: var(--info-color);
+}
+
+.doc9-toast-success {
+  border-color: var(--success-color);
+}
+
+.doc9-toast-warning {
+  border-color: var(--warning-color);
+}
+
+.doc9-toast-error {
+  border-color: var(--danger-color);
+}
+
+.doc9-toast-icon {
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.doc9-toast-info .doc9-toast-icon {
+  color: var(--info-color);
+}
+
+.doc9-toast-content {
+  flex: 1;
+}
+
+.doc9-toast-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.doc9-toast-message {
+  font-size: 0.85rem;
+  color: var(--light-text);
+}
+
+.doc9-toast-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ======= RESPONSIVE STYLES ======= */
+@media (max-width: 1200px) {
+  .doc1-dashboard-row {
+    flex-direction: column;
+  }
+  
+  .doc1-dashboard-col {
+    margin-bottom: 1.5rem;
+  }
+  
+  .doc1-dashboard-col:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  :root {
+    --sidebar-width: 70px;
+  }
+  
+  .doc1-sidebar-logo h1,
+  .doc1-sidebar-title,
+  .doc1-sidebar-link span,
+  .doc1-sidebar-footer {
+    display: none;
+  }
+  
+  .doc1-sidebar-logo {
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .doc1-sidebar-link {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+  
+  .doc1-sidebar-link.active {
+    border-left: none;
+    border-right: 3px solid var(--primary-color);
+  }
+  
+  .doc1-sidebar-link i {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .doc1-search-bar input {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .doc1-main-content,
+  .doc1-section-content {
+    padding: 1rem;
+  }
+  
+  .doc1-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .doc1-page-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .doc1-search-bar input {
+    width: 100%;
+  }
+  
+  .doc7-responsive-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .doc2-appointment-item {
+    flex-wrap: wrap;
+  }
+  
+  .doc2-appointment-info {
+    flex-basis: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+
