@@ -35,19 +35,19 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="login1-wrapper">
       <Head />
-      <div className="card">
-        <div className="card2">
-          <form className="form" onSubmit={handleLogin}>
+      <div className="login1-card">
+        <div className="login1-card2">
+          <form className="login1-form" onSubmit={handleLogin}>
             <p id="heading">Login</p>
 
-            {message && <div className="popup">{message}</div>}
+            {message && <div className="login1-popup">{message}</div>}
 
-            <div className="field">
+            <div className="login1-field">
               <input
                 type="text"
-                className="input-field"
+                className="login1-input"
                 placeholder="Phone Number"
                 autoComplete="off"
                 value={contact}
@@ -55,10 +55,10 @@ const Login = () => {
                 required
               />
             </div>
-            <div className="field">
+            <div className="login1-field">
               <input
                 type="password"
-                className="input-field"
+                className="login1-input"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -66,29 +66,30 @@ const Login = () => {
               />
             </div>
             <div className="btn">
-              <button type="submit" className="button1">
+              <button type="submit" className="bun1">
                 Login
               </button>
               <button
                 type="button"
-                className="button2"
+                className="bun2"
                 onClick={() => navigate("/userregister")}
               >
                 Sign Up
               </button>
             </div>
-            <button type="button" className="button3">
+            <button type="button" className="bun3">
               Forgot Password
             </button>
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
+
 function Head() {
-  return <h1 className="headings">Welcome Dear Users</h1>;
+  return <h1 className="login1-headings">Welcome Dear Users</h1>;
 }
 
 export default Login;
