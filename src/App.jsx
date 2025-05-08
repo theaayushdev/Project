@@ -20,6 +20,7 @@ import './App.css';
 import PregnancyDashboard from "./pages/PregnancyDashboard";
 import UserSidebar from "./pages/UserSidebar";
 import UserNavbar from "./pages/UserNavbar"; // your new sidebar
+import DueDateCalculator from "./pages/duedatecalc";
 const App = () => {
   return (
     <Router>
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
         <Route path="/mood" element={<MoodTracker />} /> 
         <Route path="/hydration" element={<HydrationTracker />} />
+        <Route path="/duedatecalc" element={<DueDateCalculator/>} />
       </Routes>
     </Router>
   );
