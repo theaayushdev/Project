@@ -12,7 +12,7 @@ function UserSidebar() {
     { label: "Sleep", icon: "fa-bed", path: "/sleep" },
     { label: "Exercise", icon: "fa-dumbbell", path: "/exercise" },
     { label: "Mood", icon: "fa-smile", path: "/mood" },  // ✅ Mood route linked properly
-    { label: "Appointments", icon: "fa-calendar-check", path: "/appointments" },
+    { label: "Appointment", icon: "fa-calendar-check", path: "/appointment" },
     { label: "Logout", icon: "fa-sign-out-alt", path: "/logout" },
   ];
 

@@ -38,4 +38,43 @@ class Doctor(db.Model):
     medical_license_number = db.Column(db.String(50), unique=True)
     specialty = db.Column(db.String(100))
     department = db.Column(db.String(100))
-    
+    password = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(10), nullable=False, default='on')  # new column
+
+
+    def __repr__(self):
+        return f'<Doctor {self.firstname} {self.lastname}>'
+
+
+class PregnancyInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.patient_id'), nullable=False)
+
+    lmc = db.Column(db.Date, nullable=False)
+    height = db.Column(db.Float, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    profession = db.Column(db.String(100), nullable=False)
+    gravida = db.Column(db.Integer, nullable=False)
+    allergies = db.Column(db.String(255))
+    conditions = db.Column(db.String(255))
+    notes = db.Column(db.Text)
+
+    user = db.relationship('User', backref=db.backref('pregnancy_info', uselist=False))
+
+    def __repr__(self):
+        return f'<PregnancyInfo for user_id={self.user_id}>'
+
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.patient_id'), nullable=False)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
+
+    appointment_date = db.Column(db.DateTime)
+    status = db.Column(db.String(20), nullable=True)  # e.g., pending, confirmed, etc.
+
+    user = db.relationship('User', backref='appointments')
+    doctor = db.relationship('Doctor', backref='appointments')
+
+    def __repr__(self):
+        return f'<Appointment user_id={self.user_id}, doctor_id={self.doctor_id}>'

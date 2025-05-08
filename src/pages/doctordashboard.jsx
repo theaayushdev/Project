@@ -363,7 +363,7 @@ const DashboardContent = () => {
       </div>
       
       <div className="doc1-dashboard-welcome">
-        <h3>Welcome back, Dr. Roberts!</h3>
+        <h3>Welcome back, Dr. Nikhil!</h3>
         <p>Here's what's happening with your patients today.</p>
       </div>
       

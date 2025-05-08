@@ -17,10 +17,12 @@ import DoctorSidebar from "./pages/doctordashboard"; // your new sidebar
 import MoodTracker from "./pages/moodtracker";
 import HydrationTracker from "./pages/hydration";
 import './App.css';
-import PregnancyDashboard from "./pages/PregnancyDashboard";
-import UserSidebar from "./pages/UserSidebar";
-import UserNavbar from "./pages/UserNavbar"; // your new sidebar
+import PregnancyDashboard from "./pages/pregnancydashboard";
+
 import DueDateCalculator from "./pages/duedatecalc";
+import AppointmentForm from './pages/appointment';
+
+import PregnancyForm from "./pages/additionalinformation";
 const App = () => {
   return (
     <Router>
@@ -41,7 +43,9 @@ const App = () => {
         <Route path="/doctordashboard" element={<DoctorSidebar />} />{/* ✅ This enables routing to the form */}
         
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
+        <Route path="/appointment" element={<AppointmentForm />} />
         <Route path="/mood" element={<MoodTracker />} /> 
+        <Route path="/additionalinformation" element={<PregnancyForm />} />
         <Route path="/hydration" element={<HydrationTracker />} />
         <Route path="/duedatecalc" element={<DueDateCalculator/>} />
       </Routes>

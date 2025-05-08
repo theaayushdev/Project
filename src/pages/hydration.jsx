@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Droplet, CheckCircle, AlertCircle, Plus, RotateCcw, ChevronUp, ChevronDown, Award } from "lucide-react";
 
 function HydrationTracker() {
-  const [waterIntake, setWaterIntake] = useState(6);
+  const [waterIntake, setWaterIntake] = useState(0);
   const [waterLog, setWaterLog] = useState([
     { id: 1, time: "8:00 AM", amount: "250ml" },
     { id: 2, time: "10:30 AM", amount: "250ml" },

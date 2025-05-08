@@ -10,6 +10,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const res = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
@@ -19,10 +20,13 @@ const Login = () => {
 
       const data = await res.json();
       if (res.ok) {
+        // ✅ Store contact for later use in dashboard
+        localStorage.setItem("userContact", contact);
+
         setMessage("✅ Login Successful!");
         setTimeout(() => {
           setMessage("");
-          navigate("/pregnancydashboard");
+          navigate("/pregnancydashboard"); // ✅ Navigate to dashboard
         }, 1500);
       } else {
         setMessage(`⚠️ ${data.error}`);
@@ -65,10 +69,9 @@ const Login = () => {
                 required
               />
             </div>
+
             <div className="btn">
-              <button type="submit" className="bun1">
-                Login
-              </button>
+              <button type="submit" className="bun1">Login</button>
               <button
                 type="button"
                 className="bun2"
@@ -77,16 +80,14 @@ const Login = () => {
                 Sign Up
               </button>
             </div>
-            <button type="button" className="bun3">
-              Forgot Password
-            </button>
+
+            <button type="button" className="bun3">Forgot Password</button>
           </form>
         </div>
       </div>
     </div>
   );
 };
-
 
 function Head() {
   return <h1 className="login1-headings">Welcome Dear Users</h1>;

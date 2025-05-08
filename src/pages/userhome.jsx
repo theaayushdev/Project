@@ -2,15 +2,14 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
-import DoctorSidebar from "./doctordashboard"; // your new sidebar
-import UserSidebar from "./UserSidebar"; // your new sidebar
+
 import "../cssonly/userhome.css";
 
 function Page() {
   const navigate = useNavigate();
 
   const navigateToLogin = () => navigate("/login");
-  const navigateToDoctorLogin = () => navigate("/doctorlogin");
+  const navigateToDoctorLogin = () => navigate("/dashboard");
 
   const navigateToRegisterLogin = () => navigate("/userregister");
   const navigateToDoctorPanel = () => navigate("/doctordashboard");
@@ -31,11 +30,11 @@ function Page() {
           <p>Find tips, books, resources, baby names, and much more!</p>
           <div className="buttons-container">
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
-            <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
+            {/* <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button> */}
             <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
             <button className="club-button" onClick={navigateToDoctorPanel}>Doctor Panel</button>
-            <button className="club-button" onClick={navigateToPregnancy}>USER</button>
-            <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
+            {/* <button className="club-button" onClick={navigateToPregnancy}>USER</button>
+            <button className="club-button" onClick={navigateToRegisterLogin}>Test</button> */}
           </div>
         </div>
         
