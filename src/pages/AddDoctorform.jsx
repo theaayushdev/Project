@@ -12,7 +12,8 @@ const AddDoctorForm = () => {
     email: '',
     medical_license_number: '',
     specialty: '',
-    department: ''
+    department: '',
+    password: ''
   });
 
   const handleChange = (e) => {
@@ -24,11 +25,32 @@ const AddDoctorForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.password) {
+      alert('Password is required');
+      return;
+    }
+
     try {
+      console.log("Submitting doctor:", formData); // Debug: inspect payload
       await axios.post('http://localhost:5000/add-doctor', formData);
       alert('Doctor added successfully!');
+
+      // Optional: reset form after submission
+      setFormData({
+        firstname: '',
+        lastname: '',
+        phone_number: '',
+        gender: '',
+        email: '',
+        medical_license_number: '',
+        specialty: '',
+        department: '',
+        password: ''
+      });
     } catch (err) {
-      alert('Error adding doctor: ' + err.message);
+      console.error("Error response:", err?.response?.data || err.message);
+      alert('Error adding doctor: ' + (err?.response?.data?.error || err.message));
     }
   };
 
@@ -43,22 +65,41 @@ const AddDoctorForm = () => {
           <div className="form-group-row">
             <div className="form-group">
               <label>First Name</label>
-              <input name="firstname" value={formData.firstname} onChange={handleChange} required />
+              <input
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="form-group">
               <label>Last Name</label>
-              <input name="lastname" value={formData.lastname} onChange={handleChange} required />
+              <input
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
 
           <div className="form-group-row">
             <div className="form-group">
               <label>Phone Number</label>
-              <input name="phone_number" value={formData.phone_number} onChange={handleChange} required />
+              <input
+                name="phone_number"
+                value={formData.phone_number}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="form-group">
               <label>Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange}>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+              >
                 <option value="">Please Select</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -69,22 +110,50 @@ const AddDoctorForm = () => {
 
           <div className="form-group">
             <label>Email</label>
-            <input name="email" type="email" value={formData.email} onChange={handleChange} />
+            <input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-group">
             <label>Medical License Number</label>
-            <input name="medical_license_number" value={formData.medical_license_number} onChange={handleChange} />
+            <input
+              name="medical_license_number"
+              value={formData.medical_license_number}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-group">
             <label>Specialty</label>
-            <input name="specialty" value={formData.specialty} onChange={handleChange} />
+            <input
+              name="specialty"
+              value={formData.specialty}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-group">
             <label>Department</label>
-            <input name="department" value={formData.department} onChange={handleChange} />
+            <input
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="form-group">

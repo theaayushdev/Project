@@ -1,6 +1,6 @@
 import React from "react";
-import UserNavbar from "./UserNavbar";
-import UserSidebar from "./UserSidebar";
+import UserNavbar from "./Usernavbar";
+import UserSidebar from "./usersidebar";
 import "../cssonly/pregnancydashboard.css";
 
 function PregnancyDashboard() {

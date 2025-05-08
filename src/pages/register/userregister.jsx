@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 const Registerlogin = () => {
+  const navigate = useNavigate(); // ✅ Initialize navigate
+
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -33,6 +36,7 @@ const Registerlogin = () => {
       const data = await res.json();
       if (res.ok) {
         setMessage(`✅ ${data.message}`);
+        navigate("/additionalinformation"); // ✅ Redirect after success
       } else {
         setMessage(`⚠️ Error: ${data.error}`);
       }
@@ -44,122 +48,121 @@ const Registerlogin = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{ padding: "20px", maxWidth: "500px" }}>
-  <h2>Register</h2>
+      <h2>Register</h2>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>First Name:</label><br />
-    <input
-      type="text"
-      name="firstname"
-      value={formData.firstname}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>First Name:</label><br />
+        <input
+          type="text"
+          name="firstname"
+          value={formData.firstname}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Last Name:</label><br />
-    <input
-      type="text"
-      name="lastname"
-      value={formData.lastname}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Last Name:</label><br />
+        <input
+          type="text"
+          name="lastname"
+          value={formData.lastname}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Contact:</label><br />
-    <input
-      type="text"
-      name="contact"
-      value={formData.contact}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Contact:</label><br />
+        <input
+          type="text"
+          name="contact"
+          value={formData.contact}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Location:</label><br />
-    <input
-      type="text"
-      name="location"
-      value={formData.location}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Location:</label><br />
+        <input
+          type="text"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Age:</label><br />
-    <input
-      type="text"
-      name="age"
-      value={formData.age}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Age:</label><br />
+        <input
+          type="text"
+          name="age"
+          value={formData.age}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Guardian Name:</label><br />
-    <input
-      type="text"
-      name="guardian_name"
-      value={formData.guardian_name}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Guardian Name:</label><br />
+        <input
+          type="text"
+          name="guardian_name"
+          value={formData.guardian_name}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Guardian Contact:</label><br />
-    <input
-      type="text"
-      name="guardian_contact"
-      value={formData.guardian_contact}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Guardian Contact:</label><br />
+        <input
+          type="text"
+          name="guardian_contact"
+          value={formData.guardian_contact}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Blood Type:</label><br />
-    <input
-      type="text"
-      name="bloodtype"
-      value={formData.bloodtype}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Blood Type:</label><br />
+        <input
+          type="text"
+          name="bloodtype"
+          value={formData.bloodtype}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Email:</label><br />
-    <input
-      type="text"
-      name="email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Email:</label><br />
+        <input
+          type="text"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <div style={{ marginBottom: "10px" }}>
-    <label>Password:</label><br />
-    <input
-      type="password"
-      name="password"
-      value={formData.password}
-      onChange={handleChange}
-      required
-    />
-  </div>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Password:</label><br />
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-  <button type="submit">Register</button>
-  {message && <p>{message}</p>}
-</form>
-
+      <button type="submit">Register</button>
+      {message && <p>{message}</p>}
+    </form>
   );
 };
 

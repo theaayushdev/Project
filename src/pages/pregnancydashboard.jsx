@@ -1,26 +1,57 @@
-import React from "react";
-import UserNavbar from "./UserNavbar";
-import UserSidebar from "./UserSidebar";
+import React, { useEffect, useState } from "react";
+import UserNavbar from "./Usernavbar";
+import UserSidebar from "./usersidebar";
 import "../cssonly/pregnancydashboard.css";
 
 function UserPregnancyDashboard() {
-  const userData = {
-    name: "Emily Johnson",
-    pregnancyWeek: "16 weeks",
-    dueDate: "November 15, 2025",
-  };
+  const [user, setUser] = useState(null);
+  const [pregnancyInfo, setPregnancyInfo] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const contact = localStorage.getItem("userContact");
 
-  const healthStats = [
-    { title: "Weight", value: "65 kg", icon: "fa-weight" },
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersRes = await fetch("http://localhost:5000/users");
+        const users = await usersRes.json();
+        const matchedUser = users.find(u => u.contact === contact);
+
+        if (!matchedUser) {
+          console.warn("User not found for contact:", contact);
+          return;
+        }
+
+        setUser(matchedUser);
+
+        const [pregnancyRes, appointmentsRes] = await Promise.all([
+          fetch("http://localhost:5000/pregnancy-info"),
+          fetch("http://localhost:5000/appointments")
+        ]);
+
+        const [pregnancyList, allAppointments] = await Promise.all([
+          pregnancyRes.json(),
+          appointmentsRes.json()
+        ]);
+
+        const matchedPregnancy = pregnancyList.find(p => p.user_id === matchedUser.patient_id);
+        setPregnancyInfo(matchedPregnancy);
+
+        const userAppointments = allAppointments.filter(a => a.user_id === matchedUser.patient_id);
+        setAppointments(userAppointments);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
+
+    if (contact) fetchData();
+  }, [contact]);
+
+  const healthStats = pregnancyInfo ? [
+    { title: "Weight", value: `${pregnancyInfo.weight} kg`, icon: "fa-weight" },
+    { title: "Height", value: `${pregnancyInfo.height} cm`, icon: "fa-ruler-vertical" },
     { title: "Water Intake", value: "6 / 8 glasses", icon: "fa-tint" },
     { title: "Sleep Quality", value: "Good (7 hrs)", icon: "fa-bed" },
-    { title: "Mood", value: "Happy 😊", icon: "fa-smile" },
-  ];
-
-  const appointments = [
-    { date: "May 8, 2025", type: "Ultrasound Checkup" },
-    { date: "May 22, 2025", type: "Prenatal Yoga Class" },
-  ];
+  ] : [];
 
   return (
     <div className="dashboard-container">
@@ -29,37 +60,37 @@ function UserPregnancyDashboard() {
         <UserSidebar />
         <main className="dashboard-content">
           <header className="dashboard-header">
-            <h2>Welcome, {userData.name}!</h2>
-            <p>Currently {userData.pregnancyWeek} pregnant | Estimated Due Date: {userData.dueDate}</p>
+            <h2>Welcome, {user ? user.firstname : "User"}!</h2>
+            <p>Estimated Due Date: November 15, 2025</p>
           </header>
 
           <section className="dashboard-grid">
             <div className="widget health-overview">
               <h3>Health Overview</h3>
               <ul>
-                {healthStats.map((stat, index) => (
+                {healthStats.length > 0 ? healthStats.map((stat, index) => (
                   <li key={index}>
                     <i className={`fas ${stat.icon}`}></i> {stat.title}: <span>{stat.value}</span>
                   </li>
-                ))}
+                )) : <li>Loading health data...</li>}
               </ul>
             </div>
 
             <div className="widget upcoming-appointments">
               <h3>Upcoming Appointments</h3>
               <ul>
-                {appointments.map((appointment, index) => (
+                {appointments.length > 0 ? appointments.map((appt, index) => (
                   <li key={index}>
-                    <span>{appointment.date}</span> - {appointment.type}
+                    <span>{appt.appointment_date}</span> - {appt.status}
                   </li>
-                ))}
+                )) : <li>No upcoming appointments</li>}
               </ul>
             </div>
 
             <div className="widget baby-growth">
               <h3>Baby Growth Tracker</h3>
               <img src="baby-development-placeholder.png" alt="Baby Growth Visualization" />
-              <p>Baby is currently the size of an **Avocado** 🥑</p>
+              <p>Baby is currently the size of an <strong>Avocado 🥑</strong></p>
             </div>
           </section>
         </main>

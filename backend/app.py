@@ -2,11 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
-from model import User, Doctor
+from model import User, Doctor, Appointment, PregnancyInfo
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174"]}})
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Pregnify.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -57,7 +57,6 @@ def login():
         return jsonify({'error': 'Contact and password are required.'}), 400
 
     user = User.query.filter_by(contact=contact, password=password).first()
-
     if user:
         return jsonify({'message': 'Loginsuccessful.'}), 200
     else:
@@ -74,17 +73,17 @@ def add_doctor():
         email=data['email'],
         medical_license_number=data['medical_license_number'],
         specialty=data['specialty'],
-        department=data['department']
+        department=data['department'],
+        password=data['password']
     )
     db.session.add(doctor)
     db.session.commit()
     return jsonify({'message': 'Doctor added successfully'}), 201
 
-# ✅ NEW ROUTES to fetch data
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
-    user_list = [{
+    return jsonify([{
         'patient_id': u.patient_id,
         'firstname': u.firstname,
         'lastname': u.lastname,
@@ -93,13 +92,12 @@ def get_users():
         'age': u.age,
         'bloodtype': u.bloodtype,
         'email': u.email
-    } for u in users]
-    return jsonify(user_list)
+    } for u in users])
 
 @app.route('/doctors', methods=['GET'])
 def get_doctors():
-    doctors = Doctor.query.all()
-    doctor_list = [{
+    doctors = Doctor.query.filter_by(status='on').all()
+    return jsonify([{
         'id': d.id,
         'firstname': d.firstname,
         'lastname': d.lastname,
@@ -107,8 +105,84 @@ def get_doctors():
         'specialty': d.specialty,
         'department': d.department,
         'email': d.email
-    } for d in doctors]
-    return jsonify(doctor_list)
+    } for d in doctors]), 200
+
+@app.route('/appointment', methods=['POST'])
+def create_appointment():
+    data = request.get_json()
+    try:
+        appointment_date = datetime.strptime(data['appointment_date'], '%Y-%m-%d').date()
+        new_appointment = Appointment(
+            user_id=data['user_id'],
+            doctor_id=data['doctor_id'],
+            appointment_date=appointment_date,
+            status=data.get('status', 'pending')
+        )
+        db.session.add(new_appointment)
+        db.session.commit()
+        return jsonify({'message': 'Appointment created successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ✅ New Route to handle pregnancy info
+@app.route('/pregnancy-info', methods=['POST'])
+def submit_pregnancy_info():
+    data = request.get_json()
+    contact = data.get('contact')
+
+    user = User.query.filter_by(contact=contact).first()
+    if not user:
+        return jsonify({'error': 'User with this contact not found.'}), 404
+
+    try:
+        new_info = PregnancyInfo(
+            user_id=user.patient_id,
+            lmc=datetime.strptime(data['lmc'], '%Y-%m-%d').date(),
+            height=float(data['height']),
+            weight=float(data['weight']),
+            profession=data['profession'],
+            gravida=int(data['gravida']),
+            allergies=data.get('allergies', ''),
+            conditions=data.get('conditions', ''),
+            notes=data.get('notes', '')
+        )
+        db.session.add(new_info)
+        db.session.commit()
+        return jsonify({'message': 'Pregnancy info submitted successfully.'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+@app.route('/pregnancy-info', methods=['GET'])
+def get_pregnancy_info():
+    try:
+        info_list = PregnancyInfo.query.all()
+        result = [{
+            'id': info.id,
+            'user_id': info.user_id,
+            'height': info.height,
+            'weight': info.weight,
+            'profession': info.profession,
+            'gravida': info.gravida,
+            'allergies': info.allergies,
+            'conditions': info.conditions,
+            'notes': info.notes,
+            'lmc': info.lmc.strftime('%Y-%m-%d') if info.lmc else None
+        } for info in info_list]
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/appointments', methods=['GET'])
+def get_appointments():
+    all_appointments = Appointment.query.all()
+    result = [{
+        'id': a.id,
+        'user_id': a.user_id,
+        'doctor_id': a.doctor_id,
+        'appointment_date': a.appointment_date.strftime('%Y-%m-%d'),
+        'status': a.status
+    } for a in all_appointments]
+    return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

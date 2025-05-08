@@ -2,15 +2,14 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import ImageComponent from "./images"; // your new sidebar
 import { useNavigate } from "react-router-dom";
-import DoctorSidebar from "./doctordashboard"; // your new sidebar
-import UserSidebar from "./UserSidebar"; // your new sidebar
+
 import "../cssonly/userhome.css";
 
 function Page() {
   const navigate = useNavigate();
 
   const navigateToLogin = () => navigate("/login");
-  const navigateToDoctorLogin = () => navigate("/doctorlogin");
+  const navigateToDoctorLogin = () => navigate("/dashboard");
 
   const navigateToRegisterLogin = () => navigate("/userregister");
   const navigateToDoctorPanel = () => navigate("/doctordashboard");
