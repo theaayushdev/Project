@@ -1,8 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import '../cssonly/babysection.css'; // Import your CSS file here
+import React, { useState } from 'react';
+import '../cssonly/babysection.css'; 
 const BabySection = () => {
-  const babyNames = ['Aarav', 'Abhinab', 'Ayush', 'Sweta', 'Zara', 'Hari', 'Ezra', 'Sky', 'Ashreeya', 'Aanya', 'Riya', 'Aria', 'Isha', 'Nia', 'Kaira', 'Aarvi', 'Anaya', 'Riyaan', 'Vihaan'];
-  const genderNeutralNames = ['Alex', 'Riley', 'Jordan', 'Taylor', 'Casey', 'Rowan'];
+  const babyBoyNames = [
+    'Aarav', 'Abhinab', 'Ayush', 'Hari', 'Bishal', 'Vicky', 'Vihaan', 
+    'Arjun', 'Ishaan', 'Devansh', 'Krishna', 'Sai', 'Reyansh', 'Ayaan', 
+    'Aditya', 'Vivaan', 'Kabir', 'Ojas',  'Tanish', 'Shaan', 
+    'Nirav', 'Samarth', 'Aryan', 'Yash'
+  ];
+  
+   const babyGirlNames = [
+    'Sweta', 'Alisha', 'Ashreeya', 'Ananya', 'Riya', 'Aria', 'Isha', 'Pallavi', 
+    'Kaira', 'Aditi', 'Anaya', 'Meera', 'Saanvi', 'Shivani', 'Aishwarya', 
+    'Sanya', 'Alisha', 'Shrinkhala', 'Prisha', 'Ankita', 
+    'Siddhi', 'Radhika', 'Jia'
+  ];
+  
+
+
+  const genderNeutralNames = [   'Anu', 'Apurva',  'Asmi', 'Bhavya',  'Kamal'];
   
   const babyFacts = [
     "👂 At 16 weeks, your baby can start to hear your voice!",
@@ -10,8 +25,53 @@ const BabySection = () => {
     "👣 They're developing unique fingerprints now!",
     "😴 Baby can yawn, stretch, and even make faces!",
     "🧠 By week 18, your baby's brain is developing specialized areas for smell, taste, hearing, vision, and touch.",
-    "🌈 Your baby can see light through your belly starting around week 22."
+    "🌈 Your baby can see light through your belly starting around week 22.",
+    "👅 Taste buds begin forming at 8 weeks, and by week 15, baby can taste amniotic fluid!",
+    "🖐 Baby starts moving their hands and feet between weeks 7–9, though you might not feel it yet.",
+    "🎧 By week 25, baby may respond to loud sounds with a jump!",
+    "💤 Babies can start having REM sleep — possibly dreaming — by the third trimester.",
+    "💪 Muscles begin to strengthen around week 14 as baby stretches and flexes.",
+    "🍼 Around week 20, baby begins to swallow and digest amniotic fluid.",
+    "👀 Eyes are fully formed by week 28, and baby may begin blinking.",
+    "🐾 Baby’s skin is covered in a protective layer called vernix caseosa.",
+    "🧠 The brain triples in weight during the last 13 weeks of pregnancy.",
+    "🐣 Baby begins producing meconium (their first poop) by week 12.",
+    "👂 Baby's ears reach final position by week 18 and start functioning soon after.",
+    "🫁 Lungs begin producing surfactant around week 26 — vital for breathing after birth.",
+    "🌬 Baby starts practicing breathing movements even before birth.",
+    "👃 Nostrils open around week 28 so baby can 'practice' breathing amniotic fluid.",
+    "💅 Fingernails and toenails start forming by week 11.",
+    "🧬 Baby's DNA determines hair and eye color from the start.",
+    "💗 A baby's heartbeat can be heard via Doppler by week 10–12.",
+    "🧸 Baby starts to grasp the umbilical cord or their own body by week 16.",
+    "🎨 Baby’s skin goes from transparent to opaque as fat develops.",
+    "🧦 Babies develop a layer of soft hair called lanugo around week 14–20.",
+    "🧊 Baby can distinguish sweet from bitter in the womb.",
+    "📈 Baby gains most of their weight in the last 8 weeks of pregnancy.",
+    "🎯 Reflexes like sucking and rooting start forming by week 28.",
+    "💬 Baby may begin to recognize familiar voices by the third trimester.",
+    "🎵 Playing music? Baby may respond with increased movement!",
+    "📅 Full-term pregnancy is considered 37 to 42 weeks.",
+    "🧸 Baby has sleep-wake cycles even before being born.",
+    "🧱 Bones begin hardening from cartilage in the second trimester.",
+    "👃 Baby can smell different scents from mom's diet through the amniotic fluid.",
+    "💓 A baby's heartbeat is much faster than an adult's — about 120–160 bpm.",
+    "🎭 Babies can show facial expressions like frowning and smiling in the womb.",
+    "👀 Baby’s eyes may be blue at birth and can change color in the first year.",
+    "🧠 By week 24, baby’s brain starts building billions of neurons.",
+    "🚶‍♀️ Baby’s position may change frequently during the third trimester.",
+    "🧵 Umbilical cord is about 22 inches long by full term.",
+    "💧 Amniotic fluid replaces itself every few hours.",
+    "🌍 Twins can start interacting with each other in the womb as early as week 14.",
+    "🛌 Some babies find a favorite sleeping position — even before birth!",
+    "🧡 Baby starts developing emotions as the limbic system matures.",
+    "👓 Baby can open their eyes for the first time around week 28.",
+    "🧪 Hormones produced by the baby help maintain pregnancy.",
+    "🥁 Kicks and punches become more coordinated around week 30.",
+    "🫶 Baby begins to recognize and be soothed by their parent’s touch on the belly.",
+    "🌟 Every baby develops at their own pace — these milestones are general!"
   ];
+  
   
   const babyCareChecklist = [
     "Soft baby clothes",
@@ -35,7 +95,7 @@ const BabySection = () => {
     { week: 40, size: "a small pumpkin 🎃", length: "20 inches" }
   ];
   
-  const [randomName, setRandomName] = useState(babyNames[Math.floor(Math.random() * babyNames.length)]);
+  const [randomName, setRandomName] = useState([...babyBoyNames, ...babyGirlNames][Math.floor(Math.random() * [...babyBoyNames, ...babyGirlNames].length)]);
   const [randomFact, setRandomFact] = useState(babyFacts[Math.floor(Math.random() * babyFacts.length)]);
   const [currentWeek, setCurrentWeek] = useState(16);
   const [favoriteNames, setFavoriteNames] = useState([]);
@@ -45,10 +105,27 @@ const BabySection = () => {
   const handleNewName = () => {
     let newName;
     do {
-      newName = babyNames[Math.floor(Math.random() * babyNames.length)];
+      newName = allBabyNames[Math.floor(Math.random() * allBabyNames.length)];
     } while (newName === randomName);
     setRandomName(newName);
   };
+  
+  const handleBoyName = () => {
+    let newName;
+    do {
+      newName = babyBoyNames[Math.floor(Math.random() * babyBoyNames.length)];
+    } while (newName === randomName);
+    setRandomName(newName);
+  };
+  
+  const handleGirlName = () => {
+    let newName;
+    do {
+      newName = babyGirlNames[Math.floor(Math.random() * babyGirlNames.length)];
+    } while (newName === randomName);
+    setRandomName(newName);
+  };
+  
   
   const handleNewFact = () => {
     let newFact;
@@ -134,9 +211,14 @@ const BabySection = () => {
               <span className="baby1-highlight-name">{randomName}</span>
             </div>
             <div className="baby1-button-group">
-              <button className="baby1-button baby1-primary" onClick={handleNewName}>
-                🔄 New Name
-              </button>
+        
+<button className="baby1-button baby1-primary" onClick={handleBoyName}>
+  Boy's Name
+</button>
+<button className="baby1-button baby1-primary" onClick={handleGirlName}>
+ Girl's Name
+</button>
+
               <button className="baby1-button baby1-secondary" onClick={addToFavorites}>
                 ❤️ Favorite
               </button>

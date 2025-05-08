@@ -165,9 +165,9 @@ const AppointmentList = () => {
 // Stats Cards Component
 const StatsCards = () => {
   const stats = [
-    { title: "Appointments", value: 28, icon: "fa-calendar", trend: "+12% from last week", trendUp: true, type: "appointments" },
-    { title: "Patients", value: 158, icon: "fa-user-md", trend: "+5% from last month", trendUp: true, type: "patients" },
-    { title: "Revenue", value: "$13,450", icon: "fa-dollar-sign", trend: "+8% from last month", trendUp: true, type: "revenue" }
+    { title: "Appointments", value: 3, icon: "fa-calendar", trend: "+12% from last week", trendUp: true, type: "appointments" },
+    { title: "Patients", value: 2, icon: "fa-user-md", trend: "+5% from last month", trendUp: true, type: "patients" },
+   
   ];
 
   return (
