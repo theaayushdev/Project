@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Droplet, CheckCircle, AlertCircle, Plus, RotateCcw, ChevronUp, ChevronDown, Award } from "lucide-react";
 
-export default function HydrationTracker() {
+function HydrationTracker() {
   const [waterIntake, setWaterIntake] = useState(6);
   const [waterLog, setWaterLog] = useState([
     { id: 1, time: "8:00 AM", amount: "250ml" },
@@ -75,85 +75,177 @@ export default function HydrationTracker() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold text-indigo-800 mb-6 text-center">Hydration Tracker</h2>
+    <div style={{
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      padding: "24px",
+      maxWidth: "500px",
+      margin: "0 auto"
+    }}>
+      <h2 style={{
+        fontSize: "24px",
+        fontWeight: "bold",
+        color: "#4338ca",
+        marginBottom: "24px",
+        textAlign: "center"
+      }}>Hydration Tracker</h2>
       
       {/* Progress Visualization */}
-      <div className="mb-8">
-        <div className="relative w-full h-64 mx-auto mb-4">
+      <div style={{ marginBottom: "32px" }}>
+        <div style={{ position: "relative", width: "100%", height: "256px", marginBottom: "16px" }}>
           {/* Water bottle outline */}
-          <div className="absolute inset-0 mx-auto w-32 h-64 border-4 border-blue-300 rounded-b-3xl rounded-t-lg overflow-hidden">
+          <div style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            bottom: "0",
+            left: "0",
+            margin: "0 auto",
+            width: "128px",
+            height: "256px",
+            border: "4px solid #93c5fd",
+            borderBottomLeftRadius: "24px",
+            borderBottomRightRadius: "24px",
+            borderTopLeftRadius: "8px",
+            borderTopRightRadius: "8px",
+            overflow: "hidden"
+          }}>
             {/* Water fill level */}
-            <div 
-              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-500 to-blue-300 transition-all duration-500 ease-out"
-              style={{ height: `${percentage}%` }}
-            ></div>
+            <div style={{
+              position: "absolute",
+              bottom: "0",
+              left: "0",
+              right: "0",
+              background: "linear-gradient(to top, #3b82f6, #60a5fa)",
+              height: `${percentage}%`,
+              transition: "height 0.5s ease-out"
+            }}></div>
             
             {/* Measurement lines */}
-            <div className="absolute inset-0">
+            <div style={{ position: "absolute", top: "0", right: "0", bottom: "0", left: "0" }}>
               {[0, 25, 50, 75].map((level) => (
                 <div 
                   key={level}
-                  className="absolute w-6 h-1 bg-blue-200 left-0"
-                  style={{ bottom: `${level}%` }}
+                  style={{
+                    position: "absolute",
+                    width: "24px",
+                    height: "4px",
+                    backgroundColor: "#bfdbfe",
+                    left: "0",
+                    bottom: `${level}%`
+                  }}
                 ></div>
               ))}
             </div>
             
             {/* Water measurement text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold text-white drop-shadow-md">{waterIntake}/{goalIntake}</span>
-              <span className="text-white font-medium drop-shadow-md">glasses</span>
+            <div style={{
+              position: "absolute",
+              top: "0",
+              right: "0",
+              bottom: "0",
+              left: "0",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              <span style={{ fontSize: "30px", fontWeight: "bold", color: "white", textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}>
+                {waterIntake}/{goalIntake}
+              </span>
+              <span style={{ color: "white", fontWeight: "500", textShadow: "0 1px 2px rgba(0,0,0,0.2)" }}>
+                glasses
+              </span>
             </div>
           </div>
         </div>
         
         {/* Droplet indicators */}
-        <div className="flex justify-center space-x-2 mb-4">
+        <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "16px" }}>
           {Array.from({ length: goalIntake }).map((_, i) => (
             <button 
               key={i}
               onClick={() => setWaterIntake(i + 1)}
-              className="transition-all duration-300 hover:scale-110 focus:outline-none"
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                transition: "transform 0.3s",
+                padding: "4px"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+              onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
             >
-              {i < waterIntake ? (
-                <Droplet className="w-8 h-8 text-blue-500" fill="currentColor" />
-              ) : (
-                <Droplet className="w-8 h-8 text-blue-200" />
-              )}
+              <Droplet 
+                size={32} 
+                color={i < waterIntake ? "#3b82f6" : "#bfdbfe"} 
+                fill={i < waterIntake ? "#3b82f6" : "none"} 
+              />
             </button>
           ))}
         </div>
       </div>
       
       {/* Daily Water Cycle */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4">Daily Water Cycle</h3>
-        <div className="relative">
+      <div style={{ marginBottom: "32px" }}>
+        <h3 style={{ fontSize: "18px", fontWeight: "600", color: "#4338ca", marginBottom: "16px" }}>
+          Daily Water Cycle
+        </h3>
+        <div style={{ position: "relative" }}>
           {/* Timeline connector */}
-          <div className="absolute left-4 top-6 w-1 h-3/4 bg-blue-200"></div>
+          <div style={{
+            position: "absolute",
+            left: "16px",
+            top: "24px",
+            width: "4px",
+            height: "75%",
+            backgroundColor: "#bfdbfe"
+          }}></div>
           
           {/* Cycle steps */}
-          <div className="space-y-6">
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             {waterCycleSteps.map((step) => (
               <div 
                 key={step.id}
-                className="flex items-center cursor-pointer group"
+                style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
                 onClick={() => toggleCycleStep(step.id)}
+                onMouseOver={(e) => {
+                  if (!step.complete) {
+                    e.currentTarget.querySelector('.step-circle').style.backgroundColor = "#dbeafe";
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!step.complete) {
+                    e.currentTarget.querySelector('.step-circle').style.backgroundColor = "#e5e7eb";
+                  }
+                }}
               >
-                <div className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 ${
-                  step.complete ? 'bg-green-500' : 'bg-gray-200 group-hover:bg-blue-100'
-                }`}>
+                <div 
+                  className="step-circle"
+                  style={{
+                    position: "relative",
+                    zIndex: "10",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: step.complete ? "#10b981" : "#e5e7eb",
+                    transition: "background-color 0.3s"
+                  }}
+                >
                   {step.complete ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
+                    <CheckCircle size={24} color="white" />
                   ) : (
-                    <Droplet className="w-5 h-5 text-blue-400" />
+                    <Droplet size={20} color="#60a5fa" />
                   )}
                 </div>
                 
-                <div className="ml-4">
-                  <p className="font-medium text-gray-800">{step.label}</p>
-                  <p className="text-sm text-gray-500">{step.time}</p>
+                <div style={{ marginLeft: "16px" }}>
+                  <p style={{ fontWeight: "500", color: "#1f2937" }}>{step.label}</p>
+                  <p style={{ fontSize: "14px", color: "#6b7280" }}>{step.time}</p>
                 </div>
               </div>
             ))}
@@ -162,40 +254,99 @@ export default function HydrationTracker() {
       </div>
       
       {/* Controls */}
-      <div className="flex gap-3 mb-6">
+      <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
         {!showAddWater ? (
           <button 
-            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+            style={{
+              flex: "1",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              cursor: "pointer",
+              transition: "background-color 0.3s"
+            }}
             onClick={() => setShowAddWater(true)}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#2563eb"}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#3b82f6"}
           >
-            <Plus className="w-5 h-5" />
+            <Plus size={20} />
             <span>Log Water Intake</span>
           </button>
         ) : (
-          <div className="w-full bg-blue-50 p-4 rounded-lg">
-            <div className="flex mb-3 gap-2">
+          <div style={{
+            width: "100%",
+            backgroundColor: "#eff6ff",
+            padding: "16px",
+            borderRadius: "8px"
+          }}>
+            <div style={{ display: "flex", marginBottom: "12px", gap: "8px" }}>
               {["150", "250", "350"].map(amount => (
                 <button 
                   key={amount}
-                  className={`flex-1 py-2 rounded-md transition-colors ${
-                    newAmount === amount ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 border border-blue-300 hover:bg-blue-100'
-                  }`}
+                  style={{
+                    flex: "1",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: newAmount === amount ? "none" : "1px solid #93c5fd",
+                    backgroundColor: newAmount === amount ? "#3b82f6" : "white",
+                    color: newAmount === amount ? "white" : "#3b82f6",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s"
+                  }}
                   onClick={() => setNewAmount(amount)}
+                  onMouseOver={(e) => {
+                    if (newAmount !== amount) {
+                      e.currentTarget.style.backgroundColor = "#dbeafe";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (newAmount !== amount) {
+                      e.currentTarget.style.backgroundColor = "white";
+                    }
+                  }}
                 >
                   {amount}ml
                 </button>
               ))}
             </div>
-            <div className="flex gap-2">
+            <div style={{ display: "flex", gap: "8px" }}>
               <button 
-                className="flex-1 bg-gray-200 hover:bg-gray-300 py-2 rounded-md text-gray-700 transition-colors"
+                style={{
+                  flex: "1",
+                  backgroundColor: "#e5e7eb",
+                  padding: "8px",
+                  borderRadius: "6px",
+                  border: "none",
+                  color: "#4b5563",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s"
+                }}
                 onClick={() => setShowAddWater(false)}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#d1d5db"}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#e5e7eb"}
               >
                 Cancel
               </button>
               <button 
-                className="flex-1 bg-blue-500 hover:bg-blue-600 py-2 rounded-md text-white transition-colors"
+                style={{
+                  flex: "1",
+                  backgroundColor: "#3b82f6",
+                  padding: "8px",
+                  borderRadius: "6px",
+                  border: "none",
+                  color: "white",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s"
+                }}
                 onClick={addWater}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#2563eb"}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#3b82f6"}
               >
                 Add
               </button>
@@ -204,73 +355,106 @@ export default function HydrationTracker() {
         )}
         
         <button 
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-lg flex items-center justify-center transition-colors"
+          style={{
+            backgroundColor: "#f3f4f6",
+            color: "#4b5563",
+            padding: "12px",
+            borderRadius: "8px",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "background-color 0.3s"
+          }}
           onClick={resetWater}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#e5e7eb"}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#f3f4f6"}
         >
-          <RotateCcw className="w-5 h-5" />
+          <RotateCcw size={20} />
         </button>
       </div>
       
       {/* Water Log */}
-      <div className="bg-gray-50 rounded-lg overflow-hidden mb-6">
+      <div style={{
+        backgroundColor: "#f9fafb",
+        borderRadius: "8px",
+        overflow: "hidden",
+        marginBottom: "24px"
+      }}>
         <div 
-          className="flex items-center justify-between px-4 py-3 bg-gray-100 cursor-pointer"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 16px",
+            backgroundColor: "#f3f4f6",
+            cursor: "pointer"
+          }}
           onClick={() => setShowLog(!showLog)}
         >
-          <h3 className="font-medium text-gray-800">Water Log</h3>
-          {showLog ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          <h3 style={{ fontWeight: "500", color: "#1f2937" }}>Water Log</h3>
+          {showLog ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </div>
         
         {showLog && (
-          <div className="p-4">
+          <div style={{ padding: "16px" }}>
             {waterLog.length > 0 ? (
-              <div className="max-h-48 overflow-auto">
-                <table className="w-full">
-                  <thead className="text-left text-gray-600 text-sm">
+              <div style={{ maxHeight: "192px", overflow: "auto" }}>
+                <table style={{ width: "100%" }}>
+                  <thead style={{ textAlign: "left", color: "#4b5563", fontSize: "14px" }}>
                     <tr>
-                      <th className="pb-2">Time</th>
-                      <th className="pb-2">Amount</th>
+                      <th style={{ paddingBottom: "8px" }}>Time</th>
+                      <th style={{ paddingBottom: "8px" }}>Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {waterLog.map(entry => (
-                      <tr key={entry.id} className="border-t border-gray-200">
-                        <td className="py-2 text-gray-800">{entry.time}</td>
-                        <td className="py-2 text-gray-800">{entry.amount}</td>
+                      <tr key={entry.id} style={{ borderTop: "1px solid #e5e7eb" }}>
+                        <td style={{ padding: "8px 0", color: "#1f2937" }}>{entry.time}</td>
+                        <td style={{ padding: "8px 0", color: "#1f2937" }}>{entry.amount}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-4">No water intake logged yet</p>
+              <p style={{ color: "#6b7280", textAlign: "center", padding: "16px 0" }}>
+                No water intake logged yet
+              </p>
             )}
           </div>
         )}
       </div>
       
       {/* Hydration Tips */}
-      <div className="bg-blue-50 rounded-lg p-4">
-        <p className="text-center text-blue-800 mb-2">Staying hydrated is essential for you and your baby!</p>
+      <div style={{
+        backgroundColor: "#eff6ff",
+        borderRadius: "8px",
+        padding: "16px"
+      }}>
+        <p style={{ textAlign: "center", color: "#1e40af", marginBottom: "8px" }}>
+          Staying hydrated is essential for you and your baby!
+        </p>
         
-        <div className="flex items-center justify-center">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           {percentage < 50 && (
-            <div className="flex items-center text-amber-600">
-              <AlertCircle className="w-5 h-5 mr-2" />
+            <div style={{ display: "flex", alignItems: "center", color: "#d97706" }}>
+              <AlertCircle size={20} style={{ marginRight: "8px" }} />
               <span>You're behind on your water intake today.</span>
             </div>
           )}
           
           {percentage >= 50 && percentage < 100 && (
-            <div className="flex items-center text-green-600">
-              <CheckCircle className="w-5 h-5 mr-2" />
+            <div style={{ display: "flex", alignItems: "center", color: "#16a34a" }}>
+              <CheckCircle size={20} style={{ marginRight: "8px" }} />
               <span>You're doing well! Keep drinking.</span>
             </div>
           )}
           
           {percentage >= 100 && (
-            <div className="flex items-center text-indigo-600">
-              <Award className="w-5 h-5 mr-2" />
+            <div style={{ display: "flex", alignItems: "center", color: "#4f46e5" }}>
+              <Award size={20} style={{ marginRight: "8px" }} />
               <span>Great job! You've reached your daily goal.</span>
             </div>
           )}
@@ -279,3 +463,5 @@ export default function HydrationTracker() {
     </div>
   );
 }
+
+export default HydrationTracker;
