@@ -165,9 +165,9 @@ const AppointmentList = () => {
 // Stats Cards Component
 const StatsCards = () => {
   const stats = [
-    { title: "Appointments", value: 2, icon: "fa-calendar", trend: "+12% from last week", trendUp: true, type: "appointments" },
-    { title: "Patients", value: 3, icon: "fa-user-md", trend: "+5% from last month", trendUp: true, type: "patients" },
-
+    { title: "Appointments", value: 3, icon: "fa-calendar", trend: "+12% from last week", trendUp: true, type: "appointments" },
+    { title: "Patients", value: 2, icon: "fa-user-md", trend: "+5% from last month", trendUp: true, type: "patients" },
+   
   ];
 
   return (
@@ -363,7 +363,7 @@ const DashboardContent = () => {
       </div>
       
       <div className="doc1-dashboard-welcome">
-        <h3>Welcome back, Dr. Roberts!</h3>
+        <h3>Welcome back, Dr. Nikhil!</h3>
         <p>Here's what's happening with your patients today.</p>
       </div>
       

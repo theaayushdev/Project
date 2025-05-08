@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import UserNavbar from "./Usernavbar";
+import UserNavbar from "./UserNavbar";
 import UserSidebar from "./usersidebar";
 import "../cssonly/pregnancydashboard.css";
 

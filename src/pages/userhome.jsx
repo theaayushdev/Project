@@ -30,11 +30,11 @@ function Page() {
           <p>Find tips, books, resources, baby names, and much more!</p>
           <div className="buttons-container">
             <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
-            <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button>
+            {/* <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button> */}
             <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
             <button className="club-button" onClick={navigateToDoctorPanel}>Doctor Panel</button>
-            <button className="club-button" onClick={navigateToPregnancy}>USER</button>
-            <button className="club-button" onClick={navigateToRegisterLogin}>Test</button>
+            {/* <button className="club-button" onClick={navigateToPregnancy}>USER</button>
+            <button className="club-button" onClick={navigateToRegisterLogin}>Test</button> */}
           </div>
         </div>
         
