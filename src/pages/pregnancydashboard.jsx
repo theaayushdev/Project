@@ -49,7 +49,7 @@ function UserPregnancyDashboard() {
   const healthStats = pregnancyInfo ? [
     { title: "Weight", value: `${pregnancyInfo.weight} kg`, icon: "fa-weight" },
     { title: "Height", value: `${pregnancyInfo.height} cm`, icon: "fa-ruler-vertical" },
-    { title: "Water Intake", value: "6 / 8 glasses", icon: "fa-tint" },
+    { title: "Water Intake", value: "0/ 8 glasses", icon: "fa-tint" },
     { title: "Sleep Quality", value: "Good (7 hrs)", icon: "fa-bed" },
   ] : [];
 
