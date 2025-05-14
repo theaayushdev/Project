@@ -33,7 +33,7 @@ function DueDateCalculator() {
 
   return (
     <div className="calculator-container">
-      <h2>Pregnancy Due Date Calculator</h2>
+      <h2>Pregnancy Due Date Calculator : </h2>
 
       <label>Last Menstrual Period (LMP):</label>
       <input type="date" value={lmp} onChange={(e) => setLmp(e.target.value)} />
