@@ -12,7 +12,8 @@ const AdminSidebar = () => {
         <ul className="sidebar-nav">
           <li onClick={() => navigate('/dashboard')} className="sidebar-link">Dashboard</li>
           <li onClick={() => navigate('/AddDoctorForm')} className="sidebar-link">Add Doctors</li>
-          <li onClick={() => navigate('/removedoctor')} className="sidebar-link">Remove Doctors</li>
+          <li onClick={() => navigate('/RemoveDoctor')} className="sidebar-link">Remove Doctors</li>
+
           <li onClick={() => navigate('/dashboard#reports')} className="sidebar-link">Generate Report</li>
         </ul>
       </nav>

@@ -21,7 +21,7 @@ import PregnancyDashboard from "./pages/pregnancydashboard";
 
 import DueDateCalculator from "./pages/duedatecalc";
 import AppointmentForm from './pages/appointment';
-import Removedoctor from './pages/appointment';
+import Removedoctor from './pages/removedoctor';
 
 import PregnancyForm from "./pages/additionalinformation";
 const App = () => {
@@ -45,11 +45,12 @@ const App = () => {
         
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
         <Route path="/appointment" element={<AppointmentForm />} />
-        <Route path="/removedoctor" element={<Removedoctor  />} />
+    
         <Route path="/mood" element={<MoodTracker />} /> 
         <Route path="/additionalinformation" element={<PregnancyForm />} />
         <Route path="/hydration" element={<HydrationTracker />} />
         <Route path="/duedatecalc" element={<DueDateCalculator/>} />
+        <Route path="/removedoctor" element={<Removedoctor  />} />
       </Routes>
     </Router>
   );

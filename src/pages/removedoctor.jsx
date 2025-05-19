@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AdminSidebar from './AdminSidebar'; // Make sure this is imported correctly
+import AdminSidebar from './adminsidebar'; // Ensure correct path
+//import '../cssonly/admin.css'; // Optional: add styling here
 
 const Removedoctor = () => {
-  const [activeTab, setActiveTab] = useState('doctors'); // Use lowercase to match logic
   const [doctors, setDoctors] = useState([]);
 
-  // Fetch doctors
   useEffect(() => {
     axios.get('http://localhost:5000/doctors')
       .then(res => setDoctors(res.data))
@@ -14,42 +13,44 @@ const Removedoctor = () => {
   }, []);
 
   return (
-    <div className="remove-dashboard">
-      <AdminSidebar setActiveTab={setActiveTab} />
-      <div className="main-content">
-        <div className="content-header">
-          <h1>{activeTab === 'doctors' ? 'Doctors' : 'Users'}</h1>
-          <p className="entries-info">
-            Showing 1–{doctors.length} of {doctors.length} entries
-          </p>
-        </div>
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Specialty</th>
-                <th>Department</th>
-                <th>Email</th>
+    <div className="remove-dashboard" style={{ display: 'flex' }}>
+      <AdminSidebar />
+      <div className="main-content" style={{ flex: 1, padding: '20px' }}>
+        <h1>Doctors List</h1>
+        <p>Showing {doctors.length} doctors</p>
+
+        <table className="doctor-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Name</th>
+              <th style={thStyle}>Phone</th>
+              <th style={thStyle}>Specialty</th>
+              <th style={thStyle}>Department</th>
+              <th style={thStyle}>Email</th>
+              {/* <th style={thStyle}>Actions</th> */}
+            </tr>
+          </thead>
+          <tbody>
+            {doctors.map((doctor) => (
+              <tr key={doctor.id} style={trStyle}>
+                <td style={tdStyle}>{doctor.firstname} {doctor.lastname}</td>
+                <td style={tdStyle}>{doctor.phone_number}</td>
+                <td style={tdStyle}>{doctor.specialty}</td>
+                <td style={tdStyle}>{doctor.department}</td>
+                <td style={tdStyle}>{doctor.email}</td>
+                {/* <td style={tdStyle}><button onClick={() => handleRemove(doctor.id)}>Remove</button></td> */}
               </tr>
-            </thead>
-            <tbody>
-              {doctors.map((doctor) => (
-                <tr key={doctor.id}>
-                  <td>{doctor.firstname} {doctor.lastname}</td>
-                  <td>{doctor.phone_number}</td>
-                  <td>{doctor.specialty}</td>
-                  <td>{doctor.department}</td>
-                  <td>{doctor.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
+
+// Simple styles (you can also move to CSS)
+const thStyle = { borderBottom: '2px solid #ccc', padding: '10px', textAlign: 'left' };
+const tdStyle = { borderBottom: '1px solid #eee', padding: '10px' };
+const trStyle = { backgroundColor: '#fff' };
 
 export default Removedoctor;
