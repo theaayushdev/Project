@@ -11,3 +11,5 @@ const ImageComponent = () => {
 };
 
 export default ImageComponent;
+
+// image will be displayed here 
