@@ -362,7 +362,7 @@ const NutritionSection = () => {
             Nutrition & Wellness Hub
           </h2>
           <p className="nut-subtitle">
-            Your personalized guide to healthy eating during pregnancy
+            Your personalized guide to healthy eating during pregnancy journey
           </p>
         </div>
         <div className="nut-decorative-elements">
@@ -426,7 +426,7 @@ const NutritionSection = () => {
           </div>
           <div className="nut-stat-item">
             <span className="nut-stat-number">24/7</span>
-            <span className="nut-stat-label">Expert Support</span>
+            <span className="nut-stat-label">Expert Supports</span>
           </div>
         </div>
       </div>
