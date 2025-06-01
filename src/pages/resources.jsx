@@ -46,18 +46,94 @@ function Resources() {
     </>
   );
 }
+
+
+
 function Navbar() {
   return (
-    <nav className="navbar">
-      <ul className="nav-list left">
-        <li><Link to="/userhome">Home</Link></li>
-      </ul>
-      <ul className="nav-list right">
-        <li>Profile</li>
-      </ul>
-    </nav>
+    <>
+      <style>
+        {`
+          .navs1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            min-width: 300px;
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+          }
+          
+          .navs2, .navs6 {
+            display: flex;
+            align-items: center;
+          }
+          
+          .navs3, .navs7 {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+          }
+          
+          .navs4, .navs8 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .navs5, .navs9 {
+            color: #374151;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          }
+          
+          .navs5:hover, .navs9:hover {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            transform: translateY(-2px);
+          }
+        `}
+      </style>
+      <nav className="navs1">
+        <div className="navs2">
+          <ul className="navs3">
+            <li className="navs4">
+              <Link to="/userhome" className="navs5">🏠 Home</Link>
+            </li>
+            <li className="navs8">
+              <Link to="/doctor" className="navs9">👨‍⚕️ Doctor</Link>
+            </li>
+            <li className="navs8">
+              <Link to="/resources" className="navs9">📚 Resources</Link>
+            </li>
+            <li className="navs8">
+              <Link to="/profile" className="navs9">👤 Profile</Link>
+            </li>
+            <li className="navs8">
+              <Link to="/logout" className="navs9">🚪 Logout</Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </>
   );
 }
+
 
 
 
