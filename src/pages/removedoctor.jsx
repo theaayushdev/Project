@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AdminSidebar from './adminsidebar'; // Ensure correct path
-//import '../cssonly/admin.css'; // Optional: add styling here
+import AdminSidebar from './adminsidebar'; 
+import '../cssonly/removedoctor.css';
 
 const Removedoctor = () => {
   const [doctors, setDoctors] = useState([]);

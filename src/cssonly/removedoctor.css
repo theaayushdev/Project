@@ -1,0 +1,17 @@
+.doctor-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .doctor-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .remove-dashboard {
+    background-color: #fdfdfd;
+  }
+  
+  .main-content {
+    overflow-x: auto;
+  }
+  
