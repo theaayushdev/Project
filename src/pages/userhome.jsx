@@ -18,7 +18,7 @@ function Page() {
   return (
     <div className="page-scroll-content">
       <header className="hero-section">
-        <h1 className="page-title"> Welcome to Pregnify, Your Pregnancy Companion</h1>
+        <h1 className="page-title"> Welcome to Pregnify, Your Pregnancy Companion  </h1>
         <p className="page-description">
           <b>Your Health is Our Top Priority</b>
         </p>
