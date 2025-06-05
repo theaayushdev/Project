@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from extensions import db
 from model import User, Doctor, Appointment, PregnancyInfo
 from datetime import datetime
+from model import Admin
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174"]}})
@@ -182,6 +183,22 @@ def get_appointments():
         'status': a.status
     } for a in all_appointments]
     return jsonify(result)
+
+
+@app.route('/admin-login', methods=['POST'])
+def admin_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required.'}), 400
+
+    admin = Admin.query.filter_by(username=username, password=password).first()
+    if admin:
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'error': 'Invalid username or password'}), 401
 
 
 if __name__ == '__main__':

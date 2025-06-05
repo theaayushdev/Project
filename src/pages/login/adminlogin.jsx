@@ -39,24 +39,41 @@ function AdminLogin() {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const newErrors = validateForm();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('http://localhost:5000/admin-login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+    setIsLoading(false);
+
+    if (response.ok) {
       alert(`Welcome Administrator ${formData.username}! Login successful.`);
-      // Here you would typically redirect to the admin dashboard
-    }, 1500);
-  };
+      // You can redirect to admin dashboard here
+      // navigate('/admin-dashboard');
+    } else {
+      alert(result.error || 'Login failed');
+    }
+  } catch (error) {
+    setIsLoading(false);
+    alert('Something went wrong. Please try again.');
+  }
+};
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
