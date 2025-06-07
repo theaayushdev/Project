@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import ImageComponent from "./images"; // your new sidebar
+import ImageComponent from "./images";
 import { useNavigate } from "react-router-dom";
 
 import "../cssonly/userhome.css";
@@ -8,9 +8,9 @@ import "../cssonly/userhome.css";
 function Page() {
   const navigate = useNavigate();
 
+  // Navigation handlers
   const navigateToLogin = () => navigate("/login");
-  const navigateToDoctorLogin = () => navigate("/dashboard");
-
+  const navigateToAdminLogin = () => navigate("/adminlogin"); // ✅ FIXED
   const navigateToRegisterLogin = () => navigate("/userregister");
   const navigateToDoctorPanel = () => navigate("/doctordashboard");
   const navigateToPregnancy = () => navigate("/pregnancydashboard");
@@ -18,7 +18,7 @@ function Page() {
   return (
     <div className="page-scroll-content">
       <header className="hero-section">
-        <h1 className="page-title"> Welcome to Pregnify, Your Pregnancy Companion  </h1>
+        <h1 className="page-title">Welcome to Pregnify, Your Pregnancy Companion</h1>
         <p className="page-description">
           <b>Your Health is Our Top Priority</b>
         </p>
@@ -29,15 +29,21 @@ function Page() {
           <h2 className="section-title">Pregnancy</h2>
           <p>Find tips, books, resources, baby names, and much more!</p>
           <div className="buttons-container">
-            <button className="club-button" onClick={navigateToLogin}>User Login Page</button>
-            {/* <button className="club-button" onClick={navigateToDoctorLogin}>Doctor Login Page</button> */}
-            <button className="club-button" onClick={navigateToDoctorLogin}>Admin login</button>
-            <button className="club-button" onClick={navigateToDoctorPanel}>Doctor Panel</button>
-            {/* <button className="club-button" onClick={navigateToPregnancy}>USER</button>
-            <button className="club-button" onClick={navigateToRegisterLogin}>Test</button> */}
+            <button className="club-button" onClick={navigateToLogin}>
+              User Login Page
+            </button>
+            <button className="club-button" onClick={navigateToAdminLogin}>
+              Admin Login
+            </button>
+            <button className="club-button" onClick={navigateToDoctorPanel}>
+              Doctor Panel
+            </button>
+            {/* Optional buttons: 
+            <button className="club-button" onClick={navigateToPregnancy}>User Dashboard</button>
+            <button className="club-button" onClick={navigateToRegisterLogin}>Register</button> 
+            */}
           </div>
         </div>
-        
       </div>
     </div>
   );
@@ -47,10 +53,11 @@ const Top = () => {
   return (
     <div className="layout-container">
       <Sidebar />
-      <ImageComponent /> 
+      <ImageComponent />
       <Page />
     </div>
   );
 };
 
 export default Top;
+

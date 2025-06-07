@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import '../../cssonly/AdminLogin.css';
+
 
 function AdminLogin() {
   const [formData, setFormData] = useState({
@@ -39,60 +41,58 @@ function AdminLogin() {
     return newErrors;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const newErrors = validateForm();
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    const response = await fetch('http://localhost:5000/admin-login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    });
-
-    const result = await response.json();
-    setIsLoading(false);
-
-    if (response.ok) {
-      alert(`Welcome Administrator ${formData.username}! Login successful.`);
-      // You can redirect to admin dashboard here
-      // navigate('/admin-dashboard');
-    } else {
-      alert(result.error || 'Login failed');
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
-  } catch (error) {
-    setIsLoading(false);
-    alert('Something went wrong. Please try again.');
-  }
-};
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/admin-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+      setIsLoading(false);
+
+      if (response.ok) {
+        alert(`Welcome Administrator ${formData.username}! Login successful.`);
+      } else {
+        alert(result.error || 'Login failed');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      alert('Something went wrong. Please try again.');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md p-8 border border-gray-700">
+    <div className="login-container">
+      <div className="login-card">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="bg-gray-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="login-header">
+          <div className="login-icon">
+            <svg className="shield-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Admin Portal</h1>
-          <p className="text-gray-400">Please sign in to access the dashboard</p>
+          <h1 className="login-title">Admin Portal</h1>
+          <p className="login-subtitle">Please sign in to access the dashboard</p>
         </div>
 
         {/* Login Form */}
-        <div className="space-y-6">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
               Username
             </label>
             <input
@@ -101,18 +101,16 @@ const handleSubmit = async (e) => {
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 bg-gray-800 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-500 ${
-                errors.username ? 'border-red-500 bg-red-900 bg-opacity-20' : 'border-gray-600'
-              }`}
+              className={`form-input ${errors.username ? 'error' : ''}`}
               placeholder="Enter your username"
             />
             {errors.username && (
-              <p className="mt-1 text-sm text-red-400">{errors.username}</p>
+              <p className="error-message">{errors.username}</p>
             )}
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
               Password
             </label>
             <input
@@ -121,56 +119,47 @@ const handleSubmit = async (e) => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 bg-gray-800 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-500 ${
-                errors.password ? 'border-red-500 bg-red-900 bg-opacity-20' : 'border-gray-600'
-              }`}
+              className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="Enter your password"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+              <p className="error-message">{errors.password}</p>
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center">
+          <div className="form-options">
+            <label className="remember-me">
               <input
                 type="checkbox"
-                className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-600 rounded bg-gray-800"
+                className="checkbox"
               />
-              <span className="ml-2 text-sm text-gray-400">Remember me</span>
+              <span>Remember me</span>
             </label>
-            <a href="#" className="text-sm text-gray-400 hover:text-gray-300 transition-colors">
+            <a href="#" className="forgot-password">
               Forgot password?
             </a>
           </div>
 
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-200 ${
-              isLoading 
-                ? 'bg-gray-700 cursor-not-allowed' 
-                : 'bg-gray-700 hover:bg-gray-600 hover:shadow-lg transform hover:-translate-y-0.5'
-            }`}
+            className={`submit-btn ${isLoading ? 'loading' : ''}`}
           >
             {isLoading ? (
-              <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+              <div className="loading-content">
+                <div className="spinner"></div>
                 Signing in...
               </div>
             ) : (
               'Sign In'
             )}
           </button>
-        </div>
+        </form>
 
         {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Need help? <a href="#" className="text-gray-400 hover:text-gray-300">Contact Support</a>
+        <div className="login-footer">
+          <p>
+            Need help? <a href="#" className="support-link">Contact Support</a>
           </p>
         </div>
       </div>
