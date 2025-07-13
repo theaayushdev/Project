@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/login";
 import UserHome from "./pages/userhome";
@@ -21,8 +21,9 @@ import DueDateCalculator from "./pages/duedatecalc";
 import AppointmentForm from './pages/appointment';
 import Removedoctor from './pages/removedoctor';
 import PregnancyForm from "./pages/additionalinformation";
-
+import Front from "./pages/front";
 import AdminLogin from './pages/login/adminlogin';
+import Top from "./pages/userhome"; // <-- import your Top component
 
 import './App.css';
 
@@ -30,8 +31,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/userhome" replace />} />
-        <Route path="/userhome" element={<UserHome />} />
+        <Route path="/" element={<Front />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/doctorlogin" element={<DoctorModule />} />
@@ -52,8 +52,7 @@ const App = () => {
         <Route path="/duedatecalc" element={<DueDateCalculator />} />
         <Route path="/removedoctor" element={<Removedoctor />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
-        
-        <Route path="/adminlogin" element={<AdminLogin />} /> {/* ✅ Add this line */}
+        <Route path="/test" element={<Top />} /> {/* <-- test route */}
       </Routes>
     </Router>
   );
