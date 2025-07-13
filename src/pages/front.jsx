@@ -53,10 +53,10 @@ const Front = () => {
   ];
 
   const stats = [
-    { number: '50K+', label: 'Happy Mothers' },
-    { number: '1K+', label: 'Healthcare Providers' },
-    { number: '99.9%', label: 'Uptime' },
-    { number: '24/7', label: 'Support' }
+    { number: '3', label: 'Happy Mothers' },
+    { number: '2', label: 'Healthcare Providers' },
+    { number: '85.5%', label: 'Uptime' },
+    { number: '12/7', label: 'Support' }
   ];
 
   return (
