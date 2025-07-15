@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PregnancyForm = () => {
   const [formData, setFormData] = useState({
@@ -9,9 +9,20 @@ const PregnancyForm = () => {
     gravida: "",
     allergies: "",
     conditions: "",
-    contact: "",
+    email: "",
     notes: ""
   });
+  
+  // Auto-populate email from registration session
+  useEffect(() => {
+    const registeredEmail = localStorage.getItem("registeredEmail");
+    if (registeredEmail) {
+      setFormData(prev => ({
+        ...prev,
+        email: registeredEmail
+      }));
+    }
+  }, []);
 
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +48,8 @@ const PregnancyForm = () => {
       if (res.ok) {
         setSubmitted(true);
         setError("");
+        // Clean up registration email from localStorage
+        localStorage.removeItem("registeredEmail");
         setTimeout(() => {
           setSubmitted(false);
           setFormData({
@@ -47,7 +60,7 @@ const PregnancyForm = () => {
             gravida: "",
             allergies: "",
             conditions: "",
-            contact: "",
+            email: "",
             notes: ""
           });
         }, 3000);
@@ -153,15 +166,26 @@ const PregnancyForm = () => {
         </div>
 
         <div style={styles.fieldGroup}>
-          <label style={styles.label}>Contact Number:</label>
+          <label style={styles.label}>Email Address:</label>
           <input
-            type="text"
-            name="contact"
-            value={formData.contact}
+            type="email"
+            name="email"
+            value={formData.email}
             onChange={handleChange}
             required
-            style={styles.input}
+            placeholder="your.email@gmail.com"
+            style={{
+              ...styles.input,
+              backgroundColor: formData.email ? '#f0f0f0' : '#fff',
+              cursor: formData.email ? 'not-allowed' : 'text'
+            }}
+            readOnly={!!formData.email}
           />
+          {formData.email && (
+            <small style={{color: '#666', fontSize: '12px', marginTop: '4px', display: 'block'}}>
+              ✓ Email auto-populated from registration
+            </small>
+          )}
         </div>
 
         <div style={styles.fieldGroup}>

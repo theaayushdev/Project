@@ -45,7 +45,14 @@ const Registerlogin = () => {
     if (!formData.firstname.trim()) newErrors.firstname = "First name is required";
     if (!formData.lastname.trim()) newErrors.lastname = "Last name is required";
     
-    // Contact validation - simple phone format
+    // Email validation (primary login method)
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    
+    // Contact validation - simple phone format (optional for contact purposes)
     if (!formData.contact.trim()) {
       newErrors.contact = "Contact number is required";
     } else if (!/^\d{10,15}$/.test(formData.contact.replace(/[-()\s]/g, ''))) {
@@ -77,12 +84,6 @@ const Registerlogin = () => {
       newErrors.bloodtype = "Please enter a valid blood type (A+, B-, AB+, O-, etc.)";
     }
     
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
     
     // Password validation
     if (!formData.password) {
@@ -128,6 +129,8 @@ const Registerlogin = () => {
       
       if (res.ok) {
         setMessage({ text: data.message || "Registration successful!", type: "success" });
+        // Store email for additional information form
+        localStorage.setItem("registeredEmail", formData.email);
         // Delay navigation to show success message
         setTimeout(() => navigate("/additionalinformation"), 1500);
       } else {
@@ -239,6 +242,20 @@ const Registerlogin = () => {
               </div>
               
               <div className="form-group">
+                <label htmlFor="email">Email Address (Login)</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your.email@gmail.com"
+                  className={errors.email ? "error" : ""}
+                />
+                {errors.email && <span className="error-text">{errors.email}</span>}
+              </div>
+              
+              <div className="form-group">
                 <label htmlFor="contact">Contact Number</label>
                 <input
                   type="tel"
@@ -288,19 +305,6 @@ const Registerlogin = () => {
             {/* Account Information Section */}
             <div className="form-section">
               <h2 className="section-title">Account Information</h2>
-              
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "error" : ""}
-                />
-                {errors.email && <span className="error-text">{errors.email}</span>}
-              </div>
               
               <div className="form-group">
                 <label htmlFor="password">Password</label>

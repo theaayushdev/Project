@@ -21,25 +21,25 @@ def home():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    contact = data.get('contact')
+    email = data.get('email')
     password = data.get('password')
 
-    if not contact or not password:
-        return jsonify({'error': 'Contact and password are required.'}), 400
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required.'}), 400
 
-    if User.query.filter_by(contact=contact).first():
-        return jsonify({'error': 'User with this contact already exists.'}), 409
+    if User.query.filter_by(email=email).first():
+        return jsonify({'error': 'User with this email already exists.'}), 409
 
     new_user = User(
         firstname=data.get('firstname'),
         lastname=data.get('lastname'),
-        contact=contact,
+        contact=data.get('contact'),
         location=data.get('location'),
         age=data.get('age'),
         guardian_name=data.get('guardian_name'),
         guardian_contact=data.get('guardian_contact'),
         bloodtype=data.get('bloodtype'),
-        email=data.get('email'),
+        email=email,
         password=password,
         status='active'
     )
@@ -51,17 +51,17 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    contact = data.get('contact')
+    email = data.get('email')
     password = data.get('password')
 
-    if not contact or not password:
-        return jsonify({'error': 'Contact and password are required.'}), 400
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required.'}), 400
 
-    user = User.query.filter_by(contact=contact, password=password).first()
+    user = User.query.filter_by(email=email, password=password).first()
     if user:
-        return jsonify({'message': 'Loginsuccessful.'}), 200
+        return jsonify({'message': 'Login successful.'}), 200
     else:
-        return jsonify({'error': 'Invalid contact or password.'}), 401
+        return jsonify({'error': 'Invalid email or password.'}), 401
 
 @app.route('/add-doctor', methods=['POST'])
 def add_doctor():
@@ -129,11 +129,11 @@ def create_appointment():
 @app.route('/pregnancy-info', methods=['POST'])
 def submit_pregnancy_info():
     data = request.get_json()
-    contact = data.get('contact')
+    email = data.get('email')
 
-    user = User.query.filter_by(contact=contact).first()
+    user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({'error': 'User with this contact not found.'}), 404
+        return jsonify({'error': 'User with this email not found.'}), 404
 
     try:
         new_info = PregnancyInfo(

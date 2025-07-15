@@ -7,17 +7,17 @@ function UserPregnancyDashboard() {
   const [user, setUser] = useState(null);
   const [pregnancyInfo, setPregnancyInfo] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  const contact = localStorage.getItem("userContact");
+  const email = localStorage.getItem("userEmail");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const usersRes = await fetch("http://localhost:5000/users");
         const users = await usersRes.json();
-        const matchedUser = users.find(u => u.contact === contact);
+        const matchedUser = users.find(u => u.email === email);
 
         if (!matchedUser) {
-          console.warn("User not found for contact:", contact);
+          console.warn("User not found for email:", email);
           return;
         }
 
@@ -43,8 +43,8 @@ function UserPregnancyDashboard() {
       }
     };
 
-    if (contact) fetchData();
-  }, [contact]);
+    if (email) fetchData();
+  }, [email]);
 
   const healthStats = pregnancyInfo ? [
     { title: "Weight", value: `${pregnancyInfo.weight} kg`, icon: "fa-weight" },
