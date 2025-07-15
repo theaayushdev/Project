@@ -4,7 +4,7 @@ import "../cssonly/login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
@@ -15,13 +15,13 @@ const Login = () => {
       const res = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contact, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        // ✅ Store contact for later use in dashboard
-        localStorage.setItem("userContact", contact);
+        // ✅ Store email for later use in dashboard
+        localStorage.setItem("userEmail", email);
 
         setMessage("✅ Login Successful!");
         setTimeout(() => {
@@ -50,12 +50,12 @@ const Login = () => {
 
             <div className="login1-field">
               <input
-                type="text"
+                type="email"
                 className="login1-input"
-                placeholder="Phone Number"
-                autoComplete="off"
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
+                placeholder="Email Address"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
