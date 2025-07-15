@@ -78,3 +78,17 @@ class Appointment(db.Model):
 
     def __repr__(self):
         return f'<Appointment user_id={self.user_id}, doctor_id={self.doctor_id}>'
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, nullable=False)  # Can be user or doctor ID
+    receiver_id = db.Column(db.Integer, nullable=False)  # Can be user or doctor ID
+    sender_type = db.Column(db.String(10), nullable=False)  # 'user' or 'doctor'
+    receiver_type = db.Column(db.String(10), nullable=False)  # 'user' or 'doctor'
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+    is_read = db.Column(db.Boolean, default=False)
+
+    def __repr__(self):
+        return f'<Message from {self.sender_type}:{self.sender_id} to {self.receiver_type}:{self.receiver_id}>'

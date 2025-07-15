@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
-from model import User, Doctor, Appointment, PregnancyInfo
+from model import User, Doctor, Appointment, PregnancyInfo, Message
 from datetime import datetime
 from model import Admin
 
@@ -184,6 +184,56 @@ def get_appointments():
     } for a in all_appointments]
     return jsonify(result)
 
+@app.route('/doctor-appointments/<int:doctor_id>', methods=['GET'])
+def get_doctor_appointments(doctor_id):
+    try:
+        appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+        result = []
+        for appointment in appointments:
+            user = User.query.get(appointment.user_id)
+            result.append({
+                'id': appointment.id,
+                'appointment_date': appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S') if appointment.appointment_date else None,
+                'status': appointment.status,
+                'patient': {
+                    'id': user.patient_id,
+                    'firstname': user.firstname,
+                    'lastname': user.lastname,
+                    'email': user.email,
+                    'contact': user.contact,
+                    'age': user.age,
+                    'bloodtype': user.bloodtype
+                } if user else None
+            })
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/doctor-login', methods=['POST'])
+def doctor_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required.'}), 400
+
+    doctor = Doctor.query.filter_by(firstname=username, password=password).first()
+    if doctor:
+        return jsonify({
+            'message': 'Login successful',
+            'doctor': {
+                'id': doctor.id,
+                'firstname': doctor.firstname,
+                'lastname': doctor.lastname,
+                'specialty': doctor.specialty,
+                'department': doctor.department,
+                'email': doctor.email
+            }
+        }), 200
+    else:
+        return jsonify({'error': 'Invalid username or password'}), 401
 
 @app.route('/admin-login', methods=['POST'])
 def admin_login():
@@ -199,6 +249,99 @@ def admin_login():
         return jsonify({'message': 'Login successful'}), 200
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
+
+# Messaging endpoints
+@app.route('/send-message', methods=['POST'])
+def send_message():
+    data = request.get_json()
+    try:
+        new_message = Message(
+            sender_id=data['sender_id'],
+            receiver_id=data['receiver_id'],
+            sender_type=data['sender_type'],
+            receiver_type=data['receiver_type'],
+            content=data['content']
+        )
+        db.session.add(new_message)
+        db.session.commit()
+        return jsonify({'message': 'Message sent successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get-messages/<sender_type>/<int:sender_id>/<receiver_type>/<int:receiver_id>', methods=['GET'])
+def get_messages(sender_type, sender_id, receiver_type, receiver_id):
+    try:
+        messages = Message.query.filter(
+            ((Message.sender_type == sender_type) & (Message.sender_id == sender_id) & 
+             (Message.receiver_type == receiver_type) & (Message.receiver_id == receiver_id)) |
+            ((Message.sender_type == receiver_type) & (Message.sender_id == receiver_id) & 
+             (Message.receiver_type == sender_type) & (Message.receiver_id == sender_id))
+        ).order_by(Message.timestamp.asc()).all()
+        
+        result = []
+        for msg in messages:
+            result.append({
+                'id': msg.id,
+                'content': msg.content,
+                'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                'sender_type': msg.sender_type,
+                'sender_id': msg.sender_id,
+                'receiver_type': msg.receiver_type,
+                'receiver_id': msg.receiver_id,
+                'is_read': msg.is_read
+            })
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get-conversations/<user_type>/<int:user_id>', methods=['GET'])
+def get_conversations(user_type, user_id):
+    try:
+        # Get all unique conversations for a user
+        if user_type == 'user':
+            conversations = db.session.query(Message).filter(
+                (Message.sender_type == 'user') & (Message.sender_id == user_id) |
+                (Message.receiver_type == 'user') & (Message.receiver_id == user_id)
+            ).all()
+        else:
+            conversations = db.session.query(Message).filter(
+                (Message.sender_type == 'doctor') & (Message.sender_id == user_id) |
+                (Message.receiver_type == 'doctor') & (Message.receiver_id == user_id)
+            ).all()
+        
+        # Extract unique conversation partners
+        partners = set()
+        for msg in conversations:
+            if msg.sender_type == user_type and msg.sender_id == user_id:
+                partners.add((msg.receiver_type, msg.receiver_id))
+            else:
+                partners.add((msg.sender_type, msg.sender_id))
+        
+        result = []
+        for partner_type, partner_id in partners:
+            if partner_type == 'user':
+                partner = User.query.get(partner_id)
+                if partner:
+                    result.append({
+                        'id': partner.patient_id,
+                        'name': f"{partner.firstname} {partner.lastname}",
+                        'type': 'user',
+                        'avatar': partner.firstname[0] + partner.lastname[0]
+                    })
+            else:
+                partner = Doctor.query.get(partner_id)
+                if partner:
+                    result.append({
+                        'id': partner.id,
+                        'name': f"Dr. {partner.firstname} {partner.lastname}",
+                        'type': 'doctor',
+                        'specialty': partner.specialty,
+                        'avatar': partner.firstname[0] + partner.lastname[0]
+                    })
+        
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

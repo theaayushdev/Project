@@ -52,12 +52,31 @@ function DoctorLogin() {
     
     setIsLoading(true);
     
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:5000/doctor-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
       setIsLoading(false);
-      alert(`Welcome Dr. ${formData.username}! Login successful.`);
-      // Here you would typically redirect to the doctor dashboard
-    }, 1500);
+      
+      if (response.ok) {
+        // Store doctor data for dashboard
+        localStorage.setItem('doctorData', JSON.stringify(result.doctor));
+        alert(`Welcome Dr. ${result.doctor.firstname} ${result.doctor.lastname}! Login successful.`);
+        // Navigate to doctor dashboard
+        window.location.href = '/doctordashboard';
+      } else {
+        alert(result.error || 'Login failed');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      alert('Something went wrong. Please try again.');
+    }
   };
 
   return (
