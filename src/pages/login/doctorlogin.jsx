@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Stethoscope, Sparkles } from 'lucide-react';
+import '../../cssonly/doctorlogin.css';
 
 function DoctorLogin() {
   const [formData, setFormData] = useState({
@@ -59,23 +61,31 @@ function DoctorLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+    <div className="doctor-login-container">
+      {/* Background Animation */}
+      <div className="doctor-login-bg">
+        <div className="doctor-login-bg-circle"></div>
+      </div>
+
+      <div className="doctor-login-card">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+        <div className="doctor-login-header">
+          <div className="doctor-login-icon-container">
+            <div className="doctor-login-icon">
+              <Stethoscope />
+            </div>
+            <Sparkles className="doctor-login-sparkles" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Doctor Portal</h1>
-          <p className="text-gray-600">Please sign in to access your dashboard</p>
+          <h1 className="doctor-login-title">
+            Doctor Portal
+          </h1>
+          <p className="doctor-login-subtitle">Please sign in to access your dashboard</p>
         </div>
 
         {/* Login Form */}
-        <div className="space-y-6">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+        <form onSubmit={handleSubmit} className="doctor-login-form">
+          <div className="doctor-form-group">
+            <label htmlFor="username" className="doctor-form-label">
               Username
             </label>
             <input
@@ -84,18 +94,18 @@ function DoctorLogin() {
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                errors.username ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              className={`doctor-form-input ${
+                errors.username ? 'error' : ''
               }`}
               placeholder="Enter your username"
             />
             {errors.username && (
-              <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+              <p className="doctor-form-error">{errors.username}</p>
             )}
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="doctor-form-group">
+            <label htmlFor="password" className="doctor-form-label">
               Password
             </label>
             <input
@@ -104,25 +114,22 @@ function DoctorLogin() {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              className={`doctor-form-input ${
+                errors.password ? 'error' : ''
               }`}
               placeholder="Enter your password"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              <p className="doctor-form-error">{errors.password}</p>
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <span className="ml-2 text-sm text-gray-600">Remember me</span>
+          <div className="doctor-form-options">
+            <label className="doctor-form-checkbox">
+              <input type="checkbox" />
+              <span>Remember me</span>
             </label>
-            <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+            <a href="#" className="doctor-form-link">
               Forgot password?
             </a>
           </div>
@@ -130,30 +137,23 @@ function DoctorLogin() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-200 ${
-              isLoading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5'
-            }`}
+            className="doctor-submit-btn"
           >
             {isLoading ? (
-              <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Signing in...
+              <div className="doctor-loading-content">
+                <div className="doctor-spinner"></div>
+                <span>Signing in...</span>
               </div>
             ) : (
-              'Sign In'
+              <span>Sign In</span>
             )}
           </button>
-        </div>
+        </form>
 
         {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
-            Need help? <a href="#" className="text-blue-600 hover:text-blue-800">Contact Support</a>
+        <div className="doctor-login-footer">
+          <p>
+            Need help? <a href="#">Contact Support</a>
           </p>
         </div>
       </div>
