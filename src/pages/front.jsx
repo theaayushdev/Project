@@ -120,7 +120,10 @@ const Front = () => {
             <span>Login as User</span>
             <ArrowRight className="w-5 h-5" />
           </button>
-            <button className="front15">
+            <button 
+              className="front15"
+              onClick={() => navigate("/doctorlogin")}
+            >
               <Stethoscope className="w-6 h-6" />
               <span>Login as Doctor</span>
               <ArrowRight className="w-5 h-5" />
