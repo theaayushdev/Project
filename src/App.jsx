@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import UserHome from "./pages/userhome";
 import AboutUs from "./pages/aboutus";
-import DoctorModule from "./pages/doctorlogin";
+import DoctorLogin from "./pages/login/doctorlogin";
 import Resources from "./pages/resources";
 import Registerlogin from "./pages/register/userregister"; 
 import Parenting from "./pages/parenting";  
@@ -34,7 +34,7 @@ const App = () => {
         <Route path="/" element={<Front />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/doctorlogin" element={<DoctorModule />} />
+<Route path="/doctorlogin" element={<DoctorLogin />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/userregister" element={<Registerlogin />} />
         <Route path="/parenting" element={<Parenting />} />
