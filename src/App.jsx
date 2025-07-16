@@ -24,6 +24,7 @@ import PregnancyForm from "./pages/additionalinformation";
 import Front from "./pages/front";
 import AdminLogin from './pages/login/adminlogin';
 import Top from "./pages/userhome"; // <-- import your Top component
+import Messaging from './pages/messaging'; // <-- import messaging component
 
 import './App.css';
 
@@ -52,6 +53,7 @@ const App = () => {
         <Route path="/duedatecalc" element={<DueDateCalculator />} />
         <Route path="/removedoctor" element={<Removedoctor />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/messaging" element={<Messaging />} />
         <Route path="/test" element={<Top />} /> {/* <-- test route */}
       </Routes>
     </Router>

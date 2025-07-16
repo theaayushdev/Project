@@ -4,7 +4,7 @@ import '../../cssonly/doctorlogin.css';
 
 function DoctorLogin() {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
@@ -28,14 +28,14 @@ function DoctorLogin() {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
     
     return newErrors;
@@ -104,22 +104,22 @@ function DoctorLogin() {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="doctor-login-form">
           <div className="doctor-form-group">
-            <label htmlFor="username" className="doctor-form-label">
-              Username
+            <label htmlFor="email" className="doctor-form-label">
+              Email Address
             </label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               className={`doctor-form-input ${
-                errors.username ? 'error' : ''
+                errors.email ? 'error' : ''
               }`}
-              placeholder="Enter your username"
+              placeholder="Enter your email address"
             />
-            {errors.username && (
-              <p className="doctor-form-error">{errors.username}</p>
+            {errors.email && (
+              <p className="doctor-form-error">{errors.email}</p>
             )}
           </div>
 
