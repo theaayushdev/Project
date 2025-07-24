@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PregnancyForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     lmc: "",
     height: "",
@@ -50,20 +52,10 @@ const PregnancyForm = () => {
         setError("");
         // Clean up registration email from localStorage
         localStorage.removeItem("registeredEmail");
+        // Redirect to login page after a brief delay
         setTimeout(() => {
-          setSubmitted(false);
-          setFormData({
-            lmc: "",
-            height: "",
-            weight: "",
-            profession: "",
-            gravida: "",
-            allergies: "",
-            conditions: "",
-            email: "",
-            notes: ""
-          });
-        }, 3000);
+          navigate('/login');
+        }, 2000);
       } else {
         setError(data.error || "Failed to submit.");
       }

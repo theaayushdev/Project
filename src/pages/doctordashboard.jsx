@@ -396,6 +396,10 @@ const DoctorDashboardApp = () => {
       navigate('/');
       return;
     }
+    if (section === 'messages') {
+      navigate('/messaging');
+      return;
+    }
     setActiveSection(section);
   };
 

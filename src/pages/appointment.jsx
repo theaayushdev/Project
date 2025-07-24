@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AppointmentForm = () => {
-  const [phone, setPhone] = useState('');
+  const [user, setUser] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
@@ -98,7 +98,22 @@ const AppointmentForm = () => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const email = localStorage.getItem('userEmail');
+        if (!email) throw new Error('User not logged in');
+        const usersRes = await axios.get('http://localhost:5000/users');
+        const users = usersRes.data;
+        const matchedUser = users.find(u => u.email === email);
+        if (!matchedUser) throw new Error('User not found');
+        setUser(matchedUser);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to retrieve user information.');
+      }
+    };
+    
     const fetchDoctors = async () => {
       setLoading(true);
       try {
@@ -110,6 +125,8 @@ const AppointmentForm = () => {
         setLoading(false);
       }
     };
+    
+    fetchUser();
     fetchDoctors();
   }, []);
 
@@ -120,17 +137,14 @@ const AppointmentForm = () => {
     setSuccess('');
     
     try {
-      // Basic validation
-      if (phone.length < 10) {
-        throw new Error('Please enter a valid phone number');
-      }
-      
-      // Step 1: Get user ID by phone number
-      const userRes = await axios.get('http://localhost:5000/users');
-      const user = userRes.data.find(u => u.contact === phone);
-
       if (!user) {
-        throw new Error('User not found with this phone number');
+        throw new Error('User information not available.');
+      }
+      if (!selectedDoctorId) {
+        throw new Error('Please select a doctor.');
+      }
+      if (!appointmentDate) {
+        throw new Error('Please select an appointment date.');
       }
 
       const payload = {
@@ -142,9 +156,7 @@ const AppointmentForm = () => {
 
       await axios.post('http://localhost:5000/appointment', payload);
       setSuccess('Appointment request submitted successfully!');
-      
-      // Clear form
-      setPhone('');
+
       setSelectedDoctorId('');
       setAppointmentDate('');
     } catch (err) {
@@ -170,17 +182,6 @@ const AppointmentForm = () => {
         </div>
       )}
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Phone Number:</label>
-        <input 
-          style={styles.input}
-          type="text" 
-          value={phone} 
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Enter your 10-digit phone number"
-          required 
-        />
-      </div>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>Select Doctor:</label>

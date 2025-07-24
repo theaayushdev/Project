@@ -2,17 +2,23 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
-from model import User, Doctor, Appointment, PregnancyInfo, Message
+from model import User, Doctor, Appointment, PregnancyInfo, Message, Admin
 from datetime import datetime
-from model import Admin
+import os 
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174"]}})
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Pregnify.db'
+
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'instance', 'Pregnify.db')}"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
+
 
 @app.route('/')
 def home():
@@ -213,13 +219,13 @@ def get_doctor_appointments(doctor_id):
 @app.route('/doctor-login', methods=['POST'])
 def doctor_login():
     data = request.get_json()
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
-    if not username or not password:
-        return jsonify({'error': 'Username and password are required.'}), 400
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required.'}), 400
 
-    doctor = Doctor.query.filter_by(firstname=username, password=password).first()
+    doctor = Doctor.query.filter_by(email=email, password=password).first()
     if doctor:
         return jsonify({
             'message': 'Login successful',

@@ -1,88 +1,230 @@
-/* Dashboard Container */
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: #f7f9fc;
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Layout */
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Dashboard Layout */
 .dashboard-layout {
   display: flex;
-  flex: 1;
+  min-height: calc(100vh - 80px);
 }
 
-/* Dashboard Content */
+/* Main Content */
 .dashboard-content {
   flex: 1;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  overflow-y: auto;
 }
 
-/* Header */
 .dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-section h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin-bottom: 0.5rem;
+}
+
+.due-date {
+  color: #718096;
+  font-size: 1rem;
+}
+
+.header-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
   text-align: center;
-  margin-bottom: 20px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  min-width: 80px;
 }
 
-.dashboard-header h2 {
-  font-size: 24px;
-  font-weight: bold;
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4ECDC4;
 }
 
-.dashboard-header p {
-  color: #777;
+.stat-label {
+  font-size: 0.875rem;
+  color: #718096;
 }
 
-/* Grid Layout */
+/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 1.5rem;
 }
 
-/* Widgets */
 .widget {
-  padding: 20px;
-  border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.widget h3 {
-  font-size: 18px;
-  margin-bottom: 15px;
+.widget:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
-.widget ul {
-  list-style: none;
-  padding: 0;
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
-.widget ul li {
-  font-size: 16px;
-  padding: 5px 0;
-}
-
-.widget img {
-  width: 100%;
-  max-width: 200px;
-  display: block;
-  margin: auto;
-}
-
-.widget button {
-  background-color: #4a90e2;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
+/* Fix Buttons and Actions */
+.add-btn,
+.view-all-btn,
+.appt-action,
+.action-card,
+.water-glass {
   cursor: pointer;
-  transition: 0.3s;
+  background-color: var(--accent-color, #667eea);
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
-.widget button:hover {
-  background-color: #357abd;
+.add-btn:hover,
+.view-all-btn:hover,
+.appt-action:hover,
+.action-card:hover,
+.water-glass:hover {
+  background-color: #5a67d8;
+}
+
+.action-card {
+  flex-direction: column;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+.health-stat-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: var(--accent-color, #edf2f7);
+  color: white;
+}
+
+.health-stat-card .stat-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+
+.health-stat-card .stat-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: white;
+}
+
+.health-stat-card .stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.health-stat-card .stat-change {
+  font-size: 0.75rem;
+  color: #f7fafc;
+  opacity: 0.9;
+}
+
+.health-stat-card .stat-change.up {
+  color: #f0fff4;
+}
+
+.health-stat-card .stat-change.neutral {
+  color: #e2e8f0;
+}
+
+.milestone.completed .milestone-marker {
+  background-color: gold;
+  color: white;
+  padding: 0.2rem;
+  border-radius: 50%;
+}
+
+.water-tracker {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.water-glass {
+  width: 16px;
+  height: 32px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+}
+
+.water-glass.filled {
+  background-color: #4ECDC4;
+}
+
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background-color: #f7fafc;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.tip-icon {
+  font-size: 1.5rem;
+}
+
+.tip-content h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2D3748;
+}
+
+.tip-content p {
+  margin: 0;
+  color: #4A5568;
+  font-size: 0.875rem;
 }
