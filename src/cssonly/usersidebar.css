@@ -1,27 +1,257 @@
-/* Sidebar */
-.user-sidebar {
-  width: 250px;
-  background-color: #ff87b2;
-  padding: 20px;
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pregnancy-progress {
+  text-align: center;
+  padding: 0 2rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.progress-circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: conic-gradient(#FF6B6B 0deg 216deg, #E2E8F0 216deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.progress-inner {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.week-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #FF6B6B;
+}
+
+.week-text {
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.progress-text {
+  color: #4A5568;
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border: none;
+  background: none;
+  color: #4A5568;
+  font-size: 0.875rem;
+  font-weight: 500;
   border-radius: 12px;
-}
-
-/* Sidebar Links */
-.user-sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.user-sidebar ul li {
-  padding: 12px;
-  font-size: 16px;
-  color: #fff;
-  font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+  text-align: left;
 }
 
-.user-sidebar ul li:hover {
-  background-color: #ff69b4;
+.nav-item:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #FF6B6B;
+}
+
+.nav-item.active {
+  background: #FF6B6B;
+  color: white;
+}
+
+.nav-arrow {
+  margin-left: auto;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-arrow,
+.nav-item.active .nav-arrow {
+  opacity: 1;
+}
+
+.sidebar-footer {
+  padding: 0 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  padding-top: 2rem;
+}
+
+.settings-btn,
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  color: #718096;
+  font-size: 0.875rem;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.settings-btn:hover,
+.logout-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #4A5568;
+}
+
+/* Responsive Design for Sidebar */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    padding: 1rem 0;
+  }
+
+  .sidebar-content {
+    flex-direction: row;
+    padding: 0 2rem;
+    align-items: center;
+  }
+
+  .pregnancy-progress {
+    margin-right: 2rem;
+    margin-bottom: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: none;
+    padding-right: 2rem;
+    padding-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .progress-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .progress-inner {
+    width: 60px;
+    height: 60px;
+  }
+
+  .week-number {
+    font-size: 1.5rem;
+  }
+
+  .week-text {
+    font-size: 0.75rem;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex: 1;
+    overflow-x: auto;
+    padding: 0;
+    gap: 0.5rem;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    margin-right: 0.5rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    margin-top: 0;
+    margin-left: 2rem;
+    padding-top: 0;
+    padding-left: 2rem;
+    border-top: none;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .settings-btn,
+  .logout-btn {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-content {
+    padding: 0 1rem;
+  }
+
+  .pregnancy-progress {
+    margin-right: 1rem;
+    padding-right: 1rem;
+  }
+
+  .progress-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .progress-inner {
+    width: 45px;
+    height: 45px;
+  }
+
+  .week-number {
+    font-size: 1.25rem;
+  }
+
+  .week-text {
+    font-size: 0.625rem;
+  }
+
+  .nav-item span {
+    display: none;
+  }
+
+  .sidebar-footer {
+    margin-left: 1rem;
+    padding-left: 1rem;
+  }
+
+  .settings-btn span,
+  .logout-btn span {
+    display: none;
+  }
 }
