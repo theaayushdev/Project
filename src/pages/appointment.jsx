@@ -3,6 +3,15 @@ import axios from 'axios';
 import UserNavbar from './Usernavbar';
 import UserSidebar from './usersidebar';
 
+function getPregnancyWeek(lmc) {
+  if (!lmc) return null;
+  const lmcDate = new Date(lmc);
+  const now = new Date();
+  const diff = now - lmcDate;
+  const week = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+  return week > 0 ? week : 0;
+}
+
 const AppointmentForm = () => {
   const [user, setUser] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState('');
@@ -12,6 +21,7 @@ const AppointmentForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('appointments');
+  const [pregnancyInfo, setPregnancyInfo] = useState(null);
 
   // Inline styles object
   const styles = {
@@ -102,6 +112,15 @@ const AppointmentForm = () => {
   };
 
 useEffect(() => {
+    const fetchPregnancy = async (userObj) => {
+      if (!userObj) return;
+      try {
+        const res = await axios.get(`http://localhost:5000/user/dashboard?email=${encodeURIComponent(userObj.email)}`);
+        if (res.data && res.data.pregnancy) {
+          setPregnancyInfo(res.data.pregnancy);
+        }
+      } catch {}
+    };
     const fetchUser = async () => {
       try {
         const email = localStorage.getItem('userEmail');
@@ -111,6 +130,7 @@ useEffect(() => {
         const matchedUser = users.find(u => u.email === email);
         if (!matchedUser) throw new Error('User not found');
         setUser(matchedUser);
+        fetchPregnancy(matchedUser);
       } catch (err) {
         console.error(err);
         setError('Failed to retrieve user information.');
@@ -169,11 +189,19 @@ useEffect(() => {
     }
   };
 
+  let week = pregnancyInfo && pregnancyInfo.lmc ? getPregnancyWeek(pregnancyInfo.lmc) : null;
+  let trimester = null;
+  if (week !== null) {
+    if (week < 13) trimester = '1st Trimester';
+    else if (week < 27) trimester = '2nd Trimester';
+    else trimester = '3rd Trimester';
+  }
+
   return (
     <div className="dashboard-container">
-      <UserNavbar />
+      <UserNavbar user={user} />
       <div className="dashboard-layout">
-        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
         <main className="dashboard-content">
           <form style={styles.form} onSubmit={handleSubmit}>
             <h2 style={styles.header}>Book Your Appointment</h2>

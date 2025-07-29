@@ -72,49 +72,57 @@ function UserPregnancyDashboard() {
   let dueDate = pregnancyInfo && pregnancyInfo.lmc ? getDueDate(pregnancyInfo.lmc) : null;
   let babySize = getBabySize(week);
 
+  // Calculate trimester
+  let trimester = null;
+  if (week !== null) {
+    if (week < 13) trimester = '1st Trimester';
+    else if (week < 27) trimester = '2nd Trimester';
+    else trimester = '3rd Trimester';
+  }
+
   const healthStats = [
-    {
-      title: "Weight",
+    { 
+      title: "Weight", 
       value: pregnancyInfo ? `${pregnancyInfo.weight} kg` : "-",
-      icon: Weight,
+      icon: Weight, 
       color: "#FF6B6B",
       change: pregnancyInfo ? `Current` : "-",
       trend: "up"
     },
-    {
-      title: "Water Intake",
-      value: `${waterIntake}/8 glasses`,
-      icon: Droplets,
+    { 
+      title: "Water Intake", 
+      value: `${waterIntake}/8 glasses`, 
+      icon: Droplets, 
       color: "#4ECDC4",
       change: "62% of daily goal",
       trend: "neutral"
     },
-    {
-      title: "Sleep Quality",
-      value: `${sleepHours} hours`,
-      icon: Moon,
+    { 
+      title: "Sleep Quality", 
+      value: `${sleepHours} hours`, 
+      icon: Moon, 
       color: "#45B7D1",
       change: "Good quality",
       trend: "up"
     },
-    {
-      title: "Heart Rate",
-      value: `${heartRate} BPM`,
-      icon: Heart,
+    { 
+      title: "Heart Rate", 
+      value: `${heartRate} BPM`, 
+      icon: Heart, 
       color: "#96CEB4",
       change: "Normal range",
       trend: "neutral"
     }
   ];
 
-  if (loading) return <div className="dashboard-container"><UserNavbar /><div className="dashboard-layout"><main className="dashboard-content"><h2>Loading...</h2></main></div></div>;
-  if (error) return <div className="dashboard-container"><UserNavbar /><div className="dashboard-layout"><main className="dashboard-content"><h2>Error: {error}</h2></main></div></div>;
+  if (loading) return <div className="dashboard-container"><UserNavbar user={user} /><div className="dashboard-layout"><main className="dashboard-content"><h2>Loading...</h2></main></div></div>;
+  if (error) return <div className="dashboard-container"><UserNavbar user={user} /><div className="dashboard-layout"><main className="dashboard-content"><h2>Error: {error}</h2></main></div></div>;
 
   return (
     <div className="dashboard-container">
-      <UserNavbar />
+      <UserNavbar user={user} />
       <div className="dashboard-layout">
-        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
         <main className="dashboard-content">
           <header className="dashboard-header">
             <div className="header-content">
@@ -186,22 +194,22 @@ function UserPregnancyDashboard() {
                   <div>No appointments found.</div>
                 ) : (
                   appointments.slice(0, 3).map((appt) => (
-                    <div key={appt.id} className="appointment-card">
-                      <div className="appt-date">
-                        <Calendar size={18} />
-                        <div>
+                  <div key={appt.id} className="appointment-card">
+                    <div className="appt-date">
+                      <Calendar size={18} />
+                      <div>
                           <p className="appt-day">{appt.appointment_date ? new Date(appt.appointment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "-"}</p>
                           <p className="appt-time">{appt.appointment_date ? new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}</p>
                         </div>
-                      </div>
-                      <div className="appt-details">
+                    </div>
+                    <div className="appt-details">
                         <h4>{appt.status || "Appointment"}</h4>
                         <p>{appt.doctor ? `${appt.doctor.firstname} ${appt.doctor.lastname}` : "Doctor"}</p>
-                      </div>
-                      <button className="appt-action">
-                        <ChevronRight size={16} />
-                      </button>
                     </div>
+                    <button className="appt-action">
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
                   ))
                 )}
               </div>
@@ -249,8 +257,8 @@ function UserPregnancyDashboard() {
                     <p>Glasses of water</p>
                     <div className="water-tracker">
                       {[...Array(8)].map((_, i) => (
-                        <div
-                          key={i}
+                        <div 
+                          key={i} 
                           className={`water-glass ${i < waterIntake ? 'filled' : ''}`}
                           onClick={() => setWaterIntake(i + 1)}
                         ></div>

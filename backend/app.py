@@ -435,6 +435,27 @@ def user_dashboard():
         'appointments': appt_list
     }), 200
 
+@app.route('/user/doctors/<int:user_id>', methods=['GET'])
+def get_user_doctors(user_id):
+    try:
+        appointments = Appointment.query.filter_by(user_id=user_id).all()
+        doctor_ids = set([appt.doctor_id for appt in appointments])
+        doctors = Doctor.query.filter(Doctor.id.in_(doctor_ids)).all()
+        result = [
+            {
+                'id': d.id,
+                'firstname': d.firstname,
+                'lastname': d.lastname,
+                'email': d.email,
+                'specialty': d.specialty,
+                'department': d.department
+            }
+            for d in doctors
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

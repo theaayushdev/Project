@@ -1,76 +1,80 @@
 import React, { useState, useEffect, useRef } from 'react';
-import DoctorSidebar from './DoctorSidebar';
-import DoctorNavbar from './DoctorNavbar';
-import '../cssonly/doctordashboard.css';
+import UserSidebar from './usersidebar';
+import UserNavbar from './Usernavbar';
+import '../cssonly/pregnancydashboard.css';
 
-const MessagingPage = () => {
-  const [activeSection, setActiveSection] = useState('messaging');
-  const [doctor, setDoctor] = useState(null);
-  const [patients, setPatients] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+const UserMessagingPage = () => {
+  const [activeTab, setActiveTab] = useState('chat');
+  const [user, setUser] = useState(null);
+  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const pollingRef = useRef();
 
-  // Fetch doctor info from localStorage
+  // Fetch user info from localStorage
   useEffect(() => {
-    const doctorData = localStorage.getItem('doctorData');
-    if (doctorData) {
-      setDoctor(JSON.parse(doctorData));
-    }
+    const email = localStorage.getItem('userEmail');
+    if (!email) return;
+    fetch('http://localhost:5000/users')
+      .then(res => res.json())
+      .then(users => {
+        const u = users.find(u => u.email === email);
+        setUser(u);
+      });
   }, []);
 
-  // Fetch patients for this doctor
+  // Fetch doctors for this user
   useEffect(() => {
-    if (!doctor) return;
+    if (!user) return;
     setLoading(true);
-    fetch(`http://localhost:5000/doctor/patients/${doctor.id}`)
+    fetch(`http://localhost:5000/user/doctors/${user.patient_id}`)
       .then(res => res.json())
       .then(data => {
-        setPatients(data);
+        setDoctors(data);
         setLoading(false);
       })
       .catch(() => {
-        setError('Failed to load patients');
+        setError('Failed to load doctors');
         setLoading(false);
       });
-  }, [doctor]);
+  }, [user]);
 
   // Poll for new messages every 2 seconds
   useEffect(() => {
-    if (!doctor || !selectedPatient) return;
+    if (!user || !selectedDoctor) return;
     const fetchMessages = () => {
-      fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
+      fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
         .then(res => res.json())
         .then(data => setMessages(Array.isArray(data) ? data : []));
     };
     fetchMessages();
     pollingRef.current = setInterval(fetchMessages, 2000);
     return () => clearInterval(pollingRef.current);
-  }, [doctor, selectedPatient]);
+  }, [user, selectedDoctor]);
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !doctor || !selectedPatient) return;
+    if (!newMessage.trim() || !user || !selectedDoctor) return;
     setLoading(true);
     try {
       const res = await fetch('http://localhost:5000/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sender_id: doctor.id,
-          receiver_id: selectedPatient.id,
-          sender_type: 'doctor',
-          receiver_type: 'user',
+          sender_id: user.patient_id,
+          receiver_id: selectedDoctor.id,
+          sender_type: 'user',
+          receiver_type: 'doctor',
           content: newMessage.trim()
         })
       });
       if (res.ok) {
         setNewMessage('');
         // Refresh messages
-        fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
+        fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
           .then(res => res.json())
           .then(data => setMessages(Array.isArray(data) ? data : []));
       }
@@ -81,34 +85,37 @@ const MessagingPage = () => {
   };
 
   return (
-    <div className="doc1-app-container">
-      <DoctorSidebar onSelect={setActiveSection} activeSection={activeSection} />
-      <div className="doc1-content-wrapper">
-        <DoctorNavbar />
-        <div className="doc1-section-content" style={{ background: '#f7fafc', minHeight: '80vh', borderRadius: 12, boxShadow: '0 2px 8px rgba(44,82,130,0.07)', margin: 24, padding: 0, display: 'flex' }}>
-          {/* Patient List */}
+    <div className="dashboard-container">
+      <UserNavbar user={user} />
+      <div className="dashboard-layout">
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
+        <main className="dashboard-content" style={{ padding: 0, display: 'flex', minHeight: 600 }}>
+          {/* Doctor List */}
           <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e2e8f0', borderRadius: '12px 0 0 12px', padding: 0 }}>
-            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18 }}>Patients</div>
+            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18 }}>Doctors</div>
             {loading && <div style={{ padding: 20 }}>Loading...</div>}
             {error && <div style={{ color: 'red', padding: 20 }}>{error}</div>}
+            {!loading && !error && doctors.length === 0 && (
+              <div style={{ padding: 20, color: '#4a5568' }}>No doctors found. Please book an appointment first.</div>
+            )}
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {patients.map((p) => (
+              {doctors.map((d) => (
                 <li
-                  key={p.id}
-                  onClick={() => setSelectedPatient(p)}
+                  key={d.id}
+                  onClick={() => setSelectedDoctor(d)}
                   style={{
                     padding: '16px 20px',
                     cursor: 'pointer',
-                    background: selectedPatient && selectedPatient.id === p.id ? '#e6f0fa' : 'transparent',
+                    background: selectedDoctor && selectedDoctor.id === d.id ? '#e6f0fa' : 'transparent',
                     borderBottom: '1px solid #f1f5f9',
                     color: '#2c5282',
                     fontWeight: 500
                   }}
                 >
                   <span style={{ background: '#bee3f8', color: '#2c5282', borderRadius: '50%', padding: '6px 12px', marginRight: 12, fontWeight: 700 }}>
-                    {p.firstname[0]}{p.lastname[0]}
+                    {d.firstname[0]}{d.lastname[0]}
                   </span>
-                  {p.firstname} {p.lastname}
+                  Dr. {d.firstname} {d.lastname}
                 </li>
               ))}
             </ul>
@@ -116,17 +123,17 @@ const MessagingPage = () => {
           {/* Chat Window */}
           <div style={{ flex: 1, background: '#f7fafc', borderRadius: '0 12px 12px 0', display: 'flex', flexDirection: 'column', minHeight: 500 }}>
             <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18, minHeight: 60 }}>
-              {selectedPatient ? `${selectedPatient.firstname} ${selectedPatient.lastname}` : 'Select a patient to chat'}
+              {selectedDoctor ? `Dr. ${selectedDoctor.firstname} ${selectedDoctor.lastname}` : 'Select a doctor to chat'}
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {selectedPatient && messages.length === 0 && <div style={{ color: '#4a5568' }}>[No messages yet]</div>}
-              {selectedPatient && messages.map((msg, idx) => (
+              {selectedDoctor && messages.length === 0 && <div style={{ color: '#4a5568' }}>[No messages yet]</div>}
+              {selectedDoctor && messages.map((msg, idx) => (
                 <div
                   key={idx}
                   style={{
-                    alignSelf: msg.sender_type === 'doctor' ? 'flex-end' : 'flex-start',
-                    background: msg.sender_type === 'doctor' ? '#2c5282' : '#bee3f8',
-                    color: msg.sender_type === 'doctor' ? '#fff' : '#2c5282',
+                    alignSelf: msg.sender_type === 'user' ? 'flex-end' : 'flex-start',
+                    background: msg.sender_type === 'user' ? '#2c5282' : '#bee3f8',
+                    color: msg.sender_type === 'user' ? '#fff' : '#2c5282',
                     borderRadius: 16,
                     padding: '10px 18px',
                     maxWidth: '70%',
@@ -137,7 +144,7 @@ const MessagingPage = () => {
                 </div>
               ))}
             </div>
-            {selectedPatient && (
+            {selectedDoctor && (
               <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, padding: 20, borderTop: '1px solid #e2e8f0', background: '#fff', borderRadius: '0 0 12px 0' }}>
                 <input
                   type="text"
@@ -153,10 +160,10 @@ const MessagingPage = () => {
               </form>
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
 };
 
-export default MessagingPage;
+export default UserMessagingPage; 

@@ -26,6 +26,7 @@ import AdminLogin from './pages/login/adminlogin';
 import Top from "./pages/userhome"; // <-- import your Top component
 import Messaging from './pages/messaging'; // <-- import messaging component
 import ReportsPage from "./pages/reports";
+import UserMessagingPage from "./pages/user_messaging";
 
 import './App.css';
 
@@ -57,6 +58,7 @@ const App = () => {
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/test" element={<Top />} /> {/* <-- test route */}
+        <Route path="/user-messaging" element={<UserMessagingPage />} />
       </Routes>
     </Router>
   );

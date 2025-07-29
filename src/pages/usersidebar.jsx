@@ -3,7 +3,7 @@ import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Sett
 import "../cssonly/usersidebar.css";
 import { useNavigate } from "react-router-dom";
 
-const UserSidebar = ({ activeTab, setActiveTab }) => {
+const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
   const navigate = useNavigate();
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
@@ -23,9 +23,14 @@ const UserSidebar = ({ activeTab, setActiveTab }) => {
       navigate('/pregnancydashboard');
     } else if (id === 'reports') {
       navigate('/reports');
+    } else if (id === 'chat') {
+      navigate('/user-messaging');
     }
     // Add more navigation as needed
   };
+
+  // Progress bar width
+  const progress = week && week > 0 ? Math.min(week / 40 * 100, 100) : 0;
 
   return (
     <aside className="sidebar">
@@ -33,11 +38,16 @@ const UserSidebar = ({ activeTab, setActiveTab }) => {
         <div className="pregnancy-progress">
           <div className="progress-circle">
             <div className="progress-inner">
-              <span className="week-number">24</span>
+              <span className="week-number">{week !== null && week !== undefined ? week : '--'}</span>
               <span className="week-text">weeks</span>
             </div>
           </div>
-          <p className="progress-text">2nd Trimester</p>
+          <div className="progress-bar-container" style={{ margin: '8px 0', width: '80%', marginLeft: '10%' }}>
+            <div className="progress-bar-bg" style={{ background: '#e2e8f0', borderRadius: 8, height: 8, width: '100%' }}>
+              <div className="progress-bar-fill" style={{ background: '#2c5282', borderRadius: 8, height: 8, width: `${progress}%`, transition: 'width 0.3s' }}></div>
+            </div>
+          </div>
+          <p className="progress-text">{trimester || '--'}</p>
         </div>
         
         <nav className="sidebar-nav">
