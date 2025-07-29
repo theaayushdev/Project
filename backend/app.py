@@ -215,6 +215,28 @@ def get_doctor_appointments(doctor_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/doctor/patients/<int:doctor_id>', methods=['GET'])
+def get_doctor_patients(doctor_id):
+    try:
+        appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+        patient_ids = set([appt.user_id for appt in appointments])
+        patients = User.query.filter(User.patient_id.in_(patient_ids)).all()
+        result = [
+            {
+                'id': p.patient_id,
+                'firstname': p.firstname,
+                'lastname': p.lastname,
+                'email': p.email,
+                'contact': p.contact,
+                'age': p.age,
+                'bloodtype': p.bloodtype
+            }
+            for p in patients
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/doctor-login', methods=['POST'])
 def doctor_login():
@@ -345,6 +367,91 @@ def get_conversations(user_type, user_id):
                         'avatar': partner.firstname[0] + partner.lastname[0]
                     })
         
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/user/dashboard', methods=['GET'])
+def user_dashboard():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({'error': 'Email is required as a query parameter.'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Pregnancy Info (may be missing)
+    preg_info = PregnancyInfo.query.filter_by(user_id=user.patient_id).first()
+    pregnancy = None
+    if preg_info:
+        pregnancy = {
+            'id': preg_info.id,
+            'height': preg_info.height,
+            'weight': preg_info.weight,
+            'profession': preg_info.profession,
+            'gravida': preg_info.gravida,
+            'allergies': preg_info.allergies,
+            'conditions': preg_info.conditions,
+            'notes': preg_info.notes,
+            'lmc': preg_info.lmc.strftime('%Y-%m-%d') if preg_info.lmc else None
+        }
+
+    # Appointments (may be empty)
+    appointments = Appointment.query.filter_by(user_id=user.patient_id).all()
+    appt_list = []
+    for appt in appointments:
+        doctor = Doctor.query.get(appt.doctor_id)
+        appt_list.append({
+            'id': appt.id,
+            'appointment_date': appt.appointment_date.strftime('%Y-%m-%d %H:%M') if appt.appointment_date else None,
+            'status': appt.status,
+            'doctor': {
+                'id': doctor.id if doctor else None,
+                'firstname': doctor.firstname if doctor else None,
+                'lastname': doctor.lastname if doctor else None,
+                'specialty': doctor.specialty if doctor else None
+            } if doctor else None
+        })
+
+    # User info
+    user_info = {
+        'patient_id': user.patient_id,
+        'firstname': user.firstname,
+        'lastname': user.lastname,
+        'contact': user.contact,
+        'location': user.location,
+        'age': user.age,
+        'guardian_name': user.guardian_name,
+        'guardian_contact': user.guardian_contact,
+        'bloodtype': user.bloodtype,
+        'email': user.email,
+        'status': user.status
+    }
+
+    return jsonify({
+        'user': user_info,
+        'pregnancy': pregnancy,
+        'appointments': appt_list
+    }), 200
+
+@app.route('/user/doctors/<int:user_id>', methods=['GET'])
+def get_user_doctors(user_id):
+    try:
+        appointments = Appointment.query.filter_by(user_id=user_id).all()
+        doctor_ids = set([appt.doctor_id for appt in appointments])
+        doctors = Doctor.query.filter(Doctor.id.in_(doctor_ids)).all()
+        result = [
+            {
+                'id': d.id,
+                'firstname': d.firstname,
+                'lastname': d.lastname,
+                'email': d.email,
+                'specialty': d.specialty,
+                'department': d.department
+            }
+            for d in doctors
+        ]
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import UserNavbar from './Usernavbar';
+import UserSidebar from './usersidebar';
+
+function getPregnancyWeek(lmc) {
+  if (!lmc) return null;
+  const lmcDate = new Date(lmc);
+  const now = new Date();
+  const diff = now - lmcDate;
+  const week = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+  return week > 0 ? week : 0;
+}
 
 const AppointmentForm = () => {
   const [user, setUser] = useState(null);
@@ -9,6 +20,8 @@ const AppointmentForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [activeTab, setActiveTab] = useState('appointments');
+  const [pregnancyInfo, setPregnancyInfo] = useState(null);
 
   // Inline styles object
   const styles = {
@@ -99,6 +112,15 @@ const AppointmentForm = () => {
   };
 
 useEffect(() => {
+    const fetchPregnancy = async (userObj) => {
+      if (!userObj) return;
+      try {
+        const res = await axios.get(`http://localhost:5000/user/dashboard?email=${encodeURIComponent(userObj.email)}`);
+        if (res.data && res.data.pregnancy) {
+          setPregnancyInfo(res.data.pregnancy);
+        }
+      } catch {}
+    };
     const fetchUser = async () => {
       try {
         const email = localStorage.getItem('userEmail');
@@ -108,6 +130,7 @@ useEffect(() => {
         const matchedUser = users.find(u => u.email === email);
         if (!matchedUser) throw new Error('User not found');
         setUser(matchedUser);
+        fetchPregnancy(matchedUser);
       } catch (err) {
         console.error(err);
         setError('Failed to retrieve user information.');
@@ -166,60 +189,76 @@ useEffect(() => {
     }
   };
 
+  let week = pregnancyInfo && pregnancyInfo.lmc ? getPregnancyWeek(pregnancyInfo.lmc) : null;
+  let trimester = null;
+  if (week !== null) {
+    if (week < 13) trimester = '1st Trimester';
+    else if (week < 27) trimester = '2nd Trimester';
+    else trimester = '3rd Trimester';
+  }
+
   return (
-    <form style={styles.form} onSubmit={handleSubmit}>
-      <h2 style={styles.header}>Book Your Appointment</h2>
-      <p style={styles.subtitle}>Enter your details to schedule a visit</p>
-      
-      {error && <div style={styles.errorMessage}>{error}</div>}
-      
-      {success && (
-        <div style={styles.successMessage}>
-          <svg style={styles.icon} viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
-          {success}
-        </div>
-      )}
+    <div className="dashboard-container">
+      <UserNavbar user={user} />
+      <div className="dashboard-layout">
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
+        <main className="dashboard-content">
+          <form style={styles.form} onSubmit={handleSubmit}>
+            <h2 style={styles.header}>Book Your Appointment</h2>
+            <p style={styles.subtitle}>Enter your details to schedule a visit</p>
+            
+            {error && <div style={styles.errorMessage}>{error}</div>}
+            
+            {success && (
+              <div style={styles.successMessage}>
+                <svg style={styles.icon} viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                {success}
+              </div>
+            )}
 
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Select Doctor:</label>
-        <select 
-          style={styles.select}
-          value={selectedDoctorId} 
-          onChange={(e) => setSelectedDoctorId(e.target.value)}
-          required
-        >
-          <option value="">Choose a doctor</option>
-          {doctors.map((doc) => (
-            <option key={doc.id} value={doc.id}>
-              Dr. {doc.firstname} {doc.lastname} ({doc.specialty})
-            </option>
-          ))}
-        </select>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Select Doctor:</label>
+              <select 
+                style={styles.select}
+                value={selectedDoctorId} 
+                onChange={(e) => setSelectedDoctorId(e.target.value)}
+                required
+              >
+                <option value="">Choose a doctor</option>
+                {doctors.map((doc) => (
+                  <option key={doc.id} value={doc.id}>
+                    Dr. {doc.firstname} {doc.lastname} ({doc.specialty})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Appointment Date:</label>
+              <input 
+                style={styles.input}
+                type="date" 
+                value={appointmentDate} 
+                onChange={(e) => setAppointmentDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                required 
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              style={loading ? {...styles.button, opacity: 0.7} : styles.button}
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : 'Confirm Appointment'}
+            </button>
+          </form>
+        </main>
       </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Appointment Date:</label>
-        <input 
-          style={styles.input}
-          type="date" 
-          value={appointmentDate} 
-          onChange={(e) => setAppointmentDate(e.target.value)}
-          min={new Date().toISOString().split('T')[0]}
-          required 
-        />
-      </div>
-
-      <button 
-        type="submit" 
-        style={loading ? {...styles.button, opacity: 0.7} : styles.button}
-        disabled={loading}
-      >
-        {loading ? 'Processing...' : 'Confirm Appointment'}
-      </button>
-    </form>
+    </div>
   );
 };
 

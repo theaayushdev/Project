@@ -4,40 +4,89 @@ import UserSidebar from "./usersidebar";
 import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target } from "lucide-react";
 import "../cssonly/pregnancydashboard.css";
 
+function getPregnancyWeek(lmc) {
+  if (!lmc) return null;
+  const lmcDate = new Date(lmc);
+  const now = new Date();
+  const diff = now - lmcDate;
+  const week = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+  return week > 0 ? week : 0;
+}
+
+function getDueDate(lmc) {
+  if (!lmc) return null;
+  const lmcDate = new Date(lmc);
+  const dueDate = new Date(lmcDate.getTime() + 280 * 24 * 60 * 60 * 1000); // 40 weeks
+  return dueDate.toLocaleDateString();
+}
+
+const babySizes = [
+  "Poppy seed", "Sesame seed", "Lentil", "Blueberry", "Kidney bean", "Grape", "Kumquat", "Fig", "Lime", "Plum", "Peach", "Lemon", "Apple", "Avocado", "Onion", "Sweet potato", "Mango", "Banana", "Pomegranate", "Papaya", "Grapefruit", "Cantaloupe", "Cauliflower", "Eggplant", "Romaine lettuce", "Cabbage", "Butternut squash", "Coconut", "Pineapple", "Pumpkin", "Watermelon"
+];
+
+function getBabySize(week) {
+  if (!week || week < 1) return "Unknown";
+  if (week > 40) week = 40;
+  return babySizes[week - 1] || "Baby";
+}
+
 function UserPregnancyDashboard() {
-  const [user, setUser] = useState({ firstname: "Sarah", lastname: "Johnson" });
-  const [pregnancyInfo, setPregnancyInfo] = useState({
-    weight: 65,
-    height: 165,
-    dueDate: "November 15, 2025",
-    currentWeek: 24
-  });
-  const [appointments, setAppointments] = useState([
-    { id: 1, date: "2025-07-28", time: "10:00 AM", doctor: "Dr. Smith", type: "Regular Checkup" },
-    { id: 2, date: "2025-08-05", time: "2:30 PM", doctor: "Dr. Johnson", type: "Ultrasound" },
-    { id: 3, date: "2025-08-12", time: "11:00 AM", doctor: "Dr. Smith", type: "Blood Test" }
-  ]);
-  
+  const [user, setUser] = useState(null);
+  const [pregnancyInfo, setPregnancyInfo] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [waterIntake, setWaterIntake] = useState(5);
   const [sleepHours, setSleepHours] = useState(7);
   const [dailySteps, setDailySteps] = useState(6432);
   const [heartRate, setHeartRate] = useState(78);
 
-  // Simulate API calls (replace with actual API calls)
   useEffect(() => {
-    // const email = localStorage.getItem("userEmail");
-    // Fetch user data, pregnancy info, and appointments here
-    // For now, we're using mock data initialized in state
+    const fetchDashboard = async () => {
+      setLoading(true);
+      setError(null);
+      const email = localStorage.getItem("userEmail");
+      if (!email) {
+        setError("No user email found. Please log in again.");
+        setLoading(false);
+        return;
+      }
+      try {
+        const res = await fetch(`http://127.0.0.1:5000/user/dashboard?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to fetch dashboard data");
+        setUser(data.user);
+        setPregnancyInfo(data.pregnancy);
+        setAppointments(data.appointments || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
   }, []);
+
+  let week = pregnancyInfo && pregnancyInfo.lmc ? getPregnancyWeek(pregnancyInfo.lmc) : null;
+  let dueDate = pregnancyInfo && pregnancyInfo.lmc ? getDueDate(pregnancyInfo.lmc) : null;
+  let babySize = getBabySize(week);
+
+  // Calculate trimester
+  let trimester = null;
+  if (week !== null) {
+    if (week < 13) trimester = '1st Trimester';
+    else if (week < 27) trimester = '2nd Trimester';
+    else trimester = '3rd Trimester';
+  }
 
   const healthStats = [
     { 
       title: "Weight", 
-      value: `${pregnancyInfo.weight} kg`, 
+      value: pregnancyInfo ? `${pregnancyInfo.weight} kg` : "-",
       icon: Weight, 
       color: "#FF6B6B",
-      change: "+2.1kg this month",
+      change: pregnancyInfo ? `Current` : "-",
       trend: "up"
     },
     { 
@@ -66,39 +115,28 @@ function UserPregnancyDashboard() {
     }
   ];
 
-  const babyMilestones = [
-    { week: 24, description: "Baby can hear sounds", completed: true },
-    { week: 25, description: "Hair begins to grow", completed: false },
-    { week: 26, description: "Eyes begin to open", completed: false },
-    { week: 28, description: "Brain tissue develops", completed: false }
-  ];
-
-  const quickActions = [
-    { title: "Log Symptoms", icon: Plus, color: "#FF6B6B" },
-    { title: "Track Mood", icon: Heart, color: "#4ECDC4" },
-    { title: "Add Meal", icon: Target, color: "#45B7D1" },
-    { title: "Record Activity", icon: Activity, color: "#96CEB4" }
-  ];
+  if (loading) return <div className="dashboard-container"><UserNavbar user={user} /><div className="dashboard-layout"><main className="dashboard-content"><h2>Loading...</h2></main></div></div>;
+  if (error) return <div className="dashboard-container"><UserNavbar user={user} /><div className="dashboard-layout"><main className="dashboard-content"><h2>Error: {error}</h2></main></div></div>;
 
   return (
     <div className="dashboard-container">
-      <UserNavbar />
+      <UserNavbar user={user} />
       <div className="dashboard-layout">
-        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
         <main className="dashboard-content">
           <header className="dashboard-header">
             <div className="header-content">
               <div className="welcome-section">
-                <h1>Good morning, {user.firstname}! ✨</h1>
-                <p className="due-date">Baby arrives in <strong>16 weeks</strong> • Due: {pregnancyInfo.dueDate}</p>
+                <h1>Good morning, {user ? user.firstname : "User"}! ✨</h1>
+                <p className="due-date">{week !== null && dueDate ? (<span>Baby arrives in <strong>{40 - week}</strong> weeks • Due: {dueDate}</span>) : "No pregnancy info available."}</p>
               </div>
               <div className="header-stats">
                 <div className="stat-item">
-                  <span className="stat-number">24</span>
+                  <span className="stat-number">{week !== null ? week : "-"}</span>
                   <span className="stat-label">Weeks</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-number">16</span>
+                  <span className="stat-number">{week !== null ? 40 - week : "-"}</span>
                   <span className="stat-label">To Go</span>
                 </div>
               </div>
@@ -136,10 +174,10 @@ function UserPregnancyDashboard() {
             <section className="widget quick-actions">
               <h3>Quick Actions</h3>
               <div className="actions-grid">
-                {quickActions.map((action, index) => (
-                  <button key={index} className="action-card" style={{ '--accent-color': action.color }}>
-                    <action.icon size={20} />
-                    <span>{action.title}</span>
+                {["Log Symptoms", "Track Mood", "Add Meal", "Record Activity"].map((title, index) => (
+                  <button key={index} className="action-card" style={{ '--accent-color': healthStats[index % healthStats.length].color }}>
+                    <Plus size={20} />
+                    <span>{title}</span>
                   </button>
                 ))}
               </div>
@@ -152,24 +190,28 @@ function UserPregnancyDashboard() {
                 <button className="view-all-btn">View All</button>
               </div>
               <div className="appointments-list">
-                {appointments.slice(0, 3).map((appt) => (
+                {appointments.length === 0 ? (
+                  <div>No appointments found.</div>
+                ) : (
+                  appointments.slice(0, 3).map((appt) => (
                   <div key={appt.id} className="appointment-card">
                     <div className="appt-date">
                       <Calendar size={18} />
                       <div>
-                        <p className="appt-day">{new Date(appt.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                        <p className="appt-time">{appt.time}</p>
-                      </div>
+                          <p className="appt-day">{appt.appointment_date ? new Date(appt.appointment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "-"}</p>
+                          <p className="appt-time">{appt.appointment_date ? new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "-"}</p>
+                        </div>
                     </div>
                     <div className="appt-details">
-                      <h4>{appt.type}</h4>
-                      <p>{appt.doctor}</p>
+                        <h4>{appt.status || "Appointment"}</h4>
+                        <p>{appt.doctor ? `${appt.doctor.firstname} ${appt.doctor.lastname}` : "Doctor"}</p>
                     </div>
                     <button className="appt-action">
                       <ChevronRight size={16} />
                     </button>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
             </section>
 
@@ -180,32 +222,16 @@ function UserPregnancyDashboard() {
                 <div className="baby-size">
                   <div className="fruit-icon">🥑</div>
                   <div className="size-info">
-                    <h4>Size of an Avocado</h4>
-                    <p>About 12 inches long</p>
-                    <p>~1.3 pounds</p>
+                    <h4>Size of a {babySize}</h4>
+                    <p>{week ? `Week ${week}` : "-"}</p>
                   </div>
                 </div>
                 <div className="growth-progress">
                   <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: '60%' }}></div>
+                    <div className="progress-fill" style={{ width: week ? `${(week / 40) * 100}%` : '0%' }}></div>
                   </div>
-                  <span className="progress-text">60% developed</span>
+                  <span className="progress-text">{week ? `${Math.round((week / 40) * 100)}% developed` : "-"}</span>
                 </div>
-              </div>
-              
-              <div className="milestones">
-                <h4>Milestones</h4>
-                {babyMilestones.map((milestone, index) => (
-                  <div key={index} className={`milestone ${milestone.completed ? 'completed' : ''}`}>
-                    <div className="milestone-marker">
-                      {milestone.completed && <Star size={12} />}
-                    </div>
-                    <div className="milestone-content">
-                      <span className="milestone-week">Week {milestone.week}</span>
-                      <span className="milestone-desc">{milestone.description}</span>
-                    </div>
-                  </div>
-                ))}
               </div>
             </section>
 
@@ -222,7 +248,6 @@ function UserPregnancyDashboard() {
                     <p>Steps taken</p>
                   </div>
                 </div>
-                
                 <div className="activity-item">
                   <div className="activity-icon water">
                     <Droplets size={20} />
