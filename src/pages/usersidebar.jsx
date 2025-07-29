@@ -1,8 +1,10 @@
 import React from "react";
 import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Settings, LogOut, ChevronRight } from "lucide-react";
 import "../cssonly/usersidebar.css";
+import { useNavigate } from "react-router-dom";
 
 const UserSidebar = ({ activeTab, setActiveTab }) => {
+  const navigate = useNavigate();
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
     { id: 'appointments', icon: Calendar, label: 'Appointments' },
@@ -12,6 +14,18 @@ const UserSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'chat', icon: MessageCircle, label: 'Chat' },
     { id: 'reports', icon: FileText, label: 'Reports' },
   ];
+
+  const handleNav = (id) => {
+    if (setActiveTab) setActiveTab(id);
+    if (id === 'appointments') {
+      navigate('/appointment');
+    } else if (id === 'dashboard') {
+      navigate('/pregnancydashboard');
+    } else if (id === 'reports') {
+      navigate('/reports');
+    }
+    // Add more navigation as needed
+  };
 
   return (
     <aside className="sidebar">
@@ -31,7 +45,7 @@ const UserSidebar = ({ activeTab, setActiveTab }) => {
             <button
               key={item.id}
               className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-              onClick={() => setActiveTab && setActiveTab(item.id)}
+              onClick={() => handleNav(item.id)}
             >
               <item.icon size={20} />
               <span>{item.label}</span>

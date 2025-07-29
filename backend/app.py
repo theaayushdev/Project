@@ -349,6 +349,70 @@ def get_conversations(user_type, user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/user/dashboard', methods=['GET'])
+def user_dashboard():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({'error': 'Email is required as a query parameter.'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found.'}), 404
+
+    # Pregnancy Info (may be missing)
+    preg_info = PregnancyInfo.query.filter_by(user_id=user.patient_id).first()
+    pregnancy = None
+    if preg_info:
+        pregnancy = {
+            'id': preg_info.id,
+            'height': preg_info.height,
+            'weight': preg_info.weight,
+            'profession': preg_info.profession,
+            'gravida': preg_info.gravida,
+            'allergies': preg_info.allergies,
+            'conditions': preg_info.conditions,
+            'notes': preg_info.notes,
+            'lmc': preg_info.lmc.strftime('%Y-%m-%d') if preg_info.lmc else None
+        }
+
+    # Appointments (may be empty)
+    appointments = Appointment.query.filter_by(user_id=user.patient_id).all()
+    appt_list = []
+    for appt in appointments:
+        doctor = Doctor.query.get(appt.doctor_id)
+        appt_list.append({
+            'id': appt.id,
+            'appointment_date': appt.appointment_date.strftime('%Y-%m-%d %H:%M') if appt.appointment_date else None,
+            'status': appt.status,
+            'doctor': {
+                'id': doctor.id if doctor else None,
+                'firstname': doctor.firstname if doctor else None,
+                'lastname': doctor.lastname if doctor else None,
+                'specialty': doctor.specialty if doctor else None
+            } if doctor else None
+        })
+
+    # User info
+    user_info = {
+        'patient_id': user.patient_id,
+        'firstname': user.firstname,
+        'lastname': user.lastname,
+        'contact': user.contact,
+        'location': user.location,
+        'age': user.age,
+        'guardian_name': user.guardian_name,
+        'guardian_contact': user.guardian_contact,
+        'bloodtype': user.bloodtype,
+        'email': user.email,
+        'status': user.status
+    }
+
+    return jsonify({
+        'user': user_info,
+        'pregnancy': pregnancy,
+        'appointments': appt_list
+    }), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
