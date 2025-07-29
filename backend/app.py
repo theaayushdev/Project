@@ -215,6 +215,28 @@ def get_doctor_appointments(doctor_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/doctor/patients/<int:doctor_id>', methods=['GET'])
+def get_doctor_patients(doctor_id):
+    try:
+        appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+        patient_ids = set([appt.user_id for appt in appointments])
+        patients = User.query.filter(User.patient_id.in_(patient_ids)).all()
+        result = [
+            {
+                'id': p.patient_id,
+                'firstname': p.firstname,
+                'lastname': p.lastname,
+                'email': p.email,
+                'contact': p.contact,
+                'age': p.age,
+                'bloodtype': p.bloodtype
+            }
+            for p in patients
+        ]
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/doctor-login', methods=['POST'])
 def doctor_login():

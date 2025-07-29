@@ -5,68 +5,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import "../cssonly/doctordashboard.css";
-
-// Enhanced PatientSidebar using doc1 classes
-const PatientSidebar = ({ onSelect, activeSection }) => {
-  return (
-    <div className="doc1-sidebar">
-      <div className="doc1-sidebar-logo">
-        <i className="fa fa-user-md"></i>
-        <h1>Pregnify</h1>
-      </div>
-      <h2 className="doc1-sidebar-title">Hi, Doctor</h2>
-      <nav>
-        <ul className="doc1-sidebar-nav">
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'dashboard' ? 'active' : ''}`} 
-            onClick={() => onSelect('dashboard')}
-          >
-            <i className="fa fa-dashboard"></i>
-            <span>Dashboard</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'appointments' ? 'active' : ''}`} 
-            onClick={() => onSelect('appointments')}
-          >
-            <i className="fa fa-calendar"></i>
-            <span>My Appointments</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'records' ? 'active' : ''}`} 
-            onClick={() => onSelect('records')}
-          >
-            <i className="fa fa-file-medical"></i>
-            <span>Medical Records</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'messages' ? 'active' : ''}`} 
-            onClick={() => onSelect('messages')}
-          >
-            <i className="fa fa-comments"></i>
-            <span>Messages</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'profile' ? 'active' : ''}`} 
-            onClick={() => onSelect('profile')}
-          >
-            <i className="fa fa-cog"></i>
-            <span>Profile</span>
-          </li>
-          <li 
-            className="doc1-sidebar-link" 
-            onClick={() => onSelect('userhome')}
-          >
-            <i className="fa fa-sign-out"></i>
-            <span>Logout</span>
-          </li>
-        </ul>
-      </nav>
-      <div className="doc1-sidebar-footer">
-       Pregnify v2.5
-      </div>
-    </div>
-  );
-};
+import DoctorSidebar from './DoctorSidebar';
+import DoctorNavbar from './DoctorNavbar';
 
 // Enhanced AppointmentList using doc2 classes
 const AppointmentList = () => {
@@ -396,7 +336,7 @@ const DoctorDashboardApp = () => {
       navigate('/');
       return;
     }
-    if (section === 'messages') {
+    if (section === 'messages' || section === 'messaging') {
       navigate('/messaging');
       return;
     }
@@ -405,8 +345,10 @@ const DoctorDashboardApp = () => {
 
   return (
     <div className="doc1-app-container">
-      <PatientSidebar onSelect={handleSectionSelect} activeSection={activeSection} />
+      <DoctorSidebar onSelect={handleSectionSelect} activeSection={activeSection} />
       <div className="doc1-content-wrapper">
+        {/* Only show DoctorNavbar for dashboard, appointments, records, messages, profile */}
+        {['dashboard', 'appointments', 'records', 'messages', 'profile'].includes(activeSection) && <DoctorNavbar />}
         {activeSection === 'dashboard' && <DashboardContent />}
         {activeSection === 'appointments' && <div className="doc1-section-content"><h2>My Appointments</h2><AppointmentList /></div>}
         {activeSection === 'records' && <div className="doc1-section-content"><h2>Medical Records</h2><p>Your medical records section is here.</p></div>}

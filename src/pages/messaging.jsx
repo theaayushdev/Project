@@ -1,390 +1,164 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Send, ArrowLeft, Phone, Video, MoreVertical, Paperclip, Smile } from 'lucide-react';
-import '../cssonly/messaging.css';
+import React, { useState, useEffect } from 'react';
+import DoctorSidebar from './DoctorSidebar';
+import DoctorNavbar from './DoctorNavbar';
+import '../cssonly/doctordashboard.css';
 
-const MessagingInterface = () => {
-  const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userType, setUserType] = useState('user'); // 'user' or 'doctor'
-  const [conversations, setConversations] = useState([]);
-  const [selectedConversation, setSelectedConversation] = useState(null);
+const MessagingPage = () => {
+  const [activeSection, setActiveSection] = useState('messaging');
+  const [doctor, setDoctor] = useState(null);
+  const [patients, setPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [doctors, setDoctors] = useState([]);
-  const [showDoctorsList, setShowDoctorsList] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [error, setError] = useState('');
 
+  // Fetch doctor info from localStorage
   useEffect(() => {
-    initializeMessaging();
+    const doctorData = localStorage.getItem('doctorData');
+    if (doctorData) {
+      setDoctor(JSON.parse(doctorData));
+    }
   }, []);
 
+  // Fetch patients for this doctor
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!doctor) return;
+    setLoading(true);
+    fetch(`http://localhost:5000/doctor/patients/${doctor.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setPatients(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load patients');
+        setLoading(false);
+      });
+  }, [doctor]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Fetch messages for selected patient
+  useEffect(() => {
+    if (!doctor || !selectedPatient) return;
+    setLoading(true);
+    fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setMessages(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load messages');
+        setLoading(false);
+      });
+  }, [doctor, selectedPatient]);
 
-  const initializeMessaging = async () => {
-    // Get current user data
-    const userData = localStorage.getItem('userEmail');
-    const doctorData = localStorage.getItem('doctorData');
-    
-    if (userData) {
-      // User is logged in
-      setUserType('user');
-      try {
-        const response = await fetch('http://localhost:5000/users');
-        const users = await response.json();
-        const user = users.find(u => u.email === userData);
-        setCurrentUser(user);
-        if (user) {
-          loadConversations('user', user.patient_id);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    } else if (doctorData) {
-      // Doctor is logged in
-      setUserType('doctor');
-      const doctor = JSON.parse(doctorData);
-      setCurrentUser(doctor);
-      loadConversations('doctor', doctor.id);
-    }
-
-    // Load available doctors for users
-    if (userData) {
-      loadDoctors();
-    }
-  };
-
-  const loadConversations = async (type, id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/get-conversations/${type}/${id}`);
-      const convos = await response.json();
-      setConversations(convos);
-    } catch (error) {
-      console.error('Error loading conversations:', error);
-    }
-  };
-
-  const loadDoctors = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/doctors');
-      const doctorsData = await response.json();
-      setDoctors(doctorsData);
-    } catch (error) {
-      console.error('Error loading doctors:', error);
-    }
-  };
-
-  const loadMessages = async (partnerType, partnerId) => {
-    if (!currentUser) return;
-    
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !doctor || !selectedPatient) return;
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:5000/get-messages/${userType}/${currentUser.patient_id || currentUser.id}/${partnerType}/${partnerId}`
-      );
-      const messagesData = await response.json();
-      setMessages(messagesData);
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation || !currentUser) return;
-
-    const messageData = {
-      sender_id: currentUser.patient_id || currentUser.id,
-      receiver_id: selectedConversation.id,
-      sender_type: userType,
-      receiver_type: selectedConversation.type,
-      content: newMessage.trim()
-    };
-
-    try {
-      const response = await fetch('http://localhost:5000/send-message', {
+      const res = await fetch('http://localhost:5000/send-message', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(messageData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_id: doctor.id,
+          receiver_id: selectedPatient.id,
+          sender_type: 'doctor',
+          receiver_type: 'user',
+          content: newMessage.trim()
+        })
       });
-
-      if (response.ok) {
+      if (res.ok) {
         setNewMessage('');
-        // Reload messages to show the new message
-        loadMessages(selectedConversation.type, selectedConversation.id);
-        // Update conversations list
-        loadConversations(userType, currentUser.patient_id || currentUser.id);
+        // Refresh messages
+        fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
+          .then(res => res.json())
+          .then(data => setMessages(Array.isArray(data) ? data : []));
       }
-    } catch (error) {
-      console.error('Error sending message:', error);
+    } catch {
+      setError('Failed to send message');
     }
+    setLoading(false);
   };
-
-  const selectConversation = (conversation) => {
-    setSelectedConversation(conversation);
-    setShowDoctorsList(false);
-    loadMessages(conversation.type, conversation.id);
-  };
-
-  const startNewConversation = (doctor) => {
-    const newConversation = {
-      id: doctor.id,
-      name: `Dr. ${doctor.firstname} ${doctor.lastname}`,
-      type: 'doctor',
-      specialty: doctor.specialty,
-      avatar: doctor.firstname[0] + doctor.lastname[0]
-    };
-    setSelectedConversation(newConversation);
-    setShowDoctorsList(false);
-    setMessages([]);
-  };
-
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString();
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  if (!currentUser) {
-    return (
-      <div className="messaging-container">
-        <div className="messaging-error">
-          <h2>Please log in to access messaging</h2>
-          <button onClick={() => navigate('/login')}>Go to Login</button>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="messaging-container">
-      {/* Sidebar */}
-      <div className="messaging-sidebar">
-        <div className="messaging-header">
-          <div className="messaging-user-info">
-            <div className="messaging-avatar">
-              {currentUser.firstname?.[0] || 'U'}
-            </div>
-            <div className="messaging-user-details">
-              <h3>{currentUser.firstname || 'User'}</h3>
-              <span className="messaging-user-type">{userType === 'user' ? 'Patient' : 'Doctor'}</span>
-            </div>
+    <div className="doc1-app-container">
+      <DoctorSidebar onSelect={setActiveSection} activeSection={activeSection} />
+      <div className="doc1-content-wrapper">
+        <DoctorNavbar />
+        <div className="doc1-section-content" style={{ background: '#f7fafc', minHeight: '80vh', borderRadius: 12, boxShadow: '0 2px 8px rgba(44,82,130,0.07)', margin: 24, padding: 0, display: 'flex' }}>
+          {/* Patient List */}
+          <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e2e8f0', borderRadius: '12px 0 0 12px', padding: 0 }}>
+            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18 }}>Patients</div>
+            {loading && <div style={{ padding: 20 }}>Loading...</div>}
+            {error && <div style={{ color: 'red', padding: 20 }}>{error}</div>}
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {patients.map((p) => (
+                <li
+                  key={p.id}
+                  onClick={() => setSelectedPatient(p)}
+                  style={{
+                    padding: '16px 20px',
+                    cursor: 'pointer',
+                    background: selectedPatient && selectedPatient.id === p.id ? '#e6f0fa' : 'transparent',
+                    borderBottom: '1px solid #f1f5f9',
+                    color: '#2c5282',
+                    fontWeight: 500
+                  }}
+                >
+                  <span style={{ background: '#bee3f8', color: '#2c5282', borderRadius: '50%', padding: '6px 12px', marginRight: 12, fontWeight: 700 }}>
+                    {p.firstname[0]}{p.lastname[0]}
+                  </span>
+                  {p.firstname} {p.lastname}
+                </li>
+              ))}
+            </ul>
           </div>
-          <button 
-            className="messaging-back-btn"
-            onClick={() => navigate(userType === 'user' ? '/pregnancydashboard' : '/doctordashboard')}
-          >
-            <ArrowLeft size={20} />
-          </button>
-        </div>
-
-        <div className="messaging-actions">
-          {userType === 'user' && (
-            <button 
-              className="messaging-new-chat-btn"
-              onClick={() => setShowDoctorsList(!showDoctorsList)}
-            >
-              + New Chat with Doctor
-            </button>
-          )}
-        </div>
-
-        {showDoctorsList && userType === 'user' && (
-          <div className="messaging-doctors-list">
-            <h4>Available Doctors</h4>
-            {doctors.map(doctor => (
-              <div 
-                key={doctor.id} 
-                className="messaging-doctor-item"
-                onClick={() => startNewConversation(doctor)}
-              >
-                <div className="messaging-avatar">
-                  {doctor.firstname[0]}{doctor.lastname[0]}
-                </div>
-                <div className="messaging-doctor-info">
-                  <span className="messaging-doctor-name">
-                    Dr. {doctor.firstname} {doctor.lastname}
-                  </span>
-                  <span className="messaging-doctor-specialty">
-                    {doctor.specialty}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="messaging-conversations">
-          <h4>Conversations</h4>
-          {conversations.map(conversation => (
-            <div 
-              key={`${conversation.type}-${conversation.id}`}
-              className={`messaging-conversation-item ${
-                selectedConversation?.id === conversation.id ? 'active' : ''
-              }`}
-              onClick={() => selectConversation(conversation)}
-            >
-              <div className="messaging-avatar">
-                {conversation.avatar}
-              </div>
-              <div className="messaging-conversation-info">
-                <span className="messaging-conversation-name">
-                  {conversation.name}
-                </span>
-                {conversation.specialty && (
-                  <span className="messaging-conversation-specialty">
-                    {conversation.specialty}
-                  </span>
-                )}
-              </div>
+          {/* Chat Window */}
+          <div style={{ flex: 1, background: '#f7fafc', borderRadius: '0 12px 12px 0', display: 'flex', flexDirection: 'column', minHeight: 500 }}>
+            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18, minHeight: 60 }}>
+              {selectedPatient ? `${selectedPatient.firstname} ${selectedPatient.lastname}` : 'Select a patient to chat'}
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Chat Area */}
-      <div className="messaging-chat-area">
-        {selectedConversation ? (
-          <>
-            {/* Chat Header */}
-            <div className="messaging-chat-header">
-              <div className="messaging-chat-user-info">
-                <div className="messaging-avatar">
-                  {selectedConversation.avatar}
+            <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {selectedPatient && messages.length === 0 && <div style={{ color: '#4a5568' }}>[No messages yet]</div>}
+              {selectedPatient && messages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    alignSelf: msg.sender_type === 'doctor' ? 'flex-end' : 'flex-start',
+                    background: msg.sender_type === 'doctor' ? '#2c5282' : '#bee3f8',
+                    color: msg.sender_type === 'doctor' ? '#fff' : '#2c5282',
+                    borderRadius: 16,
+                    padding: '10px 18px',
+                    maxWidth: '70%',
+                    fontSize: 15
+                  }}
+                >
+                  {msg.content}
                 </div>
-                <div className="messaging-chat-user-details">
-                  <h3>{selectedConversation.name}</h3>
-                  {selectedConversation.specialty && (
-                    <span className="messaging-chat-specialty">
-                      {selectedConversation.specialty}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="messaging-chat-actions">
-                <button className="messaging-action-btn">
-                  <Phone size={20} />
-                </button>
-                <button className="messaging-action-btn">
-                  <Video size={20} />
-                </button>
-                <button className="messaging-action-btn">
-                  <MoreVertical size={20} />
-                </button>
-              </div>
+              ))}
             </div>
-
-            {/* Messages */}
-            <div className="messaging-messages-container">
-              {loading ? (
-                <div className="messaging-loading">Loading messages...</div>
-              ) : (
-                <>
-                  {messages.map((message, index) => {
-                    const isCurrentUser = 
-                      (message.sender_type === userType && 
-                       message.sender_id === (currentUser.patient_id || currentUser.id));
-                    
-                    const showDate = index === 0 || 
-                      formatDate(message.timestamp) !== formatDate(messages[index - 1].timestamp);
-
-                    return (
-                      <div key={message.id}>
-                        {showDate && (
-                          <div className="messaging-date-separator">
-                            {formatDate(message.timestamp)}
-                          </div>
-                        )}
-                        <div className={`messaging-message ${isCurrentUser ? 'sent' : 'received'}`}>
-                          <div className="messaging-message-content">
-                            {message.content}
-                          </div>
-                          <div className="messaging-message-time">
-                            {formatTime(message.timestamp)}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
-                </>
-              )}
-            </div>
-
-            {/* Message Input */}
-            <div className="messaging-input-container">
-              <button className="messaging-input-action">
-                <Paperclip size={20} />
-              </button>
-              <div className="messaging-input-wrapper">
-                <textarea
+            {selectedPatient && (
+              <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, padding: 20, borderTop: '1px solid #e2e8f0', background: '#fff', borderRadius: '0 0 12px 0' }}>
+                <input
+                  type="text"
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type a message..."
-                  className="messaging-input"
-                  rows="1"
+                  onChange={e => setNewMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  style={{ flex: 1, padding: 12, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16 }}
+                  disabled={loading}
                 />
-                <button className="messaging-input-action">
-                  <Smile size={20} />
+                <button type="submit" style={{ background: '#2c5282', color: '#fff', border: 'none', borderRadius: 6, padding: '0 20px', fontWeight: 600, fontSize: 16 }} disabled={loading || !newMessage.trim()}>
+                  Send
                 </button>
-              </div>
-              <button 
-                className="messaging-send-btn"
-                onClick={sendMessage}
-                disabled={!newMessage.trim()}
-              >
-                <Send size={20} />
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="messaging-welcome">
-            <div className="messaging-welcome-content">
-              <h2>Welcome to Pregnify Messaging</h2>
-              <p>
-                {userType === 'user' 
-                  ? 'Select a conversation or start a new chat with a doctor'
-                  : 'Select a conversation to start messaging'
-                }
-              </p>
-            </div>
+              </form>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default MessagingInterface;
+export default MessagingPage;
