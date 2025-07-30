@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../cssonly/AdminLogin.css';
 
 
@@ -9,6 +10,7 @@ function AdminLogin() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +36,7 @@ function AdminLogin() {
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
+    } else if (formData.password.length < 1) {
       newErrors.password = 'Password must be at least 6 characters';
     }
     
@@ -65,7 +67,7 @@ function AdminLogin() {
       setIsLoading(false);
 
       if (response.ok) {
-        alert(`Welcome Administrator ${formData.username}! Login successful.`);
+        navigate('/admindashboard');
       } else {
         alert(result.error || 'Login failed');
       }
