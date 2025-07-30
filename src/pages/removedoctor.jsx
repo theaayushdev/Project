@@ -12,6 +12,11 @@ const Removedoctor = () => {
       .catch(err => console.error("Error fetching doctors:", err));
   }, []);
 
+  const handleRemoveDoctor = (doctorId) => {
+    // Implement the remove doctor functionality here
+    console.log("Remove doctor with id:", doctorId);
+  };
+
   return (
     <div className="remove-dashboard" style={{ display: 'flex' }}>
       <AdminSidebar />
@@ -27,7 +32,7 @@ const Removedoctor = () => {
               <th style={thStyle}>Specialty</th>
               <th style={thStyle}>Department</th>
               <th style={thStyle}>Email</th>
-              {/* <th style={thStyle}>Actions</th> */}
+              <th style={thStyle}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -38,7 +43,23 @@ const Removedoctor = () => {
                 <td style={tdStyle}>{doctor.specialty}</td>
                 <td style={tdStyle}>{doctor.department}</td>
                 <td style={tdStyle}>{doctor.email}</td>
-                {/* <td style={tdStyle}><button onClick={() => handleRemove(doctor.id)}>Remove</button></td> */}
+                <td style={tdStyle}>
+                  <button
+                    onClick={() => handleRemoveDoctor(doctor.id)}
+                    style={{
+                      backgroundColor: '#d32f2f',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      float: 'right'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
