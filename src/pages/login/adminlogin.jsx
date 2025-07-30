@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../cssonly/AdminLogin.css';
 
 
@@ -9,6 +10,7 @@ function AdminLogin() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -65,7 +67,7 @@ function AdminLogin() {
       setIsLoading(false);
 
       if (response.ok) {
-        alert(`Welcome Administrator ${formData.username}! Login successful.`);
+        navigate('/admindashboard');
       } else {
         alert(result.error || 'Login failed');
       }
