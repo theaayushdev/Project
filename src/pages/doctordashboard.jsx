@@ -26,6 +26,21 @@ const DoctorDashboardApp = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({});
   
+  // Modal states
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [newAppointmentData, setNewAppointmentData] = useState({
+    patient_id: '',
+    appointment_date: '',
+    purpose: '',
+    notes: ''
+  });
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const chatPollingRef = useRef(null);
@@ -114,6 +129,7 @@ const DoctorDashboardApp = () => {
         if (patientsResponse.ok) {
           const patientsData = await patientsResponse.json();
           setPatients(patientsData);
+          setFilteredPatients(patientsData);
         }
 
         // Fetch recent messages
@@ -136,6 +152,20 @@ const DoctorDashboardApp = () => {
 
     fetchDashboardData();
   }, [doctor]);
+
+  // Search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredPatients(patients);
+    } else {
+      const filtered = patients.filter(patient => 
+        patient.firstname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.lastname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredPatients(filtered);
+    }
+  }, [searchQuery, patients]);
 
   // Chat functionality
   useEffect(() => {
@@ -227,6 +257,54 @@ const DoctorDashboardApp = () => {
       department: doctor?.department || ''
     });
     setIsEditingProfile(false);
+  };
+
+  // Modal handlers
+  const handleViewAppointment = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowAppointmentModal(true);
+  };
+
+  const handleNewAppointment = () => {
+    setShowNewAppointmentModal(true);
+  };
+
+  const handleCreateAppointment = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/create-appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctor_id: doctor.id,
+          user_id: newAppointmentData.patient_id,
+          appointment_date: newAppointmentData.appointment_date,
+          purpose: newAppointmentData.purpose,
+          notes: newAppointmentData.notes
+        })
+      });
+      
+      if (response.ok) {
+        setShowNewAppointmentModal(false);
+        setNewAppointmentData({
+          patient_id: '',
+          appointment_date: '',
+          purpose: '',
+          notes: ''
+        });
+        // Refresh appointments
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+    }
+  };
+
+  const handleDashboardClick = (section) => {
+    setActiveSection(section);
   };
 
   // Helper functions
@@ -413,7 +491,16 @@ const DoctorDashboardApp = () => {
         <div className="doctordas-navbar">
           <div className="doctordas-navbar-search">
             <span>🔍</span>
-            <input placeholder="Search patients, appointments..." />
+            <input 
+              placeholder="Search patients..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  setActiveSection('patients');
+                }
+              }}
+            />
           </div>
           <div className="doctordas-navbar-profile">
             <div className="doctordas-navbar-time">
@@ -509,7 +596,12 @@ const DoctorDashboardApp = () => {
                       patients.slice(0, 4).map((patient) => {
                         const progress = getRandomProgress();
                         return (
-                          <div key={patient.id} className="doctordas-patient-item">
+                          <div 
+                            key={patient.id} 
+                            className="doctordas-patient-item"
+                            onClick={() => handleDashboardClick('patients')}
+                            style={{ cursor: 'pointer' }}
+                          >
                             <div className="doctordas-avatar">
                               {patient.firstname?.[0]}{patient.lastname?.[0]}
                             </div>
@@ -552,7 +644,12 @@ const DoctorDashboardApp = () => {
                       </div>
                     ) : (
                       messages.slice(0, 4).map((message) => (
-                        <div key={message.id} className="doctordas-message-item">
+                        <div 
+                          key={message.id} 
+                          className="doctordas-message-item"
+                          onClick={() => handleDashboardClick('chat')}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <div className="doctordas-avatar">
                             {message.sender?.firstname?.[0]}{message.sender?.lastname?.[0]}
                           </div>
@@ -584,7 +681,13 @@ const DoctorDashboardApp = () => {
                 <div className="doctordas-card">
                   <div className="doctordas-card-header">
                     <h3>📅 Upcoming Appointments</h3>
-                    <button className="doctordas-btn doctordas-btn-primary">+ New</button>
+                    <button 
+                      className="doctordas-btn doctordas-btn-primary"
+                      onClick={handleNewAppointment}
+                    >
+                      <span>+</span>
+                      <span>New</span>
+                    </button>
                   </div>
                   <div className="doctordas-card-content">
                     {appointments.length === 0 ? (
@@ -612,7 +715,12 @@ const DoctorDashboardApp = () => {
                             <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
                               {appointment.status}
                             </span>
-                            <button className="doctordas-btn-link">View</button>
+                            <button 
+                              className="doctordas-btn-link"
+                              onClick={() => handleViewAppointment(appointment)}
+                            >
+                              View
+                            </button>
                           </div>
                         </div>
                       ))
@@ -669,7 +777,10 @@ const DoctorDashboardApp = () => {
                   <h2>My Appointments</h2>
                   <p>Manage your patient appointments</p>
                 </div>
-                <button className="doctordas-btn doctordas-btn-primary">
+                <button 
+                  className="doctordas-btn doctordas-btn-primary"
+                  onClick={handleNewAppointment}
+                >
                   <span>+</span>
                   <span>New Appointment</span>
                 </button>
@@ -701,7 +812,12 @@ const DoctorDashboardApp = () => {
                           <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
                             {appointment.status}
                           </span>
-                          <button className="doctordas-btn-link">View</button>
+                          <button 
+                            className="doctordas-btn-link"
+                            onClick={() => handleViewAppointment(appointment)}
+                          >
+                            View
+                          </button>
                         </div>
                       </div>
                     ))
@@ -719,45 +835,77 @@ const DoctorDashboardApp = () => {
                   <h2>My Patients</h2>
                   <p>View and manage your patient list</p>
                 </div>
-              </div>
-              <div className="doctordas-card">
-                <div className="doctordas-card-content">
-                  {patients.length === 0 ? (
-                    <div className="doctordas-empty-state">
-                      <span>👥</span>
-                      <h4>No patients found</h4>
-                      <p>Start by booking appointments</p>
-                    </div>
-                  ) : (
-                    patients.map((patient) => {
-                      const progress = getRandomProgress();
-                      return (
-                        <div key={patient.id} className="doctordas-patient-item">
-                          <div className="doctordas-avatar">
-                            {patient.firstname?.[0]}{patient.lastname?.[0]}
-                          </div>
-                          <div className="doctordas-patient-info">
-                            <div className="doctordas-patient-header">
-                              <p>{patient.firstname} {patient.lastname}</p>
-                              <span>{progress}%</span>
-                            </div>
-                            <div className="doctordas-patient-details">
-                              <span>{patient.age || 'N/A'} yrs</span>
-                              <span>•</span>
-                              <span>Pregnancy</span>
-                            </div>
-                            <div className="doctordas-progress">
-                              <div 
-                                className="doctordas-progress-bar"
-                                style={{ width: `${progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
+                <div className="doctordas-search-results">
+                  {searchQuery && (
+                    <p>Showing {filteredPatients.length} results for "{searchQuery}"</p>
                   )}
                 </div>
+              </div>
+              <div className="doctordas-patients-grid">
+                {filteredPatients.length === 0 ? (
+                  <div className="doctordas-empty-state">
+                    <span>👥</span>
+                    <h4>No patients found</h4>
+                    <p>{searchQuery ? 'Try a different search term' : 'Start by booking appointments'}</p>
+                  </div>
+                ) : (
+                  filteredPatients.map((patient) => {
+                    const progress = getRandomProgress();
+                    return (
+                      <div key={patient.id} className="doctordas-patient-card">
+                        <div className="doctordas-patient-photo">
+                          {patient.firstname?.[0]}{patient.lastname?.[0]}
+                        </div>
+                        <div className="doctordas-patient-info">
+                          <h4>{patient.firstname} {patient.lastname}</h4>
+                          <div className="doctordas-patient-details">
+                            <div className="doctordas-patient-detail">
+                              <span>📧</span>
+                              <span>{patient.email}</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>📱</span>
+                              <span>{patient.contact || 'N/A'}</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>🎂</span>
+                              <span>{patient.age || 'N/A'} years old</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>📍</span>
+                              <span>{patient.location || 'N/A'}</span>
+                            </div>
+                          </div>
+                          <div className="doctordas-patient-actions">
+                            <button 
+                              className="doctordas-btn-patient doctordas-btn-patient-primary"
+                              onClick={() => {
+                                setSelectedPatient(patient);
+                                setActiveSection('chat');
+                              }}
+                            >
+                              <span>💬</span>
+                              <span>Message</span>
+                            </button>
+                            <button 
+                              className="doctordas-btn-patient doctordas-btn-patient-secondary"
+                              onClick={() => {
+                                setNewAppointmentData({
+                                  ...newAppointmentData,
+                                  patient_id: patient.id
+                                });
+                                setShowNewAppointmentModal(true);
+                              }}
+                            >
+                              <span>📅</span>
+                              <span>Book Appointment</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
           )}
@@ -833,14 +981,28 @@ const DoctorDashboardApp = () => {
                     </div>
 
                     <form onSubmit={handleSendMessage} className="doctordas-chat-input">
-                      <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type your message..."
-                        disabled={sendingMessage}
-                      />
-                      <button type="submit" disabled={sendingMessage || !newMessage.trim()}>
+                      <div className="doctordas-chat-input-container">
+                        <div className="doctordas-chat-input-actions">
+                          <button type="button" className="doctordas-chat-input-action">
+                            😊
+                          </button>
+                          <button type="button" className="doctordas-chat-input-action">
+                            📎
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder="Type your message..."
+                          disabled={sendingMessage}
+                        />
+                      </div>
+                      <button 
+                        type="submit" 
+                        className="doctordas-chat-send-btn"
+                        disabled={sendingMessage || !newMessage.trim()}
+                      >
                         {sendingMessage ? 'Sending...' : 'Send'}
                       </button>
                     </form>
@@ -979,6 +1141,143 @@ const DoctorDashboardApp = () => {
           )}
         </main>
       </div>
+
+      {/* Appointment View Modal */}
+      {showAppointmentModal && selectedAppointment && (
+        <div className="doctordas-modal-overlay" onClick={() => setShowAppointmentModal(false)}>
+          <div className="doctordas-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="doctordas-modal-header">
+              <h3 className="doctordas-modal-title">Appointment Details</h3>
+              <button 
+                className="doctordas-modal-close"
+                onClick={() => setShowAppointmentModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="doctordas-appointment-details-modal">
+              <div className="doctordas-appointment-detail-row">
+                <strong>Patient:</strong>
+                <span>{selectedAppointment.user?.firstname} {selectedAppointment.user?.lastname}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Date & Time:</strong>
+                <span>{formatDate(selectedAppointment.appointment_date)}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Purpose:</strong>
+                <span>{selectedAppointment.purpose || 'General Checkup'}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Status:</strong>
+                <span className={`doctordas-status ${getStatusColor(selectedAppointment.status)}`}>
+                  {selectedAppointment.status}
+                </span>
+              </div>
+              {selectedAppointment.notes && (
+                <div className="doctordas-appointment-detail-row">
+                  <strong>Notes:</strong>
+                  <span>{selectedAppointment.notes}</span>
+                </div>
+              )}
+              <div className="doctordas-appointment-detail-row">
+                <strong>Contact:</strong>
+                <span>{selectedAppointment.user?.contact || 'N/A'}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Email:</strong>
+                <span>{selectedAppointment.user?.email || 'N/A'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Appointment Modal */}
+      {showNewAppointmentModal && (
+        <div className="doctordas-modal-overlay" onClick={() => setShowNewAppointmentModal(false)}>
+          <div className="doctordas-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="doctordas-modal-header">
+              <h3 className="doctordas-modal-title">Create New Appointment</h3>
+              <button 
+                className="doctordas-modal-close"
+                onClick={() => setShowNewAppointmentModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="doctordas-new-appointment-form">
+              <div className="doctordas-form-group">
+                <label>Select Patient</label>
+                <select
+                  value={newAppointmentData.patient_id}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    patient_id: e.target.value
+                  })}
+                >
+                  <option value="">Choose a patient...</option>
+                  {patients.map(patient => (
+                    <option key={patient.id} value={patient.id}>
+                      {patient.firstname} {patient.lastname} - {patient.email}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="doctordas-form-group">
+                <label>Appointment Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={newAppointmentData.appointment_date}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    appointment_date: e.target.value
+                  })}
+                />
+              </div>
+              <div className="doctordas-form-group">
+                <label>Purpose</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Prenatal Checkup, Ultrasound, Consultation"
+                  value={newAppointmentData.purpose}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    purpose: e.target.value
+                  })}
+                />
+              </div>
+              <div className="doctordas-form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  placeholder="Additional notes about the appointment..."
+                  value={newAppointmentData.notes}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    notes: e.target.value
+                  })}
+                  rows="3"
+                />
+              </div>
+              <div className="doctordas-modal-actions">
+                <button 
+                  className="doctordas-btn doctordas-btn-secondary"
+                  onClick={() => setShowNewAppointmentModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="doctordas-btn doctordas-btn-primary"
+                  onClick={handleCreateAppointment}
+                  disabled={!newAppointmentData.patient_id || !newAppointmentData.appointment_date}
+                >
+                  Create Appointment
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

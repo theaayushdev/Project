@@ -6,11 +6,938 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   color: #1e293b;
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
+}
+
+/* Enhanced Search Bar */
+.doctordas-navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 0.75rem 1.25rem;
+  flex: 1;
+  max-width: 500px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.doctordas-navbar-search:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+.doctordas-navbar-search input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.doctordas-navbar-search input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Enhanced Cards */
+.doctordas-card {
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.doctordas-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Patient Cards */
+.doctordas-patient-card {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.doctordas-patient-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.doctordas-patient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.doctordas-patient-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.doctordas-patient-info h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-patient-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.doctordas-patient-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.doctordas-patient-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.doctordas-btn-patient {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctordas-btn-patient-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.doctordas-btn-patient-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.doctordas-btn-patient-secondary {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.doctordas-btn-patient-secondary:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Modal Styles */
+.doctordas-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.doctordas-modal {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.doctordas-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doctordas-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.doctordas-modal-close:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Enhanced Chat Styles */
+.doctordas-chat {
+  display: flex;
+  height: calc(100vh - 200px);
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+}
+
+.doctordas-chat-sidebar {
+  width: 350px;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.doctordas-chat-sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: white;
+}
+
+.doctordas-chat-sidebar-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-chat-sidebar-header p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-patients {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.doctordas-chat-patient {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: none;
+  background: white;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.doctordas-chat-patient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.doctordas-chat-patient.active {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border: 1px solid #3b82f6;
+}
+
+.doctordas-chat-patient-info {
+  flex: 1;
+}
+
+.doctordas-chat-patient-info h4 {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.doctordas-chat-patient-info p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.doctordas-chat-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doctordas-chat-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-chat-header p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.doctordas-chat-message {
+  margin-bottom: 1rem;
+  display: flex;
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctordas-chat-message-sent {
+  justify-content: flex-end;
+}
+
+.doctordas-chat-message-received {
+  justify-content: flex-start;
+}
+
+.doctordas-chat-message-content {
+  max-width: 70%;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.doctordas-chat-message-sent .doctordas-chat-message-content {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.doctordas-chat-message-received .doctordas-chat-message-content {
+  background: white;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.doctordas-chat-message-content p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.doctordas-chat-message-content span {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.doctordas-chat-input {
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.doctordas-chat-input-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.doctordas-chat-input-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.doctordas-chat-input-action {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.doctordas-chat-input-action:hover {
+  background: #f1f5f9;
+  color: #3b82f6;
+}
+
+.doctordas-chat-input input {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 1.5rem;
+  outline: none;
+  font-size: 0.95rem;
+  resize: none;
+  min-height: 50px;
+  max-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.doctordas-chat-input input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.doctordas-chat-send-btn {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  border-radius: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctordas-chat-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.doctordas-chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Enhanced Buttons */
+.doctordas-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.doctordas-btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.doctordas-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.doctordas-btn-secondary {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+}
+
+.doctordas-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+  transform: translateY(-1px);
+}
+
+/* Enhanced Stats Cards */
+.doctordas-stat-card {
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctordas-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+}
+
+.doctordas-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.doctordas-stat-icon {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #3b82f6;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+.doctordas-stat-content h3 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  line-height: 1;
+}
+
+.doctordas-stat-content p {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.doctordas-stat-content span {
+  font-size: 0.875rem;
+  color: #059669;
+  font-weight: 600;
+  background: #dcfce7;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+/* Enhanced Welcome Section */
+.doctordas-welcome {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.doctordas-welcome::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8, #7c3aed);
+}
+
+.doctordas-welcome h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.doctordas-welcome p {
+  color: #64748b;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.doctordas-welcome-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.doctordas-status-online {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #059669;
+  font-weight: 600;
+  background: #dcfce7;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+}
+
+/* Enhanced Grid Layout */
+.doctordas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.doctordas-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Enhanced Patient Grid */
+.doctordas-patients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* Enhanced Appointment Items */
+.doctordas-appointment-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.doctordas-appointment-item:hover {
+  background: #f8fafc;
+  transform: translateX(4px);
+}
+
+.doctordas-appointment-item:last-child {
+  border-bottom: none;
+}
+
+.doctordas-appointment-info {
+  flex: 1;
+}
+
+.doctordas-appointment-info p {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.doctordas-appointment-details {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.doctordas-appointment-purpose {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1d4ed8;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.doctordas-appointment-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Enhanced Status Badges */
+.doctordas-status {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.doctordas-status-success {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.doctordas-status-warning {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.doctordas-status-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.doctordas-status-default {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+/* Enhanced Calendar */
+.doctordas-calendar {
+  width: 100%;
+}
+
+.doctordas-calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.doctordas-calendar-day-header {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.doctordas-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.doctordas-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #64748b;
+  border-radius: 0.75rem;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.doctordas-calendar-day:hover {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+  color: #1e293b;
+}
+
+.doctordas-calendar-today {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1d4ed8;
+  font-weight: 700;
+  border-color: #3b82f6;
+}
+
+.doctordas-calendar-has-events {
+  color: #1e293b;
+  font-weight: 600;
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.doctordas-calendar-event-dot {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .doctordas-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .doctordas-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .doctordas-patients-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .doctordas-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+  }
+  
+  .doctordas-content {
+    margin-left: 0;
+  }
+  
+  .doctordas-navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .doctordas-navbar-search {
+    max-width: none;
+  }
+  
+  .doctordas-main {
+    padding: 1rem;
+  }
+  
+  .doctordas-chat {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .doctordas-chat-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .doctordas-chat-main {
+    height: 400px;
+  }
+  
+  .doctordas-welcome h1 {
+    font-size: 2rem;
+  }
+  
+  .doctordas-stat-content h3 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .doctordas-navbar-profile {
+    justify-content: center;
+  }
+  
+  .doctordas-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .doctordas-profile-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .doctordas-profile-actions .doctordas-btn {
+    flex: 1;
+  }
+  
+  .doctordas-welcome {
+    padding: 1.5rem;
+  }
+  
+  .doctordas-welcome h1 {
+    font-size: 1.75rem;
+  }
+  
+  .doctordas-stat-card {
+    padding: 1.5rem;
+  }
+  
+  .doctordas-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+  }
+  
+  .doctordas-stat-content h3 {
+    font-size: 1.5rem;
+  }
 }
 
 .doctordas-app * {
@@ -1100,6 +2027,87 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-form-group select,
+.doctordas-form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  font-family: inherit;
+}
+
+.doctordas-form-group select:focus,
+.doctordas-form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.doctordas-form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Modal Form Styles */
+.doctordas-new-appointment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.doctordas-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.doctordas-appointment-details-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doctordas-appointment-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.doctordas-appointment-detail-row:last-child {
+  border-bottom: none;
+}
+
+.doctordas-appointment-detail-row strong {
+  color: #374151;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.doctordas-appointment-detail-row span {
+  color: #1e293b;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+/* Search Results */
+.doctordas-search-results {
+  margin-top: 0.5rem;
+}
+
+.doctordas-search-results p {
+  font-size: 0.875rem;
+  color: #64748b;
   margin: 0;
 }
 
