@@ -6,9 +6,22 @@ from model import User, Doctor, Appointment, PregnancyInfo, Message, Admin
 from datetime import datetime
 import os 
 from sqlalchemy import func, or_, and_
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
+
+# File upload configuration
+UPLOAD_FOLDER = 'uploads/doctor_photos'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create upload directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -90,21 +103,39 @@ def login():
 
 @app.route('/add-doctor', methods=['POST'])
 def add_doctor():
-    data = request.get_json()
-    doctor = Doctor(
-        firstname=data['firstname'],
-        lastname=data['lastname'],
-        phone_number=data['phone_number'],
-        gender=data['gender'],
-        email=data['email'],
-        medical_license_number=data['medical_license_number'],
-        specialty=data['specialty'],
-        department=data['department'],
-        password=data['password']
-    )
-    db.session.add(doctor)
-    db.session.commit()
-    return jsonify({'message': 'Doctor added successfully'}), 201
+    try:
+        # Handle file upload
+        profile_photo_path = None
+        if 'profile_photo' in request.files:
+            file = request.files['profile_photo']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                # Add timestamp to avoid filename conflicts
+                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                profile_photo_path = file_path
+
+        # Get form data
+        doctor = Doctor(
+            firstname=request.form.get('firstname'),
+            lastname=request.form.get('lastname'),
+            phone_number=request.form.get('phone_number'),
+            gender=request.form.get('gender'),
+            email=request.form.get('email'),
+            medical_license_number=request.form.get('medical_license_number'),
+            specialty=request.form.get('specialty'),
+            department=request.form.get('department'),
+            age=int(request.form.get('age')) if request.form.get('age') else None,
+            years_of_experience=int(request.form.get('years_of_experience')) if request.form.get('years_of_experience') else None,
+            profile_photo=profile_photo_path,
+            password=request.form.get('password')
+        )
+        db.session.add(doctor)
+        db.session.commit()
+        return jsonify({'message': 'Doctor added successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -130,7 +161,12 @@ def get_doctors():
         'phone_number': d.phone_number,
         'specialty': d.specialty,
         'department': d.department,
-        'email': d.email
+        'email': d.email,
+        'age': d.age,
+        'years_of_experience': d.years_of_experience,
+        'profile_photo': d.profile_photo,
+        'gender': d.gender,
+        'medical_license_number': d.medical_license_number
     } for d in doctors]), 200
 
 @app.route('/appointment', methods=['POST'])

@@ -39,6 +39,9 @@ class Doctor(db.Model):
     specialty = db.Column(db.String(100))
     department = db.Column(db.String(100))
     password = db.Column(db.String(255), nullable=False)
+    age = db.Column(db.Integer)
+    years_of_experience = db.Column(db.Integer)
+    profile_photo = db.Column(db.String(255))  # Store file path or URL
     status = db.Column(db.String(10), nullable=False, default='on')  # new column
 
 

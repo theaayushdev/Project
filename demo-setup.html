@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo Setup - Pregnancy Care</title>
+</head>
+<body>
+    <h1>Demo Setup for Pregnancy Care App</h1>
+    <p>Click the button below to set up demo user data in localStorage:</p>
+    <button onclick="setupDemo()">Setup Demo User</button>
+    <p id="status"></p>
+    
+    <script>
+        function setupDemo() {
+            // Set demo user email in localStorage
+            localStorage.setItem('userEmail', 'sarah.johnson@example.com');
+            localStorage.setItem('userType', 'user');
+            localStorage.setItem('userId', '1');
+            localStorage.setItem('userName', 'Sarah Johnson');
+            
+            document.getElementById('status').innerHTML = 'Demo user data set! You can now navigate to the dashboard.';
+            
+            // Redirect to pregnancy dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = 'http://localhost:5175/pregnancydashboard';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
