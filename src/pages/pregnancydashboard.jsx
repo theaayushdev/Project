@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import UserNavbar from "./Usernavbar";
-import UserSidebar from "./usersidebar";
+import UserNavbar from "./Usernavbar"; // Top navigation bar for user
+import UserSidebar from "./usersidebar"; // Sidebar navigation for user
 import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target } from "lucide-react";
 import "../cssonly/pregnancydashboard.css";
 
@@ -90,36 +90,28 @@ function UserPregnancyDashboard() {
       trend: "up"
     },
     { 
-      title: "Water Intake", 
-      value: `${waterIntake}/8 glasses`, 
-      icon: Droplets, 
+      title: "Height", 
+      value: pregnancyInfo && pregnancyInfo.height ? `${pregnancyInfo.height} cm` : "-",
+      icon: Activity, // You can choose a more appropriate icon if available
       color: "#4ECDC4",
-      change: "62% of daily goal",
+      change: pregnancyInfo && pregnancyInfo.height ? "Recorded" : "-",
       trend: "neutral"
     },
     { 
-      title: "Sleep", 
-      value: `${sleepHours} hours`, 
-      icon: Moon, 
+      title: "LMC", 
+      value: pregnancyInfo && pregnancyInfo.lmc ? new Date(pregnancyInfo.lmc).toLocaleDateString() : "-",
+      icon: Calendar,
       color: "#A78BFA",
-      change: "Good quality",
-      trend: "up"
-    },
-    { 
-      title: "Steps", 
-      value: `${dailySteps.toLocaleString()}`, 
-      icon: Activity, 
-      color: "#F59E0B",
-      change: "85% of goal",
+      change: pregnancyInfo && pregnancyInfo.lmc ? "Last Menstrual Cycle" : "-",
       trend: "neutral"
     },
     { 
-      title: "Heart Rate", 
-      value: `${heartRate} bpm`, 
-      icon: Heart, 
-      color: "#EF4444",
-      change: "Normal range",
-      trend: "up"
+      title: "Gravida Number", 
+      value: pregnancyInfo && pregnancyInfo.gravida ? pregnancyInfo.gravida : "-",
+      icon: Baby,
+      color: "#F59E0B",
+      change: pregnancyInfo && pregnancyInfo.gravida ? "Recorded" : "-",
+      trend: "neutral"
     }
   ];
 
@@ -182,8 +174,10 @@ function UserPregnancyDashboard() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
+      {/* User Sidebar: navigation for dashboard sections */}
       <UserSidebar week={week} trimester={trimester} activeTab="dashboard" />
       <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+        {/* User Navbar: top navigation bar */}
         <UserNavbar />
         
         <div className="pregnancy-dashboard-header">

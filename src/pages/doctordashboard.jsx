@@ -170,10 +170,12 @@ const DoctorDashboardApp = () => {
   // Chat functionality
   useEffect(() => {
     if (!doctor || !selectedPatient) return;
-    
     const fetchChatMessages = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        // Use the same endpoint and order as the user side, but always use user/doctor as sender/receiver
+        const response = await fetch(
+          `http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`
+        );
         if (response.ok) {
           const data = await response.json();
           setChatMessages(Array.isArray(data) ? data : []);
@@ -185,7 +187,7 @@ const DoctorDashboardApp = () => {
 
     fetchChatMessages();
     chatPollingRef.current = setInterval(fetchChatMessages, 2000);
-    
+
     return () => {
       if (chatPollingRef.current) {
         clearInterval(chatPollingRef.current);
@@ -201,7 +203,7 @@ const DoctorDashboardApp = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !doctor || !selectedPatient) return;
-    
+
     setSendingMessage(true);
     try {
       const response = await fetch('http://127.0.0.1:5000/send-message', {
@@ -215,11 +217,13 @@ const DoctorDashboardApp = () => {
           content: newMessage.trim()
         })
       });
-      
+
       if (response.ok) {
         setNewMessage('');
-        // Refresh messages
-        const messagesResponse = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        // Immediately fetch messages after sending
+        const messagesResponse = await fetch(
+          `http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`
+        );
         if (messagesResponse.ok) {
           const data = await messagesResponse.json();
           setChatMessages(Array.isArray(data) ? data : []);
@@ -812,7 +816,7 @@ const DoctorDashboardApp = () => {
                           <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
                             {appointment.status}
                           </span>
-                          <button 
+                          <button
                             className="doctordas-btn-link"
                             onClick={() => handleViewAppointment(appointment)}
                           >

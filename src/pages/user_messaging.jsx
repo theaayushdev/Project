@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import UserSidebar from './usersidebar';
-import UserNavbar from './Usernavbar';
+import UserNavbar from './Usernavbar'; // Top navigation bar for user
+import UserSidebar from './usersidebar'; // Sidebar navigation for user
 import '../cssonly/user-messaging.css';
 
+function getPregnancyWeek(lmc) {
+  if (!lmc) return null;
+  const lmcDate = new Date(lmc);
+  const now = new Date();
+  const diff = now - lmcDate;
+  const week = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+  return week > 0 ? week : 0;
+}
+
 const UserMessagingPage = () => {
-  const [activeTab, setActiveTab] = useState('chat');
   const [user, setUser] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -12,6 +20,7 @@ const UserMessagingPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [pregnancyInfo, setPregnancyInfo] = useState(null);
   const pollingRef = useRef();
   const messagesEndRef = useRef(null);
 
@@ -26,6 +35,14 @@ const UserMessagingPage = () => {
         setUser(u);
       });
   }, []);
+
+  // Fetch pregnancy info for sidebar week/trimester
+  useEffect(() => {
+    if (!user) return;
+    fetch(`http://127.0.0.1:5000/user/dashboard?email=${encodeURIComponent(user.email)}`)
+      .then(res => res.json())
+      .then(data => setPregnancyInfo(data.pregnancy));
+  }, [user]);
 
   // Fetch doctors for this user
   useEffect(() => {
@@ -47,6 +64,7 @@ const UserMessagingPage = () => {
   useEffect(() => {
     if (!user || !selectedDoctor) return;
     const fetchMessages = () => {
+      // Always use user/doctor as sender/receiver for the endpoint
       fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
         .then(res => res.json())
         .then(data => setMessages(Array.isArray(data) ? data : []));
@@ -79,7 +97,7 @@ const UserMessagingPage = () => {
       });
       if (res.ok) {
         setNewMessage('');
-        // Refresh messages
+        // Immediately fetch messages after sending
         fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
           .then(res => res.json())
           .then(data => setMessages(Array.isArray(data) ? data : []));
@@ -89,6 +107,15 @@ const UserMessagingPage = () => {
     }
     setLoading(false);
   };
+
+  // Calculate week and trimester for sidebar
+  let week = pregnancyInfo && pregnancyInfo.lmc ? getPregnancyWeek(pregnancyInfo.lmc) : null;
+  let trimester = null;
+  if (week !== null) {
+    if (week < 13) trimester = '1st Trimester';
+    else if (week < 27) trimester = '2nd Trimester';
+    else trimester = '3rd Trimester';
+  }
 
   const formatTime = (dateString) => {
     if (!dateString) return '';
@@ -100,12 +127,13 @@ const UserMessagingPage = () => {
   };
 
   return (
-    <div className="user-messaging-container">
-      <div className="user-messaging-layout">
-        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
+      {/* User Sidebar: navigation for messaging sections */}
+      <UserSidebar activeTab="chat" week={week} trimester={trimester} />
+      <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+        {/* User Navbar: top navigation bar */}
+        <UserNavbar />
         <div className="user-messaging-content">
-          <UserNavbar user={user} />
-          
           <div className="user-chat-container">
             {/* Doctor List Sidebar */}
             <div className="user-doctor-list">
@@ -237,4 +265,4 @@ const UserMessagingPage = () => {
   );
 };
 
-export default UserMessagingPage; 
+export default UserMessagingPage;
