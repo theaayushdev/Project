@@ -23,6 +23,7 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.2.0",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.1.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -41,5 +42,4 @@
     "tailwindcss": "^4.1.5",
     "vite": "^6.0.5"
   }
-  
 }
