@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserNavbar from "./Usernavbar"; // Top navigation bar for user
 import UserSidebar from "./usersidebar"; // Sidebar navigation for user
+import ChatModal from "../components/Chat/ChatModal"; // Chat modal component
 import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target, Users } from "lucide-react";
 import "../cssonly/pregnancydashboard.css";
 import { useLocation } from 'react-router-dom';
@@ -43,6 +44,7 @@ function UserPregnancyDashboard() {
   const [dailySteps, setDailySteps] = useState(6432);
   const [heartRate, setHeartRate] = useState(78);
   const [doctors, setDoctors] = useState([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -245,7 +247,12 @@ function UserPregnancyDashboard() {
   if (section === 'doctors') {
     return (
       <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
-        <UserSidebar week={week} trimester={trimester} activeTab="doctors" />
+        <UserSidebar 
+        week={week} 
+        trimester={trimester} 
+        activeTab="doctors" 
+        onChatOpen={() => setIsChatOpen(true)}
+      />
         <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
           <UserNavbar user={user} />
           
@@ -338,7 +345,12 @@ function UserPregnancyDashboard() {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
       {/* User Sidebar: navigation for dashboard sections */}
-      <UserSidebar week={week} trimester={trimester} activeTab="dashboard" />
+      <UserSidebar 
+        week={week} 
+        trimester={trimester} 
+        activeTab="dashboard" 
+        onChatOpen={() => setIsChatOpen(true)}
+      />
       <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
         {/* User Navbar: top navigation bar */}
         <UserNavbar user={user} />
@@ -488,6 +500,14 @@ function UserPregnancyDashboard() {
           </div>
         </div>
       </div>
+      
+      {/* Chat Modal */}
+      <ChatModal 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        userType="user"
+        userId={user?.patient_id}
+      />
     </div>
   );
 }
