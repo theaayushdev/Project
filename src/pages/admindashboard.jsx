@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Users, UserCheck, Calendar, MessageSquare, Activity, TrendingUp, Eye, BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon } from 'lucide-react';
+import { Users, UserCheck, Calendar, MessageSquare, Activity, TrendingUp, Eye, BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon, UserPlus } from 'lucide-react';
+import AddDoctorForm from './AddDoctorform';
+import '../cssonly/admindashboard.css';
 
 // Sidebar Component
 const AdminSidebar = ({ activeSection, setActiveSection }) => {
@@ -9,6 +11,7 @@ const AdminSidebar = ({ activeSection, setActiveSection }) => {
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'users', label: 'User Analytics', icon: Users },
     { id: 'doctors', label: 'Doctor Analytics', icon: UserCheck },
+    { id: 'add-doctor', label: 'Add Doctor', icon: UserPlus },
     { id: 'appointments', label: 'Appointments', icon: Calendar },
     { id: 'pregnancy', label: 'Pregnancy Data', icon: Activity },
     { id: 'reports', label: 'Reports', icon: TrendingUp }
@@ -503,6 +506,12 @@ const AdminDashboard = () => {
     </div>
   );
 
+  const renderAddDoctor = () => (
+    <div className="add-doctor-section">
+      <AddDoctorForm />
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="admin-dashboard">
@@ -521,15 +530,18 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       <AdminSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
       <div className="main-content">
-        <div className="content-header">
-          <h1>Admin Dashboard</h1>
-          <p>Comprehensive analytics and management system</p>
-        </div>
+        {activeSection !== 'add-doctor' && (
+          <div className="content-header">
+            <h1>Admin Dashboard</h1>
+            <p>Comprehensive analytics and management system</p>
+          </div>
+        )}
 
         <div className="dashboard-content">
           {activeSection === 'overview' && renderOverview()}
           {activeSection === 'users' && renderUserAnalytics()}
           {activeSection === 'doctors' && renderDoctorAnalytics()}
+          {activeSection === 'add-doctor' && renderAddDoctor()}
           {activeSection === 'appointments' && renderAppointments()}
           {activeSection === 'pregnancy' && renderPregnancyData()}
           {activeSection === 'reports' && renderReports()}
@@ -618,6 +630,11 @@ const AdminDashboard = () => {
         .content-header p {
           color: #6b7280;
           margin: 0;
+        }
+
+        .add-doctor-section {
+          padding: 0;
+          margin: -2rem;
         }
 
         .loading-container {

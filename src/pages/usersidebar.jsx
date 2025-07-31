@@ -8,6 +8,7 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
     { id: 'appointments', icon: Calendar, label: 'Appointments' },
+    { id: 'doctors', icon: Activity, label: 'Doctors' },
     { id: 'health', icon: Activity, label: 'Health Tracker' },
     { id: 'baby', icon: Baby, label: 'Baby Growth' },
     { id: 'articles', icon: BookOpen, label: 'Articles' },
@@ -21,6 +22,8 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
       navigate('/appointment');
     } else if (id === 'dashboard') {
       navigate('/pregnancydashboard');
+    } else if (id === 'doctors') {
+      navigate('/pregnancydashboard?section=doctors');
     } else if (id === 'reports') {
       navigate('/reports');
     } else if (id === 'chat') {

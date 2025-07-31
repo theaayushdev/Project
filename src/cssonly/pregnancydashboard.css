@@ -48,6 +48,212 @@
   margin-bottom: 0.5rem;
 }
 
+/* Doctors Section Styles */
+.pregnancy-doctors-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.pregnancy-doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.pregnancy-doctor-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.pregnancy-doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+
+.pregnancy-doctor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.pregnancy-doctor-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #f1f5f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pregnancy-doctor-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fef3c7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.pregnancy-doctor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pregnancy-doctor-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.pregnancy-doctor-specialty {
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin: 0;
+  background: #eef2ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.pregnancy-doctor-department {
+  color: #059669;
+  font-weight: 500;
+  font-size: 0.75rem;
+  margin: 0;
+  background: #ecfdf5;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pregnancy-doctor-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.pregnancy-doctor-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.pregnancy-doctor-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pregnancy-doctor-value {
+  font-size: 1.125rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.pregnancy-doctor-availability {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f0fdf4;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.pregnancy-availability-indicator {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pregnancy-doctor-book-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.pregnancy-doctor-book-btn:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.pregnancy-doctor-book-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments for doctors section */
+@media (max-width: 1024px) {
+  .pregnancy-doctors-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .pregnancy-doctors-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pregnancy-doctor-card {
+    padding: 1rem;
+  }
+  
+  .pregnancy-doctor-details {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
 .pregnancy-due-date {
   color: #718096;
   font-size: 1rem;
