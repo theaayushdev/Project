@@ -13,7 +13,7 @@ import Nutrition from "./pages/nutritionsection";
 import Preg from "./pages/preg";
 import AdminDashboard from "./pages/admindashboard";
 import AddDoctorForm from "./pages/AddDoctorform"; 
-import DoctorSidebar from "./pages/doctordashboard";
+import DoctorDashboardApp from "./pages/doctordashboard";
 import MoodTracker from "./pages/moodtracker";
 import HydrationTracker from "./pages/hydration";
 import PregnancyDashboard from "./pages/pregnancydashboard";
@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
         <Route path="/AddDoctorform" element={<AddDoctorForm />} /> 
-        <Route path="/doctordashboard" element={<DoctorSidebar />} />
+        <Route path="/doctordashboard" element={<DoctorDashboardApp />} />
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
         <Route path="/appointment" element={<AppointmentForm />} />
         <Route path="/mood" element={<MoodTracker />} /> 

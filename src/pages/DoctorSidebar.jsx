@@ -1,69 +1,126 @@
 import React from 'react';
-import '../cssonly/doctordashboard.css';
+import { useNavigate } from 'react-router-dom';
 
-const DoctorSidebar = ({ onSelect, activeSection }) => {
+const DoctorSidebar = ({ onSelect, activeSection, doctor }) => {
+  const navigate = useNavigate();
+
+  // Navigation menu items
+  const menuItems = [
+    { 
+      id: 'dashboard', 
+      icon: '🏥', 
+      label: 'Dashboard',
+      description: 'Overview & Analytics'
+    },
+    { 
+      id: 'appointments', 
+      icon: '📅', 
+      label: 'Appointments',
+      description: 'Manage Schedule'
+    },
+    { 
+      id: 'patients', 
+      icon: '👥', 
+      label: 'Patients',
+      description: 'Patient List'
+    },
+    { 
+      id: 'messages', 
+      icon: '💬', 
+      label: 'Messages',
+      description: 'Patient Communication'
+    },
+    { 
+      id: 'messaging', 
+      icon: '💬', 
+      label: 'Chat',
+      description: 'Real-time Chat'
+    },
+    { 
+      id: 'records', 
+      icon: '📋', 
+      label: 'Records',
+      description: 'Medical Records'
+    },
+    { 
+      id: 'profile', 
+      icon: '👨‍⚕️', 
+      label: 'Profile',
+      description: 'Account Settings'
+    }
+  ];
+
+  const handleSectionSelect = (section) => {
+    onSelect(section);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('doctorData');
+    navigate('/doctorlogin');
+  };
+
   return (
-    <div className="doc1-sidebar">
-      <div className="doc1-sidebar-logo">
-        <i className="fa fa-user-md"></i>
-        <h1>Pregnify</h1>
+    <div className="doctor-sidebar">
+      {/* Logo and Brand */}
+      <div className="doctor-sidebar-logo">
+        <div className="doctor-sidebar-logo-icon">
+          <span>🏥</span>
+        </div>
+        <div>
+          <h1>Pregnify</h1>
+          <p>Doctor Portal</p>
+        </div>
       </div>
-      <h2 className="doc1-sidebar-title">Hi, Doctor</h2>
-      <nav>
-        <ul className="doc1-sidebar-nav">
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'dashboard' ? 'active' : ''}`} 
-            onClick={() => onSelect('dashboard')}
-          >
-            <i className="fa fa-dashboard"></i>
-            <span>Dashboard</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'appointments' ? 'active' : ''}`} 
-            onClick={() => onSelect('appointments')}
-          >
-            <i className="fa fa-calendar"></i>
-            <span>My Appointments</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'records' ? 'active' : ''}`} 
-            onClick={() => onSelect('records')}
-          >
-            <i className="fa fa-file-medical"></i>
-            <span>Medical Records</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'messages' ? 'active' : ''}`} 
-            onClick={() => onSelect('messages')}
-          >
-            <i className="fa fa-comments"></i>
-            <span>Messages</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'messaging' ? 'active' : ''}`} 
-            onClick={() => onSelect('messaging')}
-          >
-            <i className="fa fa-envelope"></i>
-            <span>Messaging</span>
-          </li>
-          <li 
-            className={`doc1-sidebar-link ${activeSection === 'profile' ? 'active' : ''}`} 
-            onClick={() => onSelect('profile')}
-          >
-            <i className="fa fa-cog"></i>
-            <span>Profile</span>
-          </li>
-          <li 
-            className="doc1-sidebar-link" 
-            onClick={() => onSelect('userhome')}
-          >
-            <i className="fa fa-sign-out"></i>
-            <span>Logout</span>
-          </li>
+
+      {/* Doctor Info */}
+      {doctor && (
+        <div className="doctor-sidebar-profile">
+          <div className="doctor-avatar">
+            {doctor.firstname?.[0]}{doctor.lastname?.[0]}
+          </div>
+          <div className="doctor-profile-info">
+            <p className="doctor-profile-name">
+              Dr. {doctor.firstname} {doctor.lastname}
+            </p>
+            <p className="doctor-profile-specialty">
+              {doctor.specialty}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Menu */}
+      <nav className="doctor-sidebar-nav">
+        <ul>
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => handleSectionSelect(item.id)}
+                className={`doctor-sidebar-link ${activeSection === item.id ? 'active' : ''}`}
+              >
+                <span className="doctor-sidebar-icon">{item.icon}</span>
+                <div className="doctor-sidebar-text">
+                  <span className="doctor-sidebar-label">{item.label}</span>
+                  <span className="doctor-sidebar-description">{item.description}</span>
+                </div>
+              </button>
+            </li>
+          ))}
         </ul>
       </nav>
-      <div className="doc1-sidebar-footer">
-       Pregnify v2.5
+
+      {/* Footer Actions */}
+      <div className="doctor-sidebar-footer">
+        <button
+          onClick={handleLogout}
+          className="doctor-sidebar-link doctor-sidebar-logout"
+        >
+          <span className="doctor-sidebar-icon">🚪</span>
+          <div className="doctor-sidebar-text">
+            <span className="doctor-sidebar-label">Logout</span>
+            <span className="doctor-sidebar-description">Sign out</span>
+          </div>
+        </button>
       </div>
     </div>
   );
