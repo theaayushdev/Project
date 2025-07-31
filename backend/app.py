@@ -19,6 +19,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Create upload directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Create chat images upload directory
+CHAT_UPLOAD_FOLDER = 'uploads/chat_images'
+os.makedirs(CHAT_UPLOAD_FOLDER, exist_ok=True)
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -42,6 +46,11 @@ def home():
 @app.route('/uploads/doctor_photos/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# Route to serve uploaded chat images
+@app.route('/uploads/chat_images/<filename>')
+def chat_image_file(filename):
+    return send_from_directory(CHAT_UPLOAD_FOLDER, filename)
 
 @app.route('/doctor/<int:doctor_id>', methods=['GET'])
 def get_doctor(doctor_id):
@@ -340,24 +349,6 @@ def admin_login():
         return jsonify({'error': 'Invalid username or password'}), 401
 
 # Messaging endpoints
-@app.route('/send-message', methods=['POST'])
-def send_message():
-    data = request.get_json()
-    try:
-        # Ensure timestamp is always set
-        new_message = Message(
-            sender_id=data['sender_id'],
-            receiver_id=data['receiver_id'],
-            sender_type=data['sender_type'],
-            receiver_type=data['receiver_type'],
-            content=data['content'],
-            timestamp=datetime.utcnow()
-        )
-        db.session.add(new_message)
-        db.session.commit()
-        return jsonify({'message': 'Message sent successfully'}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/get-messages/<sender_type>/<int:sender_id>/<receiver_type>/<int:receiver_id>', methods=['GET'])
 def get_messages(sender_type, sender_id, receiver_type, receiver_id):
@@ -389,54 +380,7 @@ def get_messages(sender_type, sender_id, receiver_type, receiver_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/get-conversations/<user_type>/<int:user_id>', methods=['GET'])
-def get_conversations(user_type, user_id):
-    try:
-        # Get all unique conversations for a user
-        if user_type == 'user':
-            conversations = db.session.query(Message).filter(
-                (Message.sender_type == 'user') & (Message.sender_id == user_id) |
-                (Message.receiver_type == 'user') & (Message.receiver_id == user_id)
-            ).all()
-        else:
-            conversations = db.session.query(Message).filter(
-                (Message.sender_type == 'doctor') & (Message.sender_id == user_id) |
-                (Message.receiver_type == 'doctor') & (Message.receiver_id == user_id)
-            ).all()
-        
-        # Extract unique conversation partners
-        partners = set()
-        for msg in conversations:
-            if msg.sender_type == user_type and msg.sender_id == user_id:
-                partners.add((msg.receiver_type, msg.receiver_id))
-            else:
-                partners.add((msg.sender_type, msg.sender_id))
-        
-        result = []
-        for partner_type, partner_id in partners:
-            if partner_type == 'user':
-                partner = User.query.get(partner_id)
-                if partner:
-                    result.append({
-                        'id': partner.patient_id,
-                        'name': f"{partner.firstname} {partner.lastname}",
-                        'type': 'user',
-                        'avatar': partner.firstname[0] + partner.lastname[0]
-                    })
-            else:
-                partner = Doctor.query.get(partner_id)
-                if partner:
-                    result.append({
-                        'id': partner.id,
-                        'name': f"Dr. {partner.firstname} {partner.lastname}",
-                        'type': 'doctor',
-                        'specialty': partner.specialty,
-                        'avatar': partner.firstname[0] + partner.lastname[0]
-                    })
-        
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/user/dashboard', methods=['GET'])
 def user_dashboard():
@@ -650,6 +594,207 @@ def get_doctor_notifications(doctor_id):
                 })
         
         return jsonify(notifications), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ============= CHAT API ENDPOINTS =============
+
+@app.route('/chat/conversations/<user_type>/<int:user_id>', methods=['GET'])
+def get_chat_conversations(user_type, user_id):
+    """Get all conversations for a user or doctor"""
+    try:
+        if user_type == 'user':
+            # Get all doctors this user has chatted with
+            conversations = db.session.query(Message.receiver_id, Doctor.firstname, Doctor.lastname, Doctor.profile_photo, Doctor.specialty)\
+                .join(Doctor, Message.receiver_id == Doctor.id)\
+                .filter(Message.sender_id == user_id, Message.sender_type == 'user', Message.receiver_type == 'doctor')\
+                .distinct().all()
+            
+            # Also get doctors who have sent messages to this user
+            incoming_conversations = db.session.query(Message.sender_id, Doctor.firstname, Doctor.lastname, Doctor.profile_photo, Doctor.specialty)\
+                .join(Doctor, Message.sender_id == Doctor.id)\
+                .filter(Message.receiver_id == user_id, Message.receiver_type == 'user', Message.sender_type == 'doctor')\
+                .distinct().all()
+            
+        else:  # doctor
+            # Get all users this doctor has chatted with
+            conversations = db.session.query(Message.receiver_id, User.firstname, User.lastname, User.email)\
+                .join(User, Message.receiver_id == User.patient_id)\
+                .filter(Message.sender_id == user_id, Message.sender_type == 'doctor', Message.receiver_type == 'user')\
+                .distinct().all()
+            
+            # Also get users who have sent messages to this doctor
+            incoming_conversations = db.session.query(Message.sender_id, User.firstname, User.lastname, User.email)\
+                .join(User, Message.sender_id == User.patient_id)\
+                .filter(Message.receiver_id == user_id, Message.receiver_type == 'doctor', Message.sender_type == 'user')\
+                .distinct().all()
+
+        # Combine and deduplicate conversations
+        all_conversations = {}
+        
+        for conv in conversations + incoming_conversations:
+            conv_id = conv[0]
+            if conv_id not in all_conversations:
+                if user_type == 'user':
+                    all_conversations[conv_id] = {
+                        'id': conv_id,
+                        'name': f"Dr. {conv[1]} {conv[2]}",
+                        'avatar': conv[3] or "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=50&h=50&fit=crop&crop=face",
+                        'specialty': conv[4] if len(conv) > 4 else '',
+                        'type': 'doctor'
+                    }
+                else:
+                    all_conversations[conv_id] = {
+                        'id': conv_id,
+                        'name': f"{conv[1]} {conv[2]}",
+                        'avatar': "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face",
+                        'email': conv[3] if len(conv) > 3 else '',
+                        'type': 'user'
+                    }
+        
+        # Get last message for each conversation
+        for conv_id, conv in all_conversations.items():
+            if user_type == 'user':
+                last_message = Message.query.filter(
+                    or_(
+                        and_(Message.sender_id == user_id, Message.receiver_id == conv_id),
+                        and_(Message.sender_id == conv_id, Message.receiver_id == user_id)
+                    )
+                ).order_by(Message.timestamp.desc()).first()
+            else:
+                last_message = Message.query.filter(
+                    or_(
+                        and_(Message.sender_id == user_id, Message.receiver_id == conv_id),
+                        and_(Message.sender_id == conv_id, Message.receiver_id == user_id)
+                    )
+                ).order_by(Message.timestamp.desc()).first()
+            
+            if last_message:
+                conv['lastMessage'] = last_message.content or 'Image'
+                conv['lastMessageTime'] = last_message.timestamp.strftime('%H:%M')
+                conv['unreadCount'] = 0  # We can implement this later
+        
+        return jsonify(list(all_conversations.values())), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/chat/messages', methods=['GET'])
+def get_chat_messages():
+    """Get messages between two users"""
+    try:
+        sender_id = int(request.args.get('sender_id'))
+        receiver_id = int(request.args.get('receiver_id'))
+        sender_type = request.args.get('sender_type')
+        receiver_type = request.args.get('receiver_type')
+        
+        messages = Message.query.filter(
+            or_(
+                and_(Message.sender_id == sender_id, Message.receiver_id == receiver_id, 
+                     Message.sender_type == sender_type, Message.receiver_type == receiver_type),
+                and_(Message.sender_id == receiver_id, Message.receiver_id == sender_id,
+                     Message.sender_type == receiver_type, Message.receiver_type == sender_type)
+            )
+        ).order_by(Message.timestamp.asc()).all()
+        
+        # Mark messages as read
+        Message.query.filter(
+            Message.sender_id == receiver_id,
+            Message.receiver_id == sender_id,
+            Message.sender_type == receiver_type,
+            Message.receiver_type == sender_type,
+            Message.is_read == False
+        ).update({'is_read': True})
+        db.session.commit()
+        
+        message_list = []
+        for msg in messages:
+            message_list.append({
+                'id': msg.id,
+                'content': msg.content,
+                'image_url': msg.image_url,
+                'message_type': msg.message_type,
+                'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                'sender_id': msg.sender_id,
+                'sender_type': msg.sender_type,
+                'is_own': msg.sender_id == sender_id and msg.sender_type == sender_type
+            })
+        
+        return jsonify(message_list), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/chat/send', methods=['POST'])
+def send_message():
+    """Send a new message"""
+    try:
+        # Handle image upload if present
+        image_url = None
+        message_type = 'text'
+        
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
+                file_path = os.path.join(CHAT_UPLOAD_FOLDER, filename)
+                file.save(file_path)
+                image_url = f"http://127.0.0.1:5000/uploads/chat_images/{filename}"
+                message_type = 'image'
+        
+        # Get form data
+        content = request.form.get('content', '').strip()
+        sender_id = int(request.form.get('sender_id'))
+        receiver_id = int(request.form.get('receiver_id'))
+        sender_type = request.form.get('sender_type')
+        receiver_type = request.form.get('receiver_type')
+        
+        # Determine message type
+        if content and image_url:
+            message_type = 'mixed'
+        elif not content and not image_url:
+            return jsonify({'error': 'Message cannot be empty'}), 400
+        
+        # Create new message
+        message = Message(
+            sender_id=sender_id,
+            receiver_id=receiver_id,
+            sender_type=sender_type,
+            receiver_type=receiver_type,
+            content=content if content else None,
+            image_url=image_url,
+            message_type=message_type
+        )
+        
+        db.session.add(message)
+        db.session.commit()
+        
+        return jsonify({
+            'id': message.id,
+            'content': message.content,
+            'image_url': message.image_url,
+            'message_type': message.message_type,
+            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'sender_id': message.sender_id,
+            'sender_type': message.sender_type
+        }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/chat/doctors', methods=['GET'])
+def get_available_doctors():
+    """Get all available doctors for users to start new conversations"""
+    try:
+        doctors = Doctor.query.filter_by(status='on').all()
+        doctor_list = []
+        for doctor in doctors:
+            doctor_list.append({
+                'id': doctor.id,
+                'name': f"Dr. {doctor.firstname} {doctor.lastname}",
+                'specialty': doctor.specialty,
+                'department': doctor.department,
+                'avatar': doctor.profile_photo or "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=50&h=50&fit=crop&crop=face"
+            })
+        return jsonify(doctor_list), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

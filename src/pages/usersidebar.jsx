@@ -3,7 +3,7 @@ import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Sett
 import "../cssonly/usersidebar.css";
 import { useNavigate } from "react-router-dom";
 
-const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
+const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen }) => {
   const navigate = useNavigate();
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
@@ -27,7 +27,12 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
     } else if (id === 'reports') {
       navigate('/reports');
     } else if (id === 'chat') {
-      navigate('/user-messaging');
+      // Open chat modal instead of navigating
+      if (onChatOpen) {
+        onChatOpen();
+      } else {
+        navigate('/user-messaging');
+      }
     }
     // Add more navigation as needed
   };

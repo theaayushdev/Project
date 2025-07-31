@@ -172,9 +172,9 @@ const DoctorDashboardApp = () => {
     if (!doctor || !selectedPatient) return;
     const fetchChatMessages = async () => {
       try {
-        // Use the same endpoint and order as the user side, but always use user/doctor as sender/receiver
+        // Use the new chat endpoints
         const response = await fetch(
-          `http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`
+          `http://127.0.0.1:5000/chat/messages?sender_id=${doctor.id}&receiver_id=${selectedPatient.id}&sender_type=doctor&receiver_type=user`
         );
         if (response.ok) {
           const data = await response.json();
@@ -206,23 +206,23 @@ const DoctorDashboardApp = () => {
 
     setSendingMessage(true);
     try {
-      const response = await fetch('http://127.0.0.1:5000/send-message', {
+      const formData = new FormData();
+      formData.append('content', newMessage.trim());
+      formData.append('sender_id', doctor.id);
+      formData.append('receiver_id', selectedPatient.id);
+      formData.append('sender_type', 'doctor');
+      formData.append('receiver_type', 'user');
+
+      const response = await fetch('http://127.0.0.1:5000/chat/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sender_id: doctor.id,
-          receiver_id: selectedPatient.id,
-          sender_type: 'doctor',
-          receiver_type: 'user',
-          content: newMessage.trim()
-        })
+        body: formData
       });
 
       if (response.ok) {
         setNewMessage('');
         // Immediately fetch messages after sending
         const messagesResponse = await fetch(
-          `http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`
+          `http://127.0.0.1:5000/chat/messages?sender_id=${doctor.id}&receiver_id=${selectedPatient.id}&sender_type=doctor&receiver_type=user`
         );
         if (messagesResponse.ok) {
           const data = await messagesResponse.json();
