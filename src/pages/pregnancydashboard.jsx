@@ -273,29 +273,28 @@ function UserPregnancyDashboard() {
                   const doctorAge = doctor.age;
                   const doctorExperience = doctor.years_of_experience || doctor.yearsOfExperience;
                   const doctorPhoto = doctor.profile_photo || doctor.profilePhoto || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face";
-                  const doctorRating = doctor.rating || 4.8;
-                  const availableSlots = doctor.availableSlots || Math.floor(Math.random() * 15) + 5;
+                  const doctorEmail = doctor.email;
+                  const doctorPhone = doctor.phone_number;
 
                   return (
                     <div key={doctor.id} className="pregnancy-doctor-card">
                       <div className="pregnancy-doctor-header">
-                        <img 
-                          src={doctorPhoto} 
-                          alt={doctorName}
-                          className="pregnancy-doctor-photo"
-                          onError={(e) => {
-                            e.target.src = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face";
-                          }}
-                        />
-                        <div className="pregnancy-doctor-rating">
-                          <Star size={14} fill="#F59E0B" color="#F59E0B" />
-                          <span>{doctorRating}</span>
+                        <div className="pregnancy-doctor-photo-container">
+                          <img 
+                            src={doctorPhoto} 
+                            alt={doctorName}
+                            className="pregnancy-doctor-photo"
+                            onError={(e) => {
+                              e.target.src = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face";
+                            }}
+                          />
                         </div>
                       </div>
                       <div className="pregnancy-doctor-info">
                         <h4 className="pregnancy-doctor-name">{doctorName}</h4>
                         <p className="pregnancy-doctor-specialty">{doctor.specialty}</p>
                         <p className="pregnancy-doctor-department">{doctor.department}</p>
+                        
                         <div className="pregnancy-doctor-details">
                           <div className="pregnancy-doctor-detail">
                             <span className="pregnancy-doctor-label">Age:</span>
@@ -305,11 +304,18 @@ function UserPregnancyDashboard() {
                             <span className="pregnancy-doctor-label">Experience:</span>
                             <span className="pregnancy-doctor-value">{doctorExperience ? `${doctorExperience} years` : 'N/A'}</span>
                           </div>
+                          <div className="pregnancy-doctor-detail">
+                            <span className="pregnancy-doctor-label">Phone:</span>
+                            <span className="pregnancy-doctor-value">{doctorPhone || 'N/A'}</span>
+                          </div>
+                          <div className="pregnancy-doctor-detail">
+                            <span className="pregnancy-doctor-label">Email:</span>
+                            <span className="pregnancy-doctor-value" title={doctorEmail}>
+                              {doctorEmail ? (doctorEmail.length > 20 ? doctorEmail.substring(0, 20) + '...' : doctorEmail) : 'N/A'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="pregnancy-doctor-availability">
-                          <span className="pregnancy-availability-indicator"></span>
-                          <span>{availableSlots} slots available</span>
-                        </div>
+                        
                         <button 
                           className="pregnancy-doctor-book-btn"
                           onClick={() => window.location.href = `/appointment?doctorId=${doctor.id}&doctorName=${encodeURIComponent(doctorName)}`}

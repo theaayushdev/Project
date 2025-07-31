@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
@@ -37,6 +37,11 @@ migrate = Migrate(app, db)
 @app.route('/')
 def home():
     return "Welcome to Pregnify!"
+
+# Route to serve uploaded doctor photos
+@app.route('/uploads/doctor_photos/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/doctor/<int:doctor_id>', methods=['GET'])
 def get_doctor(doctor_id):
@@ -114,7 +119,8 @@ def add_doctor():
                 filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-                profile_photo_path = file_path
+                # Store URL path instead of file path
+                profile_photo_path = f"http://127.0.0.1:5000/uploads/doctor_photos/{filename}"
 
         # Get form data
         doctor = Doctor(

@@ -81,30 +81,31 @@
 
 .pregnancy-doctor-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
-.pregnancy-doctor-photo {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #f1f5f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.pregnancy-doctor-photo-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.pregnancy-doctor-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: #fef3c7;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #92400e;
+.pregnancy-doctor-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.pregnancy-doctor-photo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .pregnancy-doctor-info {
@@ -149,10 +150,11 @@
 .pregnancy-doctor-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.75rem;
   background: #f8fafc;
   padding: 1rem;
   border-radius: 8px;
+  margin: 1rem 0;
 }
 
 .pregnancy-doctor-detail {
@@ -160,20 +162,25 @@
   flex-direction: column;
   gap: 0.25rem;
   text-align: center;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
 }
 
 .pregnancy-doctor-label {
   font-size: 0.75rem;
   color: #64748b;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .pregnancy-doctor-value {
-  font-size: 1.125rem;
+  font-size: 0.9rem;
   color: #1e293b;
-  font-weight: 700;
+  font-weight: 600;
+  word-break: break-word;
 }
 
 .pregnancy-doctor-availability {
@@ -480,6 +487,15 @@
   .pregnancy-health-stats {
     grid-template-columns: 1fr;
   }
+
+  .pregnancy-doctors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pregnancy-doctor-details {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -489,5 +505,18 @@
   
   .pregnancy-health-stat-card {
     padding: 1rem;
+  }
+
+  .pregnancy-doctor-photo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .pregnancy-doctor-details {
+    padding: 0.75rem;
+  }
+
+  .pregnancy-doctor-value {
+    font-size: 0.8rem;
   }
 }
