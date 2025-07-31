@@ -1,34 +1,36 @@
-/* Reset */
-* {
+/* Pregnancy Dashboard CSS - Specific to Pregnancy Dashboard */
+
+/* Reset - Specific to Pregnancy Dashboard */
+.pregnancy-dashboard-container * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.dashboard-container {
+.pregnancy-dashboard-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Dashboard Layout */
-.dashboard-layout {
+.pregnancy-dashboard-layout {
   display: flex;
   min-height: calc(100vh - 80px);
 }
 
 /* Main Content */
-.dashboard-content {
+.pregnancy-dashboard-content {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
 }
 
-.dashboard-header {
+.pregnancy-dashboard-header {
   margin-bottom: 2rem;
 }
 
-.header-content {
+.pregnancy-header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,24 +41,24 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
-.welcome-section h1 {
+.pregnancy-welcome-section h1 {
   font-size: 2rem;
   font-weight: 700;
   color: #2D3748;
   margin-bottom: 0.5rem;
 }
 
-.due-date {
+.pregnancy-due-date {
   color: #718096;
   font-size: 1rem;
 }
 
-.header-stats {
+.pregnancy-header-stats {
   display: flex;
   gap: 2rem;
 }
 
-.stat-item {
+.pregnancy-stat-item {
   text-align: center;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.5);
@@ -64,26 +66,26 @@
   min-width: 80px;
 }
 
-.stat-number {
+.pregnancy-stat-number {
   display: block;
   font-size: 2rem;
   font-weight: 700;
   color: #4ECDC4;
 }
 
-.stat-label {
+.pregnancy-stat-label {
   font-size: 0.875rem;
   color: #718096;
 }
 
 /* Dashboard Grid */
-.dashboard-grid {
+.pregnancy-dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-.widget {
+.pregnancy-widget {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -92,139 +94,194 @@
   transition: all 0.3s ease;
 }
 
-.widget:hover {
+.pregnancy-widget:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
-.widget-header {
+.pregnancy-widget-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
 }
 
-/* Fix Buttons and Actions */
-.add-btn,
-.view-all-btn,
-.appt-action,
-.action-card,
-.water-glass {
-  cursor: pointer;
-  background-color: var(--accent-color, #667eea);
-  border: none;
-  color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: background-color 0.3s ease;
-}
-
-.add-btn:hover,
-.view-all-btn:hover,
-.appt-action:hover,
-.action-card:hover,
-.water-glass:hover {
-  background-color: #5a67d8;
-}
-
-.action-card {
-  flex-direction: column;
-  padding: 1rem;
-  font-size: 0.9rem;
-}
-
-.health-stat-card {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 12px;
-  background-color: var(--accent-color, #edf2f7);
-  color: white;
-}
-
-.health-stat-card .stat-icon {
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem;
-  border-radius: 50%;
-}
-
-.health-stat-card .stat-info h4 {
-  margin: 0;
-  font-size: 1rem;
-  color: white;
-}
-
-.health-stat-card .stat-value {
+.pregnancy-widget-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
-}
-
-.health-stat-card .stat-change {
-  font-size: 0.75rem;
-  color: #f7fafc;
-  opacity: 0.9;
-}
-
-.health-stat-card .stat-change.up {
-  color: #f0fff4;
-}
-
-.health-stat-card .stat-change.neutral {
-  color: #e2e8f0;
-}
-
-.milestone.completed .milestone-marker {
-  background-color: gold;
-  color: white;
-  padding: 0.2rem;
-  border-radius: 50%;
-}
-
-.water-tracker {
-  display: flex;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-}
-
-.water-glass {
-  width: 16px;
-  height: 32px;
-  background-color: #e2e8f0;
-  border-radius: 4px;
-}
-
-.water-glass.filled {
-  background-color: #4ECDC4;
-}
-
-.tip-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background-color: #f7fafc;
-  padding: 1rem;
-  border-radius: 12px;
-}
-
-.tip-icon {
-  font-size: 1.5rem;
-}
-
-.tip-content h4 {
-  margin: 0;
-  font-size: 1rem;
   color: #2D3748;
 }
 
-.tip-content p {
-  margin: 0;
-  color: #4A5568;
+.pregnancy-widget-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Health Stats */
+.pregnancy-health-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.pregnancy-health-stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-info h4 {
   font-size: 0.875rem;
+  color: #718096;
+  margin-bottom: 0.25rem;
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2D3748;
+  margin-bottom: 0.25rem;
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-change {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-change.up {
+  color: #48BB78;
+}
+
+.pregnancy-health-stat-card .pregnancy-stat-change.neutral {
+  color: #718096;
+}
+
+/* Milestones */
+.pregnancy-milestone {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.pregnancy-milestone.completed .pregnancy-milestone-marker {
+  background-color: #48BB78;
+}
+
+.pregnancy-milestone-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+}
+
+/* Water Tracker */
+.pregnancy-water-tracker {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pregnancy-water-glass {
+  width: 32px;
+  height: 40px;
+  background: #E2E8F0;
+  border-radius: 4px 4px 8px 8px;
+  transition: all 0.3s ease;
+}
+
+.pregnancy-water-glass.filled {
+  background: #4ECDC4;
+}
+
+/* Tips */
+.pregnancy-tip-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.pregnancy-tip-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pregnancy-tip-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.pregnancy-tip-content p {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pregnancy-dashboard-content {
+    padding: 1rem;
+  }
+  
+  .pregnancy-header-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .pregnancy-header-stats {
+    justify-content: center;
+  }
+  
+  .pregnancy-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pregnancy-health-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .pregnancy-widget {
+    padding: 1rem;
+  }
+  
+  .pregnancy-health-stat-card {
+    padding: 1rem;
+  }
 }

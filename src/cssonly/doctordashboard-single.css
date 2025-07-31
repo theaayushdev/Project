@@ -1,0 +1,1177 @@
+/* Single Page Doctor Dashboard CSS - Unique Class Names */
+
+/* Reset and Base */
+.doctordas-app {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+}
+
+.doctordas-app * {
+  box-sizing: border-box;
+}
+
+/* Sidebar */
+.doctordas-sidebar {
+  width: 260px;
+  background: white;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+  left: 0;
+  top: 0;
+}
+
+.doctordas-sidebar-logo {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doctordas-sidebar-logo-icon {
+  font-size: 1.5rem;
+  color: #3b82f6;
+  background: #dbeafe;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctordas-sidebar-logo h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-sidebar-logo p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-sidebar-profile {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.doctordas-profile-info {
+  flex: 1;
+}
+
+.doctordas-profile-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doctordas-profile-specialty {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doctordas-sidebar-nav {
+  flex: 1;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+}
+
+.doctordas-sidebar-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.doctordas-sidebar-link {
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.doctordas-sidebar-link:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.doctordas-sidebar-link.active {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border-right: 3px solid #3b82f6;
+}
+
+.doctordas-sidebar-link.doctordas-sidebar-logout:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.doctordas-sidebar-link span:first-child {
+  width: 1.25rem;
+  text-align: center;
+  font-size: 1.125rem;
+}
+
+.doctordas-sidebar-link div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.doctordas-sidebar-link div span:first-child {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.doctordas-sidebar-link div span:last-child {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.125rem;
+}
+
+.doctordas-sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Main Content */
+.doctordas-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+}
+
+.doctordas-navbar {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.doctordas-navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  flex: 1;
+  max-width: 400px;
+}
+
+.doctordas-navbar-search input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  color: #1e293b;
+}
+
+.doctordas-navbar-search input::placeholder {
+  color: #94a3b8;
+}
+
+.doctordas-navbar-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doctordas-navbar-time {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.doctordas-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #f8fafc;
+}
+
+/* Alerts */
+.doctordas-alert {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.doctordas-alert-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Dashboard */
+.doctordas-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.doctordas-welcome {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doctordas-welcome h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-welcome p {
+  color: #64748b;
+  margin: 0 0 1rem 0;
+}
+
+.doctordas-welcome-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.doctordas-status-online {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #059669;
+}
+
+/* Stats Grid */
+.doctordas-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.doctordas-stat-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.doctordas-stat-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.doctordas-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  background: #dbeafe;
+  color: #3b82f6;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.doctordas-stat-content {
+  flex: 1;
+}
+
+.doctordas-stat-content h3 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-stat-content p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-stat-content span {
+  font-size: 0.75rem;
+  color: #059669;
+  font-weight: 500;
+}
+
+/* Grid Layout */
+.doctordas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Cards */
+.doctordas-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.doctordas-card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doctordas-card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-card-header span {
+  font-size: 0.875rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.doctordas-card-content {
+  padding: 1.5rem;
+}
+
+/* Avatar */
+.doctordas-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.doctordas-avatar-large {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.25rem;
+}
+
+/* Patient Items */
+.doctordas-patient-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.doctordas-patient-item:last-child {
+  border-bottom: none;
+}
+
+.doctordas-patient-info {
+  flex: 1;
+}
+
+.doctordas-patient-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.doctordas-patient-header p {
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-patient-header span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.doctordas-patient-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.doctordas-progress {
+  width: 100%;
+  height: 0.5rem;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.doctordas-progress-bar {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* Message Items */
+.doctordas-message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.doctordas-message-item:last-child {
+  border-bottom: none;
+}
+
+.doctordas-message-info {
+  flex: 1;
+}
+
+.doctordas-message-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.doctordas-message-header p {
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+.doctordas-message-header span {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.doctordas-message-content {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-message-unread {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctordas-message-unread span:first-child {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+.doctordas-message-unread span:last-child {
+  font-size: 0.75rem;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Appointment Items */
+.doctordas-appointment-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.doctordas-appointment-item:last-child {
+  border-bottom: none;
+}
+
+.doctordas-appointment-info {
+  flex: 1;
+}
+
+.doctordas-appointment-info p {
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-appointment-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.doctordas-appointment-purpose {
+  background: #f1f5f9;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.doctordas-appointment-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Status Badges */
+.doctordas-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.doctordas-status-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.doctordas-status-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.doctordas-status-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.doctordas-status-default {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* Buttons */
+.doctordas-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctordas-btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.doctordas-btn-primary:hover {
+  background: #2563eb;
+}
+
+.doctordas-btn-secondary {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.doctordas-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.doctordas-btn-link {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.doctordas-btn-link:hover {
+  color: #2563eb;
+}
+
+/* Empty States */
+.doctordas-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+}
+
+.doctordas-empty-state span {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.5;
+}
+
+.doctordas-empty-state h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-empty-state p {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Loading States */
+.doctordas-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.doctordas-loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: doctordas-spin 1s linear infinite;
+}
+
+.doctordas-loading-text {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.doctordas-loading-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.doctordas-loading-success {
+  color: #10b981;
+  font-size: 0.875rem;
+}
+
+@keyframes doctordas-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Calendar */
+.doctordas-calendar {
+  width: 100%;
+}
+
+.doctordas-calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.doctordas-calendar-day-header {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  padding: 0.5rem;
+}
+
+.doctordas-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.doctordas-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: #64748b;
+  border-radius: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.doctordas-calendar-day:hover {
+  background-color: #f1f5f9;
+}
+
+.doctordas-calendar-today {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.doctordas-calendar-has-events {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.doctordas-calendar-event-dot {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+/* Chat */
+.doctordas-chat {
+  display: flex;
+  height: calc(100vh - 200px);
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.doctordas-chat-sidebar {
+  width: 300px;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.doctordas-chat-sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doctordas-chat-sidebar-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-chat-sidebar-header p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-patients {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.doctordas-chat-patient {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.doctordas-chat-patient:hover {
+  background-color: #f1f5f9;
+}
+
+.doctordas-chat-patient.active {
+  background-color: #dbeafe;
+}
+
+.doctordas-chat-patient-info {
+  flex: 1;
+}
+
+.doctordas-chat-patient-info p {
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0 0 0.125rem 0;
+  font-size: 0.875rem;
+}
+
+.doctordas-chat-patient-info span {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.doctordas-chat-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.doctordas-chat-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.125rem 0;
+}
+
+.doctordas-chat-header p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.doctordas-chat-message {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.doctordas-chat-message-sent {
+  justify-content: flex-end;
+}
+
+.doctordas-chat-message-received {
+  justify-content: flex-start;
+}
+
+.doctordas-chat-message-content {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  position: relative;
+}
+
+.doctordas-chat-message-sent .doctordas-chat-message-content {
+  background: #3b82f6;
+  color: white;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.doctordas-chat-message-received .doctordas-chat-message-content {
+  background: white;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.doctordas-chat-message-content p {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.doctordas-chat-message-content span {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.doctordas-chat-input {
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 1rem;
+}
+
+.doctordas-chat-input input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.doctordas-chat-input input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.doctordas-chat-input button {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.doctordas-chat-input button:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.doctordas-chat-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.doctordas-chat-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.doctordas-chat-placeholder span {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.doctordas-chat-placeholder h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.doctordas-chat-placeholder p {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Section */
+.doctordas-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.doctordas-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.doctordas-section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-section-header p {
+  color: #64748b;
+  margin: 0;
+}
+
+.doctordas-profile-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Profile */
+.doctordas-profile-content {
+  padding: 1.5rem;
+}
+
+.doctordas-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doctordas-profile-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.doctordas-profile-header p {
+  color: #64748b;
+  margin: 0 0 0.125rem 0;
+}
+
+.doctordas-profile-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.doctordas-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.doctordas-form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.doctordas-form-group input {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.doctordas-form-group input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.doctordas-form-group p {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .doctordas-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .doctordas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctordas-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+  }
+  
+  .doctordas-content {
+    margin-left: 0;
+  }
+  
+  .doctordas-navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .doctordas-navbar-search {
+    max-width: none;
+  }
+  
+  .doctordas-main {
+    padding: 1rem;
+  }
+  
+  .doctordas-chat {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .doctordas-chat-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .doctordas-chat-main {
+    height: 400px;
+  }
+}
+
+@media (max-width: 640px) {
+  .doctordas-navbar-profile {
+    justify-content: center;
+  }
+  
+  .doctordas-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .doctordas-profile-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .doctordas-profile-actions .doctordas-btn {
+    flex: 1;
+  }
+} 

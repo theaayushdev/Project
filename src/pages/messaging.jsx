@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DoctorSidebar from './DoctorSidebar';
 import DoctorNavbar from './DoctorNavbar';
-import '../cssonly/doctordashboard.css';
 
 const MessagingPage = () => {
   const [activeSection, setActiveSection] = useState('messaging');
@@ -12,9 +12,11 @@ const MessagingPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [patientsLoading, setPatientsLoading] = useState(true);
   const pollingRef = useRef();
+  const messagesEndRef = useRef(null);
 
-  // Fetch doctor info from localStorage
+  // Get doctor data from localStorage
   useEffect(() => {
     const doctorData = localStorage.getItem('doctorData');
     if (doctorData) {
@@ -25,38 +27,66 @@ const MessagingPage = () => {
   // Fetch patients for this doctor
   useEffect(() => {
     if (!doctor) return;
-    setLoading(true);
-    fetch(`http://localhost:5000/doctor/patients/${doctor.id}`)
-      .then(res => res.json())
-      .then(data => {
-        setPatients(data);
-        setLoading(false);
-      })
-      .catch(() => {
+    
+    const fetchPatients = async () => {
+      try {
+        setPatientsLoading(true);
+        const response = await fetch(`http://127.0.0.1:5000/doctor/patients/${doctor.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setPatients(data);
+        } else {
+          throw new Error('Failed to fetch patients');
+        }
+      } catch (err) {
+        console.error('Error fetching patients:', err);
         setError('Failed to load patients');
-        setLoading(false);
-      });
+      } finally {
+        setPatientsLoading(false);
+      }
+    };
+
+    fetchPatients();
   }, [doctor]);
 
-  // Poll for new messages every 2 seconds
+  // Poll for new messages
   useEffect(() => {
     if (!doctor || !selectedPatient) return;
-    const fetchMessages = () => {
-      fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
-        .then(res => res.json())
-        .then(data => setMessages(Array.isArray(data) ? data : []));
+    
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMessages(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+      }
     };
+
     fetchMessages();
     pollingRef.current = setInterval(fetchMessages, 2000);
-    return () => clearInterval(pollingRef.current);
+    
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
   }, [doctor, selectedPatient]);
+
+  // Auto scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSend = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !doctor || !selectedPatient) return;
+    
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/send-message', {
+      const response = await fetch('http://127.0.0.1:5000/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -67,90 +97,199 @@ const MessagingPage = () => {
           content: newMessage.trim()
         })
       });
-      if (res.ok) {
+      
+      if (response.ok) {
         setNewMessage('');
         // Refresh messages
-        fetch(`http://localhost:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`)
-          .then(res => res.json())
-          .then(data => setMessages(Array.isArray(data) ? data : []));
+        const messagesResponse = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        if (messagesResponse.ok) {
+          const data = await messagesResponse.json();
+          setMessages(Array.isArray(data) ? data : []);
+        }
       }
-    } catch {
+    } catch (err) {
+      console.error('Error sending message:', err);
       setError('Failed to send message');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const handleSectionSelect = (section) => {
+    if (section === 'dashboard') {
+      navigate('/doctordashboard');
+    } else if (section === 'logout') {
+      localStorage.removeItem('doctorData');
+      navigate('/doctorlogin');
+    } else {
+      setActiveSection(section);
+    }
+  };
+
+  const navigate = useNavigate();
+
   return (
-    <div className="doc1-app-container">
-      <DoctorSidebar onSelect={setActiveSection} activeSection={activeSection} />
-      <div className="doc1-content-wrapper">
-        <DoctorNavbar />
-        <div className="doc1-section-content" style={{ background: '#f7fafc', minHeight: '80vh', borderRadius: 12, boxShadow: '0 2px 8px rgba(44,82,130,0.07)', margin: 24, padding: 0, display: 'flex' }}>
-          {/* Patient List */}
-          <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e2e8f0', borderRadius: '12px 0 0 12px', padding: 0 }}>
-            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18 }}>Patients</div>
-            {loading && <div style={{ padding: 20 }}>Loading...</div>}
-            {error && <div style={{ color: 'red', padding: 20 }}>{error}</div>}
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {patients.map((p) => (
-                <li
-                  key={p.id}
-                  onClick={() => setSelectedPatient(p)}
-                  style={{
-                    padding: '16px 20px',
-                    cursor: 'pointer',
-                    background: selectedPatient && selectedPatient.id === p.id ? '#e6f0fa' : 'transparent',
-                    borderBottom: '1px solid #f1f5f9',
-                    color: '#2c5282',
-                    fontWeight: 500
-                  }}
-                >
-                  <span style={{ background: '#bee3f8', color: '#2c5282', borderRadius: '50%', padding: '6px 12px', marginRight: 12, fontWeight: 700 }}>
-                    {p.firstname[0]}{p.lastname[0]}
-                  </span>
-                  {p.firstname} {p.lastname}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {/* Chat Window */}
-          <div style={{ flex: 1, background: '#f7fafc', borderRadius: '0 12px 12px 0', display: 'flex', flexDirection: 'column', minHeight: 500 }}>
-            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18, minHeight: 60 }}>
-              {selectedPatient ? `${selectedPatient.firstname} ${selectedPatient.lastname}` : 'Select a patient to chat'}
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <DoctorSidebar 
+        onSelect={handleSectionSelect} 
+        activeSection={activeSection}
+        doctor={doctor}
+      />
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Navbar */}
+        <DoctorNavbar doctor={doctor} />
+        
+        {/* Chat Interface */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Patient List Sidebar */}
+          <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Patients</h2>
+              <p className="text-sm text-gray-500 mt-1">Select a patient to start chatting</p>
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {selectedPatient && messages.length === 0 && <div style={{ color: '#4a5568' }}>[No messages yet]</div>}
-              {selectedPatient && messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    alignSelf: msg.sender_type === 'doctor' ? 'flex-end' : 'flex-start',
-                    background: msg.sender_type === 'doctor' ? '#2c5282' : '#bee3f8',
-                    color: msg.sender_type === 'doctor' ? '#fff' : '#2c5282',
-                    borderRadius: 16,
-                    padding: '10px 18px',
-                    maxWidth: '70%',
-                    fontSize: 15
-                  }}
-                >
-                  {msg.content}
+            
+            <div className="flex-1 overflow-y-auto">
+              {patientsLoading ? (
+                <div className="p-4 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                  <p className="text-gray-500">Loading patients...</p>
                 </div>
-              ))}
+              ) : error ? (
+                <div className="p-4 text-center">
+                  <div className="text-red-500 text-4xl mb-2">⚠️</div>
+                  <p className="text-red-600">{error}</p>
+                </div>
+              ) : patients.length === 0 ? (
+                <div className="p-4 text-center">
+                  <div className="text-gray-400 text-4xl mb-2">👥</div>
+                  <p className="text-gray-500">No patients found</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {patients.map((patient) => (
+                    <button
+                      key={patient.id}
+                      onClick={() => setSelectedPatient(patient)}
+                      className={`w-full p-4 text-left hover:bg-gray-50 transition-colors ${
+                        selectedPatient?.id === patient.id ? 'bg-blue-50 border-r-2 border-blue-500' : ''
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">
+                          {patient.firstname?.[0]}{patient.lastname?.[0]}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate">
+                            {patient.firstname} {patient.lastname}
+                          </p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {patient.email}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            {selectedPatient && (
-              <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, padding: 20, borderTop: '1px solid #e2e8f0', background: '#fff', borderRadius: '0 0 12px 0' }}>
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={e => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  style={{ flex: 1, padding: 12, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16 }}
-                  disabled={loading}
-                />
-                <button type="submit" style={{ background: '#2c5282', color: '#fff', border: 'none', borderRadius: 6, padding: '0 20px', fontWeight: 600, fontSize: 16 }} disabled={loading || !newMessage.trim()}>
-                  Send
-                </button>
-              </form>
+          </div>
+
+          {/* Chat Area */}
+          <div className="flex-1 flex flex-col bg-gray-50">
+            {selectedPatient ? (
+              <>
+                {/* Chat Header */}
+                <div className="bg-white border-b border-gray-200 p-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">
+                      {selectedPatient.firstname?.[0]}{selectedPatient.lastname?.[0]}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {selectedPatient.firstname} {selectedPatient.lastname}
+                      </h3>
+                      <p className="text-sm text-gray-500">Patient</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                  {messages.length === 0 ? (
+                    <div className="text-center py-8">
+                      <div className="text-gray-400 text-4xl mb-4">💬</div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No messages yet</h3>
+                      <p className="text-gray-600">Start the conversation!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${message.sender_type === 'doctor' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              message.sender_type === 'doctor'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white text-gray-900 border border-gray-200'
+                            }`}
+                          >
+                            <p className="text-sm">{message.content}</p>
+                            <p className={`text-xs mt-1 ${
+                              message.sender_type === 'doctor' ? 'text-blue-100' : 'text-gray-500'
+                            }`}>
+                              {formatTime(message.timestamp)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Message Input */}
+                <div className="bg-white border-t border-gray-200 p-4">
+                  <form onSubmit={handleSend} className="flex space-x-4">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      disabled={loading}
+                    />
+                    <button
+                      type="submit"
+                      disabled={loading || !newMessage.trim()}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? 'Sending...' : 'Send'}
+                    </button>
+                  </form>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-gray-400 text-6xl mb-4">💬</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Select a Patient</h3>
+                  <p className="text-gray-600">Choose a patient from the list to start messaging</p>
+                </div>
+              </div>
             )}
           </div>
         </div>

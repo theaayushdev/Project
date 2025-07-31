@@ -5,9 +5,10 @@ from extensions import db
 from model import User, Doctor, Appointment, PregnancyInfo, Message, Admin
 from datetime import datetime
 import os 
+from sqlalchemy import func, or_, and_
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5174"]}})
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -23,6 +24,24 @@ migrate = Migrate(app, db)
 @app.route('/')
 def home():
     return "Welcome to Pregnify!"
+
+@app.route('/doctor/<int:doctor_id>', methods=['GET'])
+def get_doctor(doctor_id):
+    doctor = Doctor.query.get(doctor_id)
+    if doctor:
+        return jsonify({
+            'id': doctor.id,
+            'firstname': doctor.firstname,
+            'lastname': doctor.lastname,
+            'email': doctor.email,
+            'phone_number': doctor.phone_number,
+            'specialty': doctor.specialty,
+            'department': doctor.department,
+            'gender': doctor.gender,
+            'medical_license_number': doctor.medical_license_number
+        }), 200
+    else:
+        return jsonify({'error': 'Doctor not found'}), 404
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -456,6 +475,135 @@ def get_user_doctors(user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Doctor Dashboard Stats Endpoint
+@app.route('/doctor/stats/<int:doctor_id>', methods=['GET'])
+def get_doctor_stats(doctor_id):
+    try:
+        # Get total patients
+        total_patients = db.session.query(User).join(Appointment).filter(Appointment.doctor_id == doctor_id).distinct().count()
+        
+        # Get today's appointments
+        today = datetime.now().date()
+        today_appointments = db.session.query(Appointment).filter(
+            Appointment.doctor_id == doctor_id,
+            func.date(Appointment.appointment_date) == today
+        ).count()
+        
+        # Get pending appointments
+        pending_appointments = db.session.query(Appointment).filter(
+            Appointment.doctor_id == doctor_id,
+            Appointment.status == 'pending'
+        ).count()
+        
+        # Get unread messages
+        unread_messages = db.session.query(Message).filter(
+            Message.receiver_id == doctor_id,
+            Message.receiver_type == 'doctor',
+            Message.is_read == False
+        ).count()
+        
+        stats = {
+            'total_patients': total_patients,
+            'today_appointments': today_appointments,
+            'pending_appointments': pending_appointments,
+            'unread_messages': unread_messages
+        }
+        
+        return jsonify(stats), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Doctor Recent Messages Endpoint
+@app.route('/doctor/recent-messages/<int:doctor_id>', methods=['GET'])
+def get_doctor_recent_messages(doctor_id):
+    try:
+        # Get recent messages for the doctor
+        messages = db.session.query(Message).filter(
+            or_(
+                and_(Message.sender_id == doctor_id, Message.sender_type == 'doctor'),
+                and_(Message.receiver_id == doctor_id, Message.receiver_type == 'doctor')
+            )
+        ).order_by(Message.timestamp.desc()).limit(10).all()
+        
+        message_list = []
+        for msg in messages:
+            # Get sender info
+            if msg.sender_type == 'doctor':
+                sender = db.session.query(Doctor).filter(Doctor.id == msg.sender_id).first()
+            else:
+                sender = db.session.query(User).filter(User.id == msg.sender_id).first()
+            
+            message_data = {
+                'id': msg.id,
+                'content': msg.content,
+                'timestamp': msg.timestamp.isoformat() if msg.timestamp else None,
+                'is_read': msg.is_read,
+                'sender_type': msg.sender_type,
+                'sender': {
+                    'id': sender.id,
+                    'firstname': sender.firstname,
+                    'lastname': sender.lastname
+                } if sender else None
+            }
+            message_list.append(message_data)
+        
+        return jsonify(message_list), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Doctor Calendar Events Endpoint
+@app.route('/doctor/calendar-events/<int:doctor_id>', methods=['GET'])
+def get_doctor_calendar_events(doctor_id):
+    try:
+        # Get appointments for the doctor
+        appointments = db.session.query(Appointment).filter(
+            Appointment.doctor_id == doctor_id
+        ).order_by(Appointment.appointment_date).all()
+        
+        appointment_list = []
+        for apt in appointments:
+            # Get user info
+            user = db.session.query(User).filter(User.id == apt.user_id).first()
+            
+            appointment_data = {
+                'id': apt.id,
+                'appointment_date': apt.appointment_date.isoformat() if apt.appointment_date else None,
+                'status': apt.status,
+                'user': {
+                    'id': user.id,
+                    'firstname': user.firstname,
+                    'lastname': user.lastname
+                } if user else None
+            }
+            appointment_list.append(appointment_data)
+        
+        return jsonify(appointment_list), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Doctor Notifications Endpoint
+@app.route('/doctor/notifications/<int:doctor_id>', methods=['GET'])
+def get_doctor_notifications(doctor_id):
+    try:
+        # Get recent appointments
+        recent_appointments = Appointment.query.filter_by(doctor_id=doctor_id).order_by(Appointment.appointment_date.desc()).limit(5).all()
+        
+        notifications = []
+        for appt in recent_appointments:
+            user = User.query.get(appt.user_id)
+            if user:
+                notifications.append({
+                    'id': appt.id,
+                    'type': 'appointment',
+                    'title': f'Appointment with {user.firstname} {user.lastname}',
+                    'message': f'Appointment scheduled for {appt.appointment_date.strftime("%Y-%m-%d %H:%M")}',
+                    'time': appt.appointment_date.strftime("%Y-%m-%d %H:%M"),
+                    'status': appt.status
+                })
+        
+        return jsonify(notifications), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
