@@ -29,51 +29,56 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester }) => {
     // Add more navigation as needed
   };
 
-  // Progress bar width
   const progress = week && week > 0 ? Math.min(week / 40 * 100, 100) : 0;
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-content">
-        <div className="pregnancy-progress">
-          <div className="progress-circle">
-            <div className="progress-inner">
-              <span className="week-number">{week !== null && week !== undefined ? week : '--'}</span>
-              <span className="week-text">weeks</span>
-            </div>
-          </div>
-          <div className="progress-bar-container" style={{ margin: '8px 0', width: '80%', marginLeft: '10%' }}>
-            <div className="progress-bar-bg" style={{ background: '#e2e8f0', borderRadius: 8, height: 8, width: '100%' }}>
-              <div className="progress-bar-fill" style={{ background: '#2c5282', borderRadius: 8, height: 8, width: `${progress}%`, transition: 'width 0.3s' }}></div>
-            </div>
-          </div>
-          <p className="progress-text">{trimester || '--'}</p>
+    <aside className="usersidebar">
+      <div className="usersidebar-header">
+        <div className="usersidebar-header-icon">
+          <Baby size={28} />
         </div>
-        
-        <nav className="sidebar-nav">
+        <h1>Pregnancy Care</h1>
+      </div>
+      <div className="usersidebar-progress">
+        <div className="usersidebar-progress-circle">
+          <span className="usersidebar-week-number">{week !== null && week !== undefined ? week : '--'}</span>
+          <span className="usersidebar-week-text">weeks</span>
+        </div>
+        <div className="usersidebar-progress-bar-container">
+          <div className="usersidebar-progress-bar-bg">
+            <div
+              className="usersidebar-progress-bar-fill"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
+        <p className="usersidebar-progress-text">{trimester || '--'}</p>
+      </div>
+      <nav className="usersidebar-nav">
+        <ul>
           {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-              onClick={() => handleNav(item.id)}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-              <ChevronRight size={16} className="nav-arrow" />
-            </button>
+            <li key={item.id}>
+              <button
+                className={`usersidebar-link${activeTab === item.id ? " active" : ""}`}
+                onClick={() => handleNav(item.id)}
+              >
+                <span className="icon"><item.icon size={20} /></span>
+                <span>{item.label}</span>
+                <ChevronRight size={16} className="nav-arrow" />
+              </button>
+            </li>
           ))}
-        </nav>
-        
-        <div className="sidebar-footer">
-          <button className="settings-btn">
-            <Settings size={18} />
-            <span>Settings</span>
-          </button>
-          <button className="logout-btn">
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
+        </ul>
+      </nav>
+      <div className="usersidebar-footer">
+        <button className="usersidebar-link" style={{ width: "100%", marginBottom: 8 }}>
+          <span className="icon"><Settings size={18} /></span>
+          <span>Settings</span>
+        </button>
+        <button className="usersidebar-link" style={{ width: "100%" }}>
+          <span className="icon"><LogOut size={18} /></span>
+          <span>Logout</span>
+        </button>
       </div>
     </aside>
   );
