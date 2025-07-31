@@ -1,360 +1,1283 @@
-import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../cssonly/doctordashboard.css";
-import DoctorSidebar from './DoctorSidebar';
-import DoctorNavbar from './DoctorNavbar';
+import '../cssonly/doctordashboard-single.css';
 
-// Enhanced AppointmentList using doc2 classes
-const AppointmentList = () => {
-  const [appointments, setAppointments] = useState([
-    { date: "May 6, 2025", time: "10:30 AM", doctor: "Dr. Scarrlet", patient: "Ayush", purpose: "General Checkup", status: "Confirmed" },
-    { date: "May 12, 2025", time: "2:15 PM", doctor: "Dr. Johnson", patient: "Abhinab ", purpose: "Follow-up", status: "Confirmed" },
-    { date: "May 12, 2025", time: "4:00 PM", doctor: "Dr. Gwen", patient: "Ashreeya", purpose: "Consultation", status: "Confirmed" },
-  ]);
-
-  const handleStatusChange = (index) => {
-    const updatedAppointments = [...appointments];
-    updatedAppointments[index].status = updatedAppointments[index].status === "Confirmed" ? "Pending" : "Confirmed";
-    setAppointments(updatedAppointments);
-    
-    const statusMessage = `Status changed for ${updatedAppointments[index].patient} to ${updatedAppointments[index].status}`;
-    toast.info(statusMessage);
-    
-    // Display custom toast
-    const toastElement = document.createElement('div');
-    toastElement.className = `doc9-toast doc9-toast-info`;
-    toastElement.innerHTML = `
-      <div class="doc9-toast-icon"><i class="fa fa-info-circle"></i></div>
-      <div class="doc9-toast-content">
-        <div class="doc9-toast-title">Status Updated</div>
-        <div class="doc9-toast-message">${statusMessage}</div>
-      </div>
-      <button class="doc9-toast-close">&times;</button>
-    `;
-    
-    const toastContainer = document.querySelector('.doc9-toast-container') || createToastContainer();
-    toastContainer.appendChild(toastElement);
-    
-    setTimeout(() => {
-      toastElement.style.opacity = '0';
-      setTimeout(() => toastElement.remove(), 300);
-    }, 3000);
-  };
-  
-  const createToastContainer = () => {
-    const container = document.createElement('div');
-    container.className = 'doc9-toast-container';
-    document.body.appendChild(container);
-    return container;
-  };
-
-  const getInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('');
-  };
-
-  return (
-    <div className="doc2-appointment-section">
-      <div className="doc2-section-header">
-        <h3 className="doc2-section-title">Upcoming Appointments</h3>
-        <button className="doc10-btn doc10-btn-primary">
-          <i className="fa fa-plus"></i> New Appointment
-        </button>
-      </div>
-      <ul className="doc2-appointment-list">
-        {appointments.map((appointment, index) => (
-          <li key={index} className="doc2-appointment-item">
-            <div className="doc2-appointment-info">
-              <div className="doc2-patient-avatar">
-                {getInitials(appointment.patient)}
-              </div>
-              <div className="doc2-patient-details">
-                <div className="doc2-patient-name">{appointment.patient}</div>
-                <div className="doc2-appointment-purpose">{appointment.purpose}</div>
-              </div>
-            </div>
-            <div className="doc2-appointment-time">
-              <i className="fa fa-clock"></i>
-              {appointment.date}, {appointment.time}
-            </div>
-            <div 
-              className={`doc2-status-badge ${appointment.status === 'Confirmed' ? 'doc2-status-confirmed' : 'doc2-status-pending'}`}
-              onClick={() => handleStatusChange(index)}
-            >
-              <i className={`fa ${appointment.status === 'Confirmed' ? 'fa-check' : 'fa-clock'}`}></i>
-              {appointment.status}
-            </div>
-            <div className="doc2-actions">
-              <button className="doc2-action-btn doc2-edit-btn">
-                <i className="fa fa-edit"></i>
-              </button>
-              <button className="doc2-action-btn doc2-cancel-btn">
-                <i className="fa fa-times"></i>
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-// Stats Cards Component
-const StatsCards = () => {
-  const stats = [
-    { title: "Appointments", value: 3, icon: "fa-calendar", trend: "+12% from last week", trendUp: true, type: "appointments" },
-    { title: "Patients", value: 2, icon: "fa-user-md", trend: "+5% from last month", trendUp: true, type: "patients" },
-   
-  ];
-
-  return (
-    <div className="doc1-dashboard-grid">
-      {stats.map((stat, index) => (
-        <div key={index} className="doc1-card">
-          <div className="doc1-card-header">
-            <h3 className="doc1-card-title">{stat.title}</h3>
-            <div className={`doc1-card-icon ${stat.type}`}>
-              <i className={`fa ${stat.icon}`}></i>
-            </div>
-          </div>
-          <div className="doc1-card-value">{stat.value}</div>
-          <div className="doc1-card-label">This month</div>
-          <div className={`doc1-card-trend ${stat.trendUp ? 'doc1-trend-up' : 'doc1-trend-down'}`}>
-            <i className={`fa fa-arrow-${stat.trendUp ? 'up' : 'down'}`}></i>
-            {stat.trend}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// Top Patients Component
-const TopPatients = () => {
-  const patients = [
-    { name: "Ayush ", age: 19, condition: "Bodypain", progress: 85 },
-    { name: "Abhinab ", age: 19, condition: "Backpain", progress: 70 },
-    { name: "Ashreeya ", age: 19, condition: "Headache", progress: 95 }
-  ];
-
-  const getInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('');
-  };
-
-  return (
-    <div className="doc7-responsive-item">
-      <h3 className="doc7-responsive-title">
-        <i className="fa fa-user-md"></i>
-        Top Patients
-      </h3>
-      <ul className="doc8-patients-list">
-        {patients.map((patient, index) => (
-          <li key={index} className="doc8-patient-item">
-            <div className="doc8-patient-avatar">
-              {getInitials(patient.name)}
-            </div>
-            <div className="doc8-patient-info">
-              <div className="doc8-patient-name">{patient.name}</div>
-              <div className="doc8-patient-details">
-                <span className="doc8-patient-age">{patient.age} yrs</span>
-                <span className="doc8-patient-condition">{patient.condition}</span>
-              </div>
-            </div>
-            <div className="doc8-progress-container">
-              <div className="doc8-progress-bar">
-                <div 
-                  className="doc8-progress-fill" 
-                  style={{ width: `${patient.progress}%` }}
-                ></div>
-              </div>
-              <span className="doc8-progress-text">{patient.progress}%</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <button className="doc10-btn doc10-btn-outline">View All Patients</button>
-    </div>
-  );
-};
-
-// Calendar Widget Component
-const CalendarWidget = () => {
-  const [value, onChange] = useState(new Date());
-  const [events, setEvents] = useState({
-    '2025-05-06': ['10:30 AM - Ayush ', '3:15 PM - Staff Meeting'],
-    '2025-05-12': ['2:15 PM - Abhinab ', '4:00 PM - Ashreeya '],
-    '2025-05-15': ['11:00 AM - Department Meeting']
-  });
-
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const renderSelectedDayEvents = () => {
-    const dateKey = formatDate(value);
-    const dayEvents = events[dateKey] || [];
-    
-    return (
-      <div className="doc6-events-list">
-        <h4 className="doc6-events-title">{value.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h4>
-        {dayEvents.length > 0 ? (
-          <ul className="doc6-event-items">
-            {dayEvents.map((event, idx) => (
-              <li key={idx} className="doc6-event-item">
-                <i className="fa fa-calendar-check"></i>
-                <span>{event}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="doc6-no-events">No appointments scheduled for this day.</p>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <div className="doc6-calendar-widget">
-      <h3 className="doc6-widget-title">
-        <i className="fa fa-calendar"></i>
-        Appointment Calendar
-      </h3>
-      <div className="doc6-calendar-container">
-        <Calendar
-          onChange={onChange}
-          value={value}
-          className="doc6-calendar"
-          tileClassName={({ date }) => {
-            const dateKey = formatDate(date);
-            return events[dateKey] ? 'doc6-event-day' : null;
-          }}
-        />
-        {renderSelectedDayEvents()}
-      </div>
-    </div>
-  );
-};
-
-// Recent Messages Component
-const RecentMessages = () => {
-  const [messages, setMessages] = useState([
-    { sender: "Ayush ", time: "10:30 AM", message: "Thank you for the appointment, Doctor. My symptoms have improved.", unread: true },
-    { sender: "Dr. Johnson", time: "Yesterday", message: "Please review the patient history for tomorrow's consultation.", unread: false },
-    { sender: "Ashreeya ", time: "2 days ago", message: "When should I visit again Thanks!", unread: true }
-  ]);
-
-  const getInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('');
-  };
-
-  return (
-    <div className="doc7-responsive-item">
-      <h3 className="doc7-responsive-title">
-        <i className="fa fa-comments"></i>
-        Recent Messages
-      </h3>
-      <ul className="doc5-messages-list">
-        {messages.map((msg, index) => (
-          <li key={index} className={`doc5-message-item ${msg.unread ? 'doc5-unread' : ''}`}>
-            <div className="doc5-message-avatar">
-              {getInitials(msg.sender)}
-              {msg.unread && <span className="doc5-unread-indicator"></span>}
-            </div>
-            <div className="doc5-message-content">
-              <div className="doc5-message-header">
-                <span className="doc5-sender-name">{msg.sender}</span>
-                <span className="doc5-message-time">{msg.time}</span>
-              </div>
-              <p className="doc5-message-text">{msg.message}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <button className="doc10-btn doc10-btn-outline">View All Messages</button>
-    </div>
-  );
-};
-
-// Dashboard Content Component
-const DashboardContent = () => {
-  return (
-    <div className="doc1-main-content">
-      <div className="doc1-page-header">
-        <h2 className="doc1-page-title">Dashboard</h2>
-        <div className="doc1-page-actions">
-          <div className="doc1-search-bar">
-            <i className="fa fa-search"></i>
-            <input type="text" placeholder="Search patients, appointments..." />
-          </div>
-          <div className="doc1-user-profile">
-            <div className="doc1-notification-icon">
-              <i className="fa fa-bell"></i>
-              <span className="doc1-badge">3</span>
-            </div>
-            <div className="doc1-avatar">DR</div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="doc1-dashboard-welcome">
-        <h3>Welcome back, Dr. Nikhil!</h3>
-        <p>Here's what's happening with your patients today.</p>
-      </div>
-      
-      <StatsCards />
-      
-      <div className="doc7-responsive-grid">
-        <TopPatients />
-        <RecentMessages />
-      </div>
-      
-      <div className="doc1-dashboard-row">
-        <div className="doc1-dashboard-col">
-          <AppointmentList />
-        </div>
-        <div className="doc1-dashboard-col">
-          <CalendarWidget />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Main DoctorDashboardApp Component
 const DoctorDashboardApp = () => {
+  const [doctor, setDoctor] = useState(null);
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [backendStatus, setBackendStatus] = useState('checking');
+  
+  // Stats and data states
+  const [stats, setStats] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  
+  // Chat states
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
+  
+  // Profile states
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({});
+  
+  // Modal states
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [newAppointmentData, setNewAppointmentData] = useState({
+    patient_id: '',
+    appointment_date: '',
+    purpose: '',
+    notes: ''
+  });
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  
   const navigate = useNavigate();
+  const messagesEndRef = useRef(null);
+  const chatPollingRef = useRef(null);
 
-  const handleSectionSelect = (section) => {
-    if (section === 'userhome') {
-      navigate('/');
-      return;
+  // Test backend connectivity
+  useEffect(() => {
+    const testBackend = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/');
+        if (response.ok) {
+          setBackendStatus('connected');
+        } else {
+          setBackendStatus('error');
+        }
+      } catch (err) {
+        console.error('Backend connection error:', err);
+        setBackendStatus('error');
+      }
+    };
+    testBackend();
+  }, []);
+
+  // Fetch doctor data and verify
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        setLoading(true);
+        const doctorData = localStorage.getItem('doctorData');
+        if (doctorData) {
+          const parsedDoctor = JSON.parse(doctorData);
+          setDoctor(parsedDoctor);
+          
+          // Verify doctor data with backend
+          const response = await fetch(`http://127.0.0.1:5000/doctor/${parsedDoctor.id}`);
+          if (!response.ok) {
+            throw new Error('Doctor data verification failed');
+          }
+          
+          // Initialize profile data
+          setProfileData({
+            firstname: parsedDoctor.firstname || '',
+            lastname: parsedDoctor.lastname || '',
+            email: parsedDoctor.email || '',
+            phone_number: parsedDoctor.phone_number || '',
+            specialty: parsedDoctor.specialty || '',
+            department: parsedDoctor.department || ''
+          });
+        } else {
+          navigate('/doctorlogin');
+          return;
+        }
+      } catch (err) {
+        console.error('Error fetching doctor data:', err);
+        setError('Failed to load doctor data. Please log in again.');
+        setTimeout(() => navigate('/doctorlogin'), 2000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, [navigate]);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    if (!doctor) return;
+
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch stats
+        const statsResponse = await fetch(`http://127.0.0.1:5000/doctor/stats/${doctor.id}`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setStats(statsData);
+        }
+
+        // Fetch appointments
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
+        }
+
+        // Fetch patients
+        const patientsResponse = await fetch(`http://127.0.0.1:5000/doctor/patients/${doctor.id}`);
+        if (patientsResponse.ok) {
+          const patientsData = await patientsResponse.json();
+          setPatients(patientsData);
+          setFilteredPatients(patientsData);
+        }
+
+        // Fetch recent messages
+        const messagesResponse = await fetch(`http://127.0.0.1:5000/doctor/recent-messages/${doctor.id}`);
+        if (messagesResponse.ok) {
+          const messagesData = await messagesResponse.json();
+          setMessages(messagesData);
+        }
+
+        // Fetch calendar events
+        const calendarResponse = await fetch(`http://127.0.0.1:5000/doctor/calendar-events/${doctor.id}`);
+        if (calendarResponse.ok) {
+          const calendarData = await calendarResponse.json();
+          setCalendarEvents(calendarData);
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+      }
+    };
+
+    fetchDashboardData();
+  }, [doctor]);
+
+  // Search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredPatients(patients);
+    } else {
+      const filtered = patients.filter(patient => 
+        patient.firstname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.lastname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredPatients(filtered);
     }
-    if (section === 'messages' || section === 'messaging') {
-      navigate('/messaging');
-      return;
+  }, [searchQuery, patients]);
+
+  // Chat functionality
+  useEffect(() => {
+    if (!doctor || !selectedPatient) return;
+    
+    const fetchChatMessages = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setChatMessages(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error('Error fetching chat messages:', err);
+      }
+    };
+
+    fetchChatMessages();
+    chatPollingRef.current = setInterval(fetchChatMessages, 2000);
+    
+    return () => {
+      if (chatPollingRef.current) {
+        clearInterval(chatPollingRef.current);
+      }
+    };
+  }, [doctor, selectedPatient]);
+
+  // Auto scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !doctor || !selectedPatient) return;
+    
+    setSendingMessage(true);
+    try {
+      const response = await fetch('http://127.0.0.1:5000/send-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_id: doctor.id,
+          receiver_id: selectedPatient.id,
+          sender_type: 'doctor',
+          receiver_type: 'user',
+          content: newMessage.trim()
+        })
+      });
+      
+      if (response.ok) {
+        setNewMessage('');
+        // Refresh messages
+        const messagesResponse = await fetch(`http://127.0.0.1:5000/get-messages/doctor/${doctor.id}/user/${selectedPatient.id}`);
+        if (messagesResponse.ok) {
+          const data = await messagesResponse.json();
+          setChatMessages(Array.isArray(data) ? data : []);
+        }
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+    } finally {
+      setSendingMessage(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('doctorData');
+    navigate('/doctorlogin');
+  };
+
+  const handleProfileSave = async () => {
+    try {
+      // Here you would typically make an API call to update the doctor's profile
+      console.log('Saving profile:', profileData);
+      setIsEditingProfile(false);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    }
+  };
+
+  const handleProfileCancel = () => {
+    setProfileData({
+      firstname: doctor?.firstname || '',
+      lastname: doctor?.lastname || '',
+      email: doctor?.email || '',
+      phone_number: doctor?.phone_number || '',
+      specialty: doctor?.specialty || '',
+      department: doctor?.department || ''
+    });
+    setIsEditingProfile(false);
+  };
+
+  // Modal handlers
+  const handleViewAppointment = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowAppointmentModal(true);
+  };
+
+  const handleNewAppointment = () => {
+    setShowNewAppointmentModal(true);
+  };
+
+  const handleCreateAppointment = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/create-appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctor_id: doctor.id,
+          user_id: newAppointmentData.patient_id,
+          appointment_date: newAppointmentData.appointment_date,
+          purpose: newAppointmentData.purpose,
+          notes: newAppointmentData.notes
+        })
+      });
+      
+      if (response.ok) {
+        setShowNewAppointmentModal(false);
+        setNewAppointmentData({
+          patient_id: '',
+          appointment_date: '',
+          purpose: '',
+          notes: ''
+        });
+        // Refresh appointments
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+    }
+  };
+
+  const handleDashboardClick = (section) => {
     setActiveSection(section);
   };
 
-  return (
-    <div className="doc1-app-container">
-      <DoctorSidebar onSelect={handleSectionSelect} activeSection={activeSection} />
-      <div className="doc1-content-wrapper">
-        {/* Only show DoctorNavbar for dashboard, appointments, records, messages, profile */}
-        {['dashboard', 'appointments', 'records', 'messages', 'profile'].includes(activeSection) && <DoctorNavbar />}
-        {activeSection === 'dashboard' && <DashboardContent />}
-        {activeSection === 'appointments' && <div className="doc1-section-content"><h2>My Appointments</h2><AppointmentList /></div>}
-        {activeSection === 'records' && <div className="doc1-section-content"><h2>Medical Records</h2><p>Your medical records section is here.</p></div>}
-        {activeSection === 'messages' && <div className="doc1-section-content"><h2>Messages</h2><RecentMessages /></div>}
-        {activeSection === 'profile' && <div className="doc1-section-content"><h2>Profile Settings</h2><p>Your profile settings are here.</p></div>}
+  // Helper functions
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'confirmed': return 'doctordas-status-success';
+      case 'pending': return 'doctordas-status-warning';
+      case 'cancelled': return 'doctordas-status-error';
+      default: return 'doctordas-status-default';
+    }
+  };
+
+  const getRandomProgress = () => Math.floor(Math.random() * 40) + 60;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="doctordas-app">
+        <div className="doctordas-loading">
+          <div className="doctordas-loading-spinner"></div>
+          <p>Loading your dashboard...</p>
+          {backendStatus === 'checking' && (
+            <p className="doctordas-loading-text">Checking backend connection...</p>
+          )}
+          {backendStatus === 'error' && (
+            <p className="doctordas-loading-error">⚠️ Backend connection failed</p>
+          )}
+          {backendStatus === 'connected' && (
+            <p className="doctordas-loading-success">✅ Backend connected</p>
+          )}
+        </div>
       </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="doctordas-app">
+        <div className="doctordas-empty-state">
+          <div className="doctordas-empty-state-icon">⚠️</div>
+          <h2 className="doctordas-empty-state-title">Error Loading Dashboard</h2>
+          <p className="doctordas-empty-state-description">{error}</p>
+          <button 
+            onClick={() => navigate('/doctorlogin')}
+            className="doctordas-btn doctordas-btn-primary"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="doctordas-app">
+      {/* Sidebar */}
+      <div className="doctordas-sidebar">
+        {/* Logo */}
+        <div className="doctordas-sidebar-logo">
+          <div className="doctordas-sidebar-logo-icon">🏥</div>
+          <div>
+            <h1>Pregnify</h1>
+            <p>Doctor Portal</p>
+          </div>
+        </div>
+
+        {/* Doctor Info */}
+        {doctor && (
+          <div className="doctordas-sidebar-profile">
+            <div className="doctordas-avatar">
+              {doctor.firstname?.[0]}{doctor.lastname?.[0]}
+            </div>
+            <div className="doctordas-profile-info">
+              <p className="doctordas-profile-name">
+                Dr. {doctor.firstname} {doctor.lastname}
+              </p>
+              <p className="doctordas-profile-specialty">
+                {doctor.specialty}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <nav className="doctordas-sidebar-nav">
+          <ul>
+            <li>
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className={`doctordas-sidebar-link ${activeSection === 'dashboard' ? 'active' : ''}`}
+              >
+                <span>🏥</span>
+                <div>
+                  <span>Dashboard</span>
+                  <span>Overview & Analytics</span>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection('appointments')}
+                className={`doctordas-sidebar-link ${activeSection === 'appointments' ? 'active' : ''}`}
+              >
+                <span>📅</span>
+                <div>
+                  <span>Appointments</span>
+                  <span>Manage Schedule</span>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection('patients')}
+                className={`doctordas-sidebar-link ${activeSection === 'patients' ? 'active' : ''}`}
+              >
+                <span>👥</span>
+                <div>
+                  <span>Patients</span>
+                  <span>Patient List</span>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection('chat')}
+                className={`doctordas-sidebar-link ${activeSection === 'chat' ? 'active' : ''}`}
+              >
+                <span>💬</span>
+                <div>
+                  <span>Chat</span>
+                  <span>Real-time Chat</span>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection('profile')}
+                className={`doctordas-sidebar-link ${activeSection === 'profile' ? 'active' : ''}`}
+              >
+                <span>👨‍⚕️</span>
+                <div>
+                  <span>Profile</span>
+                  <span>Account Settings</span>
+                </div>
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Logout */}
+        <div className="doctordas-sidebar-footer">
+          <button onClick={handleLogout} className="doctordas-sidebar-link doctordas-sidebar-logout">
+            <span>🚪</span>
+            <div>
+              <span>Logout</span>
+              <span>Sign out</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="doctordas-content">
+        {/* Navbar */}
+        <div className="doctordas-navbar">
+          <div className="doctordas-navbar-search">
+            <span>🔍</span>
+            <input 
+              placeholder="Search patients..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  setActiveSection('patients');
+                }
+              }}
+            />
+          </div>
+          <div className="doctordas-navbar-profile">
+            <div className="doctordas-navbar-time">
+              {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+            <div className="doctordas-avatar">
+              {doctor?.firstname?.[0]}{doctor?.lastname?.[0]}
+            </div>
+          </div>
+        </div>
+
+        {/* Dashboard Content */}
+        <main className="doctordas-main">
+          {/* Backend Status */}
+          {backendStatus === 'error' && (
+            <div className="doctordas-alert doctordas-alert-error">
+              <span>⚠️</span>
+              <span>Backend connection failed. Some features may not work properly.</span>
+            </div>
+          )}
+
+          {/* Dashboard Section */}
+          {activeSection === 'dashboard' && (
+            <div className="doctordas-dashboard">
+              {/* Welcome */}
+              <div className="doctordas-welcome">
+                <h1>Welcome back, Dr. {doctor?.firstname} {doctor?.lastname}</h1>
+                <p>Here's what's happening with your patients today.</p>
+                <div className="doctordas-welcome-stats">
+                  <span className="doctordas-status-online">🟢 Online</span>
+                  <span>•</span>
+                  <span>{new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</span>
+                </div>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="doctordas-stats-grid">
+                <div className="doctordas-stat-card">
+                  <div className="doctordas-stat-icon">👥</div>
+                  <div className="doctordas-stat-content">
+                    <h3>{stats?.total_patients || 0}</h3>
+                    <p>Total Patients</p>
+                    <span>+12%</span>
+                  </div>
+                </div>
+                <div className="doctordas-stat-card">
+                  <div className="doctordas-stat-icon">📅</div>
+                  <div className="doctordas-stat-content">
+                    <h3>{stats?.today_appointments || 0}</h3>
+                    <p>Today's Appointments</p>
+                    <span>{stats?.pending_appointments || 0} pending</span>
+                  </div>
+                </div>
+                <div className="doctordas-stat-card">
+                  <div className="doctordas-stat-icon">💬</div>
+                  <div className="doctordas-stat-content">
+                    <h3>{stats?.unread_messages || 0}</h3>
+                    <p>New Messages</p>
+                    <span>5 unread</span>
+                  </div>
+                </div>
+                <div className="doctordas-stat-card">
+                  <div className="doctordas-stat-icon">📊</div>
+                  <div className="doctordas-stat-content">
+                    <h3>{stats?.total_patients || 0}</h3>
+                    <p>Active Cases</p>
+                    <span>+3 this week</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Grid */}
+              <div className="doctordas-grid">
+                {/* Top Patients */}
+                <div className="doctordas-card">
+                  <div className="doctordas-card-header">
+                    <h3>👥 Top Patients</h3>
+                    <span>{patients.length} patients</span>
+                  </div>
+                  <div className="doctordas-card-content">
+                    {patients.length === 0 ? (
+                      <div className="doctordas-empty-state">
+                        <span>👥</span>
+                        <h4>No patients found</h4>
+                        <p>Start by booking appointments</p>
+                      </div>
+                    ) : (
+                      patients.slice(0, 4).map((patient) => {
+                        const progress = getRandomProgress();
+                        return (
+                          <div 
+                            key={patient.id} 
+                            className="doctordas-patient-item"
+                            onClick={() => handleDashboardClick('patients')}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div className="doctordas-avatar">
+                              {patient.firstname?.[0]}{patient.lastname?.[0]}
+                            </div>
+                            <div className="doctordas-patient-info">
+                              <div className="doctordas-patient-header">
+                                <p>{patient.firstname} {patient.lastname}</p>
+                                <span>{progress}%</span>
+                              </div>
+                              <div className="doctordas-patient-details">
+                                <span>{patient.age || 'N/A'} yrs</span>
+                                <span>•</span>
+                                <span>Pregnancy</span>
+                              </div>
+                              <div className="doctordas-progress">
+                                <div 
+                                  className="doctordas-progress-bar"
+                                  style={{ width: `${progress}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+
+                {/* Recent Messages */}
+                <div className="doctordas-card">
+                  <div className="doctordas-card-header">
+                    <h3>💬 Recent Messages</h3>
+                    <span>{messages.length} messages</span>
+                  </div>
+                  <div className="doctordas-card-content">
+                    {messages.length === 0 ? (
+                      <div className="doctordas-empty-state">
+                        <span>💬</span>
+                        <h4>No messages yet</h4>
+                        <p>Start a conversation with your patients</p>
+                      </div>
+                    ) : (
+                      messages.slice(0, 4).map((message) => (
+                        <div 
+                          key={message.id} 
+                          className="doctordas-message-item"
+                          onClick={() => handleDashboardClick('chat')}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <div className="doctordas-avatar">
+                            {message.sender?.firstname?.[0]}{message.sender?.lastname?.[0]}
+                          </div>
+                          <div className="doctordas-message-info">
+                            <div className="doctordas-message-header">
+                              <p>{message.sender?.firstname} {message.sender?.lastname}</p>
+                              <span>{formatTime(message.timestamp)}</span>
+                            </div>
+                            <p className="doctordas-message-content">
+                              {message.content?.substring(0, 50)}...
+                            </p>
+                            {!message.is_read && (
+                              <div className="doctordas-message-unread">
+                                <span></span>
+                                <span>New</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Grid */}
+              <div className="doctordas-grid">
+                {/* Appointments */}
+                <div className="doctordas-card">
+                  <div className="doctordas-card-header">
+                    <h3>📅 Upcoming Appointments</h3>
+                    <button 
+                      className="doctordas-btn doctordas-btn-primary"
+                      onClick={handleNewAppointment}
+                    >
+                      <span>+</span>
+                      <span>New</span>
+                    </button>
+                  </div>
+                  <div className="doctordas-card-content">
+                    {appointments.length === 0 ? (
+                      <div className="doctordas-empty-state">
+                        <span>📅</span>
+                        <h4>No appointments scheduled</h4>
+                        <p>All clear for now!</p>
+                      </div>
+                    ) : (
+                      appointments.slice(0, 5).map((appointment) => (
+                        <div key={appointment.id} className="doctordas-appointment-item">
+                          <div className="doctordas-avatar">
+                            {appointment.user?.firstname?.[0]}{appointment.user?.lastname?.[0]}
+                          </div>
+                          <div className="doctordas-appointment-info">
+                            <p>{appointment.user?.firstname} {appointment.user?.lastname}</p>
+                            <div className="doctordas-appointment-details">
+                              <span>{formatDate(appointment.appointment_date)}</span>
+                              {appointment.purpose && (
+                                <span className="doctordas-appointment-purpose">{appointment.purpose}</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="doctordas-appointment-actions">
+                            <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
+                              {appointment.status}
+                            </span>
+                            <button 
+                              className="doctordas-btn-link"
+                              onClick={() => handleViewAppointment(appointment)}
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                {/* Calendar */}
+                <div className="doctordas-card">
+                  <div className="doctordas-card-header">
+                    <h3>📅 Appointment Calendar</h3>
+                    <span>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                  </div>
+                  <div className="doctordas-card-content">
+                    <div className="doctordas-calendar">
+                      <div className="doctordas-calendar-header">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                          <div key={day} className="doctordas-calendar-day-header">{day}</div>
+                        ))}
+                      </div>
+                      <div className="doctordas-calendar-grid">
+                        {Array.from({ length: 42 }, (_, i) => {
+                          const day = i + 1;
+                          const hasEvents = calendarEvents.some(event => {
+                            const eventDate = new Date(event.appointment_date);
+                            return eventDate.getDate() === day && 
+                                   eventDate.getMonth() === new Date().getMonth() &&
+                                   eventDate.getFullYear() === new Date().getFullYear();
+                          });
+                          
+                          return (
+                            <div
+                              key={i}
+                              className={`doctordas-calendar-day ${day === new Date().getDate() ? 'doctordas-calendar-today' : ''} ${hasEvents ? 'doctordas-calendar-has-events' : ''}`}
+                            >
+                              {day <= 31 ? day : ''}
+                              {hasEvents && <span className="doctordas-calendar-event-dot"></span>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Appointments Section */}
+          {activeSection === 'appointments' && (
+            <div className="doctordas-section">
+              <div className="doctordas-section-header">
+                <div>
+                  <h2>My Appointments</h2>
+                  <p>Manage your patient appointments</p>
+                </div>
+                <button 
+                  className="doctordas-btn doctordas-btn-primary"
+                  onClick={handleNewAppointment}
+                >
+                  <span>+</span>
+                  <span>New Appointment</span>
+                </button>
+              </div>
+              <div className="doctordas-card">
+                <div className="doctordas-card-content">
+                  {appointments.length === 0 ? (
+                    <div className="doctordas-empty-state">
+                      <span>📅</span>
+                      <h4>No appointments scheduled</h4>
+                      <p>All clear for now!</p>
+                    </div>
+                  ) : (
+                    appointments.map((appointment) => (
+                      <div key={appointment.id} className="doctordas-appointment-item">
+                        <div className="doctordas-avatar">
+                          {appointment.user?.firstname?.[0]}{appointment.user?.lastname?.[0]}
+                        </div>
+                        <div className="doctordas-appointment-info">
+                          <p>{appointment.user?.firstname} {appointment.user?.lastname}</p>
+                          <div className="doctordas-appointment-details">
+                            <span>{formatDate(appointment.appointment_date)}</span>
+                            {appointment.purpose && (
+                              <span className="doctordas-appointment-purpose">{appointment.purpose}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="doctordas-appointment-actions">
+                          <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
+                            {appointment.status}
+                          </span>
+                          <button 
+                            className="doctordas-btn-link"
+                            onClick={() => handleViewAppointment(appointment)}
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Patients Section */}
+          {activeSection === 'patients' && (
+            <div className="doctordas-section">
+              <div className="doctordas-section-header">
+                <div>
+                  <h2>My Patients</h2>
+                  <p>View and manage your patient list</p>
+                </div>
+                <div className="doctordas-search-results">
+                  {searchQuery && (
+                    <p>Showing {filteredPatients.length} results for "{searchQuery}"</p>
+                  )}
+                </div>
+              </div>
+              <div className="doctordas-patients-grid">
+                {filteredPatients.length === 0 ? (
+                  <div className="doctordas-empty-state">
+                    <span>👥</span>
+                    <h4>No patients found</h4>
+                    <p>{searchQuery ? 'Try a different search term' : 'Start by booking appointments'}</p>
+                  </div>
+                ) : (
+                  filteredPatients.map((patient) => {
+                    const progress = getRandomProgress();
+                    return (
+                      <div key={patient.id} className="doctordas-patient-card">
+                        <div className="doctordas-patient-photo">
+                          {patient.firstname?.[0]}{patient.lastname?.[0]}
+                        </div>
+                        <div className="doctordas-patient-info">
+                          <h4>{patient.firstname} {patient.lastname}</h4>
+                          <div className="doctordas-patient-details">
+                            <div className="doctordas-patient-detail">
+                              <span>📧</span>
+                              <span>{patient.email}</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>📱</span>
+                              <span>{patient.contact || 'N/A'}</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>🎂</span>
+                              <span>{patient.age || 'N/A'} years old</span>
+                            </div>
+                            <div className="doctordas-patient-detail">
+                              <span>📍</span>
+                              <span>{patient.location || 'N/A'}</span>
+                            </div>
+                          </div>
+                          <div className="doctordas-patient-actions">
+                            <button 
+                              className="doctordas-btn-patient doctordas-btn-patient-primary"
+                              onClick={() => {
+                                setSelectedPatient(patient);
+                                setActiveSection('chat');
+                              }}
+                            >
+                              <span>💬</span>
+                              <span>Message</span>
+                            </button>
+                            <button 
+                              className="doctordas-btn-patient doctordas-btn-patient-secondary"
+                              onClick={() => {
+                                setNewAppointmentData({
+                                  ...newAppointmentData,
+                                  patient_id: patient.id
+                                });
+                                setShowNewAppointmentModal(true);
+                              }}
+                            >
+                              <span>📅</span>
+                              <span>Book Appointment</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Chat Section */}
+          {activeSection === 'chat' && (
+            <div className="doctordas-chat">
+              <div className="doctordas-chat-sidebar">
+                <div className="doctordas-chat-sidebar-header">
+                  <h3>Patients</h3>
+                  <p>Select a patient to start chatting</p>
+                </div>
+                <div className="doctordas-chat-patients">
+                  {patients.length === 0 ? (
+                    <div className="doctordas-empty-state">
+                      <span>👥</span>
+                      <p>No patients found</p>
+                    </div>
+                  ) : (
+                    patients.map((patient) => (
+                      <button
+                        key={patient.id}
+                        onClick={() => setSelectedPatient(patient)}
+                        className={`doctordas-chat-patient ${selectedPatient?.id === patient.id ? 'active' : ''}`}
+                      >
+                        <div className="doctordas-avatar">
+                          {patient.firstname?.[0]}{patient.lastname?.[0]}
+                        </div>
+                        <div className="doctordas-chat-patient-info">
+                          <p>{patient.firstname} {patient.lastname}</p>
+                          <span>{patient.email}</span>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="doctordas-chat-main">
+                {selectedPatient ? (
+                  <>
+                    <div className="doctordas-chat-header">
+                      <div className="doctordas-avatar">
+                        {selectedPatient.firstname?.[0]}{selectedPatient.lastname?.[0]}
+                      </div>
+                      <div>
+                        <h3>{selectedPatient.firstname} {selectedPatient.lastname}</h3>
+                        <p>Patient</p>
+                      </div>
+                    </div>
+
+                    <div className="doctordas-chat-messages">
+                      {chatMessages.length === 0 ? (
+                        <div className="doctordas-empty-state">
+                          <span>💬</span>
+                          <h4>No messages yet</h4>
+                          <p>Start the conversation!</p>
+                        </div>
+                      ) : (
+                        chatMessages.map((message, index) => (
+                          <div
+                            key={index}
+                            className={`doctordas-chat-message ${message.sender_type === 'doctor' ? 'doctordas-chat-message-sent' : 'doctordas-chat-message-received'}`}
+                          >
+                            <div className="doctordas-chat-message-content">
+                              <p>{message.content}</p>
+                              <span>{formatTime(message.timestamp)}</span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                      <div ref={messagesEndRef} />
+                    </div>
+
+                    <form onSubmit={handleSendMessage} className="doctordas-chat-input">
+                      <div className="doctordas-chat-input-container">
+                        <div className="doctordas-chat-input-actions">
+                          <button type="button" className="doctordas-chat-input-action">
+                            😊
+                          </button>
+                          <button type="button" className="doctordas-chat-input-action">
+                            📎
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder="Type your message..."
+                          disabled={sendingMessage}
+                        />
+                      </div>
+                      <button 
+                        type="submit" 
+                        className="doctordas-chat-send-btn"
+                        disabled={sendingMessage || !newMessage.trim()}
+                      >
+                        {sendingMessage ? 'Sending...' : 'Send'}
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <div className="doctordas-chat-placeholder">
+                    <span>💬</span>
+                    <h3>Select a Patient</h3>
+                    <p>Choose a patient from the list to start messaging</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Profile Section */}
+          {activeSection === 'profile' && (
+            <div className="doctordas-section">
+              <div className="doctordas-section-header">
+                <div>
+                  <h2>Profile Settings</h2>
+                  <p>Manage your account information</p>
+                </div>
+                <div className="doctordas-profile-actions">
+                  {isEditingProfile ? (
+                    <>
+                      <button onClick={handleProfileSave} className="doctordas-btn doctordas-btn-primary">
+                        Save Changes
+                      </button>
+                      <button onClick={handleProfileCancel} className="doctordas-btn doctordas-btn-secondary">
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button onClick={() => setIsEditingProfile(true)} className="doctordas-btn doctordas-btn-primary">
+                      Edit Profile
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="doctordas-card">
+                <div className="doctordas-profile-content">
+                  <div className="doctordas-profile-header">
+                    <div className="doctordas-avatar doctordas-avatar-large">
+                      {doctor?.firstname?.[0]}{doctor?.lastname?.[0]}
+                    </div>
+                    <div>
+                      <h3>Dr. {doctor?.firstname} {doctor?.lastname}</h3>
+                      <p>{doctor?.specialty}</p>
+                      <p>{doctor?.department}</p>
+                    </div>
+                  </div>
+
+                  <div className="doctordas-profile-form">
+                    <div className="doctordas-form-group">
+                      <label>First Name</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="text"
+                          value={profileData.firstname}
+                          onChange={(e) => setProfileData({...profileData, firstname: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.firstname}</p>
+                      )}
+                    </div>
+
+                    <div className="doctordas-form-group">
+                      <label>Last Name</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="text"
+                          value={profileData.lastname}
+                          onChange={(e) => setProfileData({...profileData, lastname: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.lastname}</p>
+                      )}
+                    </div>
+
+                    <div className="doctordas-form-group">
+                      <label>Email</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="email"
+                          value={profileData.email}
+                          onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.email}</p>
+                      )}
+                    </div>
+
+                    <div className="doctordas-form-group">
+                      <label>Phone Number</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="tel"
+                          value={profileData.phone_number}
+                          onChange={(e) => setProfileData({...profileData, phone_number: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.phone_number}</p>
+                      )}
+                    </div>
+
+                    <div className="doctordas-form-group">
+                      <label>Specialty</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="text"
+                          value={profileData.specialty}
+                          onChange={(e) => setProfileData({...profileData, specialty: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.specialty}</p>
+                      )}
+                    </div>
+
+                    <div className="doctordas-form-group">
+                      <label>Department</label>
+                      {isEditingProfile ? (
+                        <input
+                          type="text"
+                          value={profileData.department}
+                          onChange={(e) => setProfileData({...profileData, department: e.target.value})}
+                        />
+                      ) : (
+                        <p>{doctor?.department}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Appointment View Modal */}
+      {showAppointmentModal && selectedAppointment && (
+        <div className="doctordas-modal-overlay" onClick={() => setShowAppointmentModal(false)}>
+          <div className="doctordas-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="doctordas-modal-header">
+              <h3 className="doctordas-modal-title">Appointment Details</h3>
+              <button 
+                className="doctordas-modal-close"
+                onClick={() => setShowAppointmentModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="doctordas-appointment-details-modal">
+              <div className="doctordas-appointment-detail-row">
+                <strong>Patient:</strong>
+                <span>{selectedAppointment.user?.firstname} {selectedAppointment.user?.lastname}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Date & Time:</strong>
+                <span>{formatDate(selectedAppointment.appointment_date)}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Purpose:</strong>
+                <span>{selectedAppointment.purpose || 'General Checkup'}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Status:</strong>
+                <span className={`doctordas-status ${getStatusColor(selectedAppointment.status)}`}>
+                  {selectedAppointment.status}
+                </span>
+              </div>
+              {selectedAppointment.notes && (
+                <div className="doctordas-appointment-detail-row">
+                  <strong>Notes:</strong>
+                  <span>{selectedAppointment.notes}</span>
+                </div>
+              )}
+              <div className="doctordas-appointment-detail-row">
+                <strong>Contact:</strong>
+                <span>{selectedAppointment.user?.contact || 'N/A'}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Email:</strong>
+                <span>{selectedAppointment.user?.email || 'N/A'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Appointment Modal */}
+      {showNewAppointmentModal && (
+        <div className="doctordas-modal-overlay" onClick={() => setShowNewAppointmentModal(false)}>
+          <div className="doctordas-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="doctordas-modal-header">
+              <h3 className="doctordas-modal-title">Create New Appointment</h3>
+              <button 
+                className="doctordas-modal-close"
+                onClick={() => setShowNewAppointmentModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="doctordas-new-appointment-form">
+              <div className="doctordas-form-group">
+                <label>Select Patient</label>
+                <select
+                  value={newAppointmentData.patient_id}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    patient_id: e.target.value
+                  })}
+                >
+                  <option value="">Choose a patient...</option>
+                  {patients.map(patient => (
+                    <option key={patient.id} value={patient.id}>
+                      {patient.firstname} {patient.lastname} - {patient.email}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="doctordas-form-group">
+                <label>Appointment Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={newAppointmentData.appointment_date}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    appointment_date: e.target.value
+                  })}
+                />
+              </div>
+              <div className="doctordas-form-group">
+                <label>Purpose</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Prenatal Checkup, Ultrasound, Consultation"
+                  value={newAppointmentData.purpose}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    purpose: e.target.value
+                  })}
+                />
+              </div>
+              <div className="doctordas-form-group">
+                <label>Notes (Optional)</label>
+                <textarea
+                  placeholder="Additional notes about the appointment..."
+                  value={newAppointmentData.notes}
+                  onChange={(e) => setNewAppointmentData({
+                    ...newAppointmentData,
+                    notes: e.target.value
+                  })}
+                  rows="3"
+                />
+              </div>
+              <div className="doctordas-modal-actions">
+                <button 
+                  className="doctordas-btn doctordas-btn-secondary"
+                  onClick={() => setShowNewAppointmentModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="doctordas-btn doctordas-btn-primary"
+                  onClick={handleCreateAppointment}
+                  disabled={!newAppointmentData.patient_id || !newAppointmentData.appointment_date}
+                >
+                  Create Appointment
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

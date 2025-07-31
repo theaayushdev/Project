@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import UserSidebar from './usersidebar';
 import UserNavbar from './Usernavbar';
-import '../cssonly/pregnancydashboard.css';
+import '../cssonly/user-messaging.css';
 
 const UserMessagingPage = () => {
   const [activeTab, setActiveTab] = useState('chat');
@@ -13,6 +13,7 @@ const UserMessagingPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const pollingRef = useRef();
+  const messagesEndRef = useRef(null);
 
   // Fetch user info from localStorage
   useEffect(() => {
@@ -55,6 +56,11 @@ const UserMessagingPage = () => {
     return () => clearInterval(pollingRef.current);
   }, [user, selectedDoctor]);
 
+  // Auto scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSend = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !user || !selectedDoctor) return;
@@ -84,83 +90,148 @@ const UserMessagingPage = () => {
     setLoading(false);
   };
 
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
-    <div className="dashboard-container">
-      <UserNavbar user={user} />
-      <div className="dashboard-layout">
-        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} lmc={pregnancyInfo?.lmc} week={week} trimester={trimester} />
-        <main className="dashboard-content" style={{ padding: 0, display: 'flex', minHeight: 600 }}>
-          {/* Doctor List */}
-          <div style={{ width: 260, background: '#fff', borderRight: '1px solid #e2e8f0', borderRadius: '12px 0 0 12px', padding: 0 }}>
-            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18 }}>Doctors</div>
-            {loading && <div style={{ padding: 20 }}>Loading...</div>}
-            {error && <div style={{ color: 'red', padding: 20 }}>{error}</div>}
-            {!loading && !error && doctors.length === 0 && (
-              <div style={{ padding: 20, color: '#4a5568' }}>No doctors found. Please book an appointment first.</div>
-            )}
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {doctors.map((d) => (
-                <li
-                  key={d.id}
-                  onClick={() => setSelectedDoctor(d)}
-                  style={{
-                    padding: '16px 20px',
-                    cursor: 'pointer',
-                    background: selectedDoctor && selectedDoctor.id === d.id ? '#e6f0fa' : 'transparent',
-                    borderBottom: '1px solid #f1f5f9',
-                    color: '#2c5282',
-                    fontWeight: 500
-                  }}
-                >
-                  <span style={{ background: '#bee3f8', color: '#2c5282', borderRadius: '50%', padding: '6px 12px', marginRight: 12, fontWeight: 700 }}>
-                    {d.firstname[0]}{d.lastname[0]}
-                  </span>
-                  Dr. {d.firstname} {d.lastname}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {/* Chat Window */}
-          <div style={{ flex: 1, background: '#f7fafc', borderRadius: '0 12px 12px 0', display: 'flex', flexDirection: 'column', minHeight: 500 }}>
-            <div style={{ padding: 20, borderBottom: '1px solid #e2e8f0', color: '#2c5282', fontWeight: 600, fontSize: 18, minHeight: 60 }}>
-              {selectedDoctor ? `Dr. ${selectedDoctor.firstname} ${selectedDoctor.lastname}` : 'Select a doctor to chat'}
-            </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {selectedDoctor && messages.length === 0 && <div style={{ color: '#4a5568' }}>[No messages yet]</div>}
-              {selectedDoctor && messages.map((msg, idx) => (
+    <div className="user-messaging-container">
+      <div className="user-messaging-layout">
+        <UserSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="user-messaging-content">
+          <UserNavbar user={user} />
+          
+          <div className="user-chat-container">
+            {/* Doctor List Sidebar */}
+            <div className="user-doctor-list">
+              <div className="user-doctor-list-header">
+                Doctors
+              </div>
+              
+              {loading && (
+                <div className="user-loading">
+                  Loading doctors...
+                </div>
+              )}
+              
+              {error && (
+                <div style={{ padding: '1rem', color: '#ef4444' }}>
+                  {error}
+                </div>
+              )}
+              
+              {!loading && !error && doctors.length === 0 && (
+                <div className="user-empty-state">
+                  <div className="user-empty-icon">👨‍⚕️</div>
+                  <p className="user-empty-title">No doctors found</p>
+                  <p className="user-empty-description">Please book an appointment first</p>
+                </div>
+              )}
+              
+              {doctors.map((doctor) => (
                 <div
-                  key={idx}
-                  style={{
-                    alignSelf: msg.sender_type === 'user' ? 'flex-end' : 'flex-start',
-                    background: msg.sender_type === 'user' ? '#2c5282' : '#bee3f8',
-                    color: msg.sender_type === 'user' ? '#fff' : '#2c5282',
-                    borderRadius: 16,
-                    padding: '10px 18px',
-                    maxWidth: '70%',
-                    fontSize: 15
-                  }}
+                  key={doctor.id}
+                  className={`user-doctor-item ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedDoctor(doctor)}
                 >
-                  {msg.content}
+                  <div className="user-doctor-avatar">
+                    {doctor.firstname?.[0]}{doctor.lastname?.[0]}
+                  </div>
+                  <div className="user-doctor-info">
+                    <div className="user-doctor-name">
+                      Dr. {doctor.firstname} {doctor.lastname}
+                    </div>
+                    <div className="user-doctor-specialty">
+                      {doctor.specialty}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-            {selectedDoctor && (
-              <form onSubmit={handleSend} style={{ display: 'flex', gap: 8, padding: 20, borderTop: '1px solid #e2e8f0', background: '#fff', borderRadius: '0 0 12px 0' }}>
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={e => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  style={{ flex: 1, padding: 12, borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 16 }}
-                  disabled={loading}
-                />
-                <button type="submit" style={{ background: '#2c5282', color: '#fff', border: 'none', borderRadius: 6, padding: '0 20px', fontWeight: 600, fontSize: 16 }} disabled={loading || !newMessage.trim()}>
-                  Send
-                </button>
-              </form>
-            )}
+
+            {/* Chat Area */}
+            <div className="user-chat-area">
+              {selectedDoctor ? (
+                <>
+                  {/* Chat Header */}
+                  <div className="user-chat-header">
+                    <div className="user-doctor-avatar">
+                      {selectedDoctor.firstname?.[0]}{selectedDoctor.lastname?.[0]}
+                    </div>
+                    <div>
+                      <div className="user-doctor-name">
+                        Dr. {selectedDoctor.firstname} {selectedDoctor.lastname}
+                      </div>
+                      <div className="user-doctor-specialty">
+                        {selectedDoctor.specialty}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Messages */}
+                  <div className="user-chat-messages">
+                    {messages.length === 0 ? (
+                      <div className="user-empty-state">
+                        <div className="user-empty-icon">💬</div>
+                        <p className="user-empty-title">No messages yet</p>
+                        <p className="user-empty-description">Start the conversation!</p>
+                      </div>
+                    ) : (
+                      <div>
+                        {messages.map((message, index) => (
+                          <div
+                            key={index}
+                            className={`user-message ${message.sender_type === 'user' ? 'sent' : 'received'}`}
+                          >
+                            <div className={`user-message-bubble ${message.sender_type === 'user' ? 'sent' : 'received'}`}>
+                              <div>{message.content}</div>
+                              <div className="user-message-time">
+                                {formatTime(message.timestamp)}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Message Input */}
+                  <div className="user-chat-input">
+                    <form onSubmit={handleSend} className="user-message-form">
+                      <textarea
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Type your message..."
+                        className="user-message-input"
+                        disabled={loading}
+                        rows={1}
+                      />
+                      <button
+                        type="submit"
+                        disabled={loading || !newMessage.trim()}
+                        className="user-send-button"
+                      >
+                        Send
+                      </button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <div className="user-empty-state">
+                  <div className="user-empty-icon">💬</div>
+                  <h3 className="user-empty-title">Select a Doctor</h3>
+                  <p className="user-empty-description">Choose a doctor from the list to start messaging</p>
+                </div>
+              )}
+            </div>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );
