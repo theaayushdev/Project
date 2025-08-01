@@ -141,7 +141,8 @@ body {
   background: #f8fafc;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
-  color: #1a1a1a;
+  color: #222 !important;
+  background: #fff !important;
   transition: all 0.2s ease;
   font-family: inherit;
 }

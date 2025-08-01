@@ -105,6 +105,7 @@ function AdminLogin() {
               onChange={handleInputChange}
               className={`form-input ${errors.username ? 'error' : ''}`}
               placeholder="Enter your username"
+              style={{ color: '#222', background: '#fff' }}
             />
             {errors.username && (
               <p className="error-message">{errors.username}</p>
@@ -123,6 +124,7 @@ function AdminLogin() {
               onChange={handleInputChange}
               className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="Enter your password"
+              style={{ color: '#222', background: '#fff' }}
             />
             {errors.password && (
               <p className="error-message">{errors.password}</p>
