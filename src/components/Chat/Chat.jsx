@@ -163,7 +163,14 @@ const Chat = ({ userType, userId, onClose }) => {
                 className="doctor-item"
                 onClick={() => startNewConversation(doctor)}
               >
-                <img src={doctor.avatar} alt={doctor.name} className="doctor-avatar" />
+                <img 
+                  src={doctor.avatar} 
+                  alt={doctor.name} 
+                  className="doctor-avatar"
+                  onError={(e) => {
+                    e.target.src = 'http://127.0.0.1:5000/assets/default-avatar.svg';
+                  }}
+                />
                 <div className="doctor-info">
                   <div className="doctor-name">{doctor.name}</div>
                   <div className="doctor-specialty">{doctor.specialty}</div>
@@ -184,7 +191,19 @@ const Chat = ({ userType, userId, onClose }) => {
                 setShowDoctorList(false);
               }}
             >
-              <img src={conversation.avatar} alt={conversation.name} className="conversation-avatar" />
+              <div className="avatar-container">
+                <img 
+                  src={conversation.avatar} 
+                  alt={conversation.name} 
+                  className="conversation-avatar"
+                  onError={(e) => {
+                    e.target.src = 'http://127.0.0.1:5000/assets/default-avatar.svg';
+                  }}
+                />
+                {conversation.type === 'user' && !conversation.avatar.includes('default-avatar') && !conversation.avatar.includes('avatar-') && (
+                  <div className="photo-indicator" title="User uploaded photo"></div>
+                )}
+              </div>
               <div className="conversation-info">
                 <div className="conversation-name">{conversation.name}</div>
                 <div className="conversation-last-message">
@@ -207,11 +226,19 @@ const Chat = ({ userType, userId, onClose }) => {
           <>
             <div className="chat-conversation-header">
               <div className="conversation-header-info">
-                <img 
-                  src={selectedConversation.avatar} 
-                  alt={selectedConversation.name} 
-                  className="conversation-header-avatar" 
-                />
+                <div className="avatar-container">
+                  <img 
+                    src={selectedConversation.avatar} 
+                    alt={selectedConversation.name} 
+                    className="conversation-header-avatar"
+                    onError={(e) => {
+                      e.target.src = 'http://127.0.0.1:5000/assets/default-avatar.svg';
+                    }}
+                  />
+                  {selectedConversation.type === 'user' && !selectedConversation.avatar.includes('default-avatar') && !selectedConversation.avatar.includes('avatar-') && (
+                    <div className="photo-indicator-header" title="User uploaded photo"></div>
+                  )}
+                </div>
                 <div>
                   <div className="conversation-header-name">{selectedConversation.name}</div>
                   <div className="conversation-header-status">
