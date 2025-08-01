@@ -51,6 +51,11 @@ os.makedirs(USER_UPLOAD_FOLDER, exist_ok=True)
 def uploaded_user_photo(filename):
     return send_from_directory(USER_UPLOAD_FOLDER, filename)
 
+# Route to serve public assets (like default avatar)
+@app.route('/assets/<filename>')
+def serve_assets(filename):
+    return send_from_directory('../public', filename)
+
 # Route to serve uploaded doctor photos
 @app.route('/uploads/doctor_photos/<filename>')
 def uploaded_file(filename):
@@ -93,7 +98,7 @@ def register():
                 filename = f"user_{timestamp}_{filename}"
                 file_path = os.path.join(USER_UPLOAD_FOLDER, filename)
                 file.save(file_path)
-                profile_photo_url = f"http://127.0.0.1:5000/uploads/user_photos/{filename}"
+                profile_photo_url = filename  # Store only filename, not full URL
 
         # Get form data (works with both form-data and JSON)
         if request.content_type and 'multipart/form-data' in request.content_type:
@@ -687,7 +692,18 @@ def get_chat_conversations(user_type, user_id):
                         'type': 'doctor'
                     }
                 else:
-                    avatar_url = f'/uploads/user_photos/{conv[4]}' if conv[4] else '/assets/default-avatar.png'
+                    # Handle both full URLs and filenames for profile photos
+                    if conv[4]:
+                        if conv[4].startswith('http'):
+                            # Already a full URL
+                            avatar_url = conv[4]
+                        else:
+                            # Just a filename, construct full URL
+                            avatar_url = f'http://127.0.0.1:5000/uploads/user_photos/{conv[4]}'
+                    else:
+                        # No profile photo, use default
+                        avatar_url = 'http://127.0.0.1:5000/assets/default-avatar.svg'
+                    
                     all_conversations[conv_id] = {
                         'id': conv_id,
                         'name': f"{conv[1]} {conv[2]}",
