@@ -2,8 +2,8 @@
 
 .chat-container {
   display: flex;
-  height: 100vh;
-  max-height: 800px;
+  height: 100%;
+  max-height: 85vh;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
