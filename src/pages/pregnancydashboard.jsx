@@ -186,15 +186,6 @@ function UserPregnancyDashboard() {
     }
   ];
 
-  const milestones = [
-    { id: 1, text: "First prenatal visit", completed: true },
-    { id: 2, text: "First ultrasound", completed: true },
-    { id: 3, text: "Genetic screening", completed: false },
-    { id: 4, text: "Anatomy scan", completed: false },
-    { id: 5, text: "Glucose test", completed: false },
-    { id: 6, text: "Birth plan preparation", completed: false }
-  ];
-
   const tips = [
     {
       icon: "💧",
@@ -350,122 +341,136 @@ function UserPregnancyDashboard() {
         trimester={trimester} 
         activeTab="dashboard" 
         onChatOpen={() => setIsChatOpen(true)}
+        user={user}
       />
       <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
         {/* User Navbar: top navigation bar */}
         <UserNavbar user={user} />
         
         <div className="pregnancy-dashboard-header">
-          <div className="pregnancy-header-content">
-            <div className="pregnancy-welcome-section">
-              <h1>Welcome back, {user?.firstname}!</h1>
-              {dueDate && (
-                <p className="pregnancy-due-date">Due Date: {dueDate}</p>
-              )}
-            </div>
-            <div className="pregnancy-header-stats">
-              <div className="pregnancy-stat-item">
-                <span className="pregnancy-stat-number">{week || 0}</span>
-                <span className="pregnancy-stat-label">Weeks</span>
+          <div className="pregnancy-header-clean">
+            <div className="pregnancy-header-content">
+              <div className="pregnancy-welcome-section">
+                <div className="welcome-content">
+                  <div className="welcome-avatar-container">
+                    <img 
+                      src={user?.profile_photo ? 
+                        (user.profile_photo.startsWith('http') ? 
+                          user.profile_photo : 
+                          `http://127.0.0.1:5000/uploads/user_photos/${user.profile_photo}`) 
+                        : 'http://127.0.0.1:5000/assets/default-avatar.svg'
+                      }
+                      alt={`${user?.firstname} ${user?.lastname}`}
+                      className="welcome-profile-avatar"
+                      onError={(e) => {
+                        e.target.src = 'http://127.0.0.1:5000/assets/default-avatar.svg';
+                      }}
+                    />
+                    <div className="avatar-status-badge">
+                      <Heart size={10} />
+                    </div>
+                  </div>
+                  <div className="welcome-text-content">
+                    <div className="welcome-main-info">
+                      <h1>Welcome back, {user?.firstname}!</h1>
+                      <p className="welcome-subtitle">
+                        {week && week > 0 ? 
+                          `${week} weeks along in your pregnancy journey` : 
+                          'Your pregnancy journey starts here'
+                        }
+                      </p>
+                    </div>
+                    <div className="user-details-compact">
+                      <div className="user-detail-row">
+                        <span className="detail-label">Email:</span>
+                        <span className="detail-value">{user?.email}</span>
+                      </div>
+                      <div className="user-detail-row">
+                        <span className="detail-label">Phone:</span>
+                        <span className="detail-value">{user?.contact || 'Not provided'}</span>
+                      </div>
+                      {dueDate && (
+                        <div className="user-detail-row due-date-row">
+                          <Calendar size={14} className="detail-icon" />
+                          <span className="detail-label">Due Date:</span>
+                          <span className="detail-value">{dueDate}</span>
+                          {week && week > 0 && (
+                            <span className="weeks-left">({40 - week} weeks left)</span>
+                          )}
+                        </div>
+                      )}
+                      {!dueDate && (
+                        <div className="user-detail-row due-date-row">
+                          <Calendar size={14} className="detail-icon" />
+                          <span className="detail-label">Due Date:</span>
+                          <span className="detail-value">Complete pregnancy profile to set due date</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="pregnancy-message-compact">
+                  <Heart size={16} className="message-heart" />
+                  <span>
+                    {week && week > 0 ? 
+                      `You're doing amazing! Week ${week} of your journey.` :
+                      'Welcome to your pregnancy journey!'
+                    }
+                  </span>
+                </div>
               </div>
-              <div className="pregnancy-stat-item">
-                <span className="pregnancy-stat-number">{trimester || 'N/A'}</span>
-                <span className="pregnancy-stat-label">Trimester</span>
-              </div>
-              <div className="pregnancy-stat-item">
-                <span className="pregnancy-stat-number">{babySize}</span>
-                <span className="pregnancy-stat-label">Baby Size</span>
+              <div className="pregnancy-header-stats">
+                <div className="pregnancy-stat-item">
+                  <div className="pregnancy-stat-icon">
+                    <Calendar size={18} />
+                  </div>
+                  <span className="pregnancy-stat-number">{week || 0}</span>
+                  <span className="pregnancy-stat-label">Weeks</span>
+                </div>
+                <div className="pregnancy-stat-item">
+                  <div className="pregnancy-stat-icon">
+                    <Heart size={18} />
+                  </div>
+                  <span className="pregnancy-stat-number">{trimester ? trimester.split(' ')[0] : 'N/A'}</span>
+                  <span className="pregnancy-stat-label">Trimester</span>
+                </div>
+                <div className="pregnancy-stat-item">
+                  <div className="pregnancy-stat-icon">
+                    <Baby size={18} />
+                  </div>
+                  <span className="pregnancy-stat-number">{babySize}</span>
+                  <span className="pregnancy-stat-label">Baby Size</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <div className="pregnancy-dashboard-grid">
-          {/* Health Stats */}
-          <div className="pregnancy-widget">
+          {/* Health Overview - Complete health stats */}
+          <div className="pregnancy-widget pregnancy-widget-expanded">
             <div className="pregnancy-widget-header">
-              <h3 className="pregnancy-widget-title">Health Stats</h3>
+              <h3 className="pregnancy-widget-title">Health Overview</h3>
               <div className="pregnancy-widget-icon" style={{ backgroundColor: "#4ECDC4" }}>
                 <Activity size={20} />
               </div>
             </div>
-            <div className="pregnancy-health-stats">
+            <div className="pregnancy-health-stats-full">
               {healthStats.map((stat, index) => (
-                <div key={index} className="pregnancy-health-stat-card">
-                  <div className="pregnancy-stat-icon" style={{ backgroundColor: stat.color }}>
-                    <stat.icon size={24} />
+                <div key={index} className="pregnancy-health-stat-card-full" style={{'--stat-color': stat.color}}>
+                  <div className="pregnancy-stat-icon-full" style={{ backgroundColor: stat.color }}>
+                    <stat.icon size={22} />
                   </div>
-                  <div className="pregnancy-stat-info">
+                  <div className="pregnancy-stat-info-full">
                     <h4>{stat.title}</h4>
-                    <div className="pregnancy-stat-value">{stat.value}</div>
-                    <div className={`pregnancy-stat-change ${stat.trend}`}>
+                    <div className="pregnancy-stat-value-full">{stat.value}</div>
+                    <div className={`pregnancy-stat-change-full ${stat.trend}`}>
                       {stat.change}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Milestones */}
-          <div className="pregnancy-widget">
-            <div className="pregnancy-widget-header">
-              <h3 className="pregnancy-widget-title">Pregnancy Milestones</h3>
-              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#A78BFA" }}>
-                <Target size={20} />
-              </div>
-            </div>
-            <div>
-              {milestones.map((milestone) => (
-                <div key={milestone.id} className={`pregnancy-milestone ${milestone.completed ? 'completed' : ''}`}>
-                  <div className="pregnancy-milestone-marker">
-                    {milestone.completed ? '✓' : milestone.id}
-                  </div>
-                  <span>{milestone.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Water Tracker */}
-          <div className="pregnancy-widget">
-            <div className="pregnancy-widget-header">
-              <h3 className="pregnancy-widget-title">Water Intake</h3>
-              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#4ECDC4" }}>
-                <Droplets size={20} />
-              </div>
-            </div>
-            <div className="pregnancy-water-tracker">
-              {Array.from({ length: 8 }, (_, i) => (
-                <div
-                  key={i}
-                  className={`pregnancy-water-glass ${i < waterIntake ? 'filled' : ''}`}
-                  onClick={() => setWaterIntake(i + 1)}
-                />
-              ))}
-            </div>
-            <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: '#718096' }}>
-              Click glasses to track your water intake
-            </p>
-          </div>
-
-          {/* Tips */}
-          <div className="pregnancy-widget">
-            <div className="pregnancy-widget-header">
-              <h3 className="pregnancy-widget-title">Daily Tips</h3>
-              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#F59E0B" }}>
-                <Star size={20} />
-              </div>
-            </div>
-            {tips.map((tip, index) => (
-              <div key={index} className="pregnancy-tip-card">
-                <div className="pregnancy-tip-icon">{tip.icon}</div>
-                <div className="pregnancy-tip-content">
-                  <h4>{tip.title}</h4>
-                  <p>{tip.content}</p>
-                </div>
-              </div>
-            ))}
           </div>
 
           {/* Appointments */}
@@ -476,27 +481,157 @@ function UserPregnancyDashboard() {
                 <Calendar size={20} />
               </div>
             </div>
-            {appointments.length > 0 ? (
-              <div>
-                {appointments.slice(0, 3).map((appointment, index) => (
-                  <div key={index} className="pregnancy-milestone">
-                    <div className="pregnancy-milestone-marker">
-                      📅
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: '600' }}>{appointment.purpose}</div>
-                      <div style={{ fontSize: '0.875rem', color: '#718096' }}>
-                        {new Date(appointment.appointment_date).toLocaleDateString()}
+            <div className="appointments-content">
+              {appointments.length > 0 ? (
+                <div>
+                  {appointments.slice(0, 3).map((appointment, index) => (
+                    <div key={index} className="appointment-item">
+                      <div className="appointment-date">
+                        <span className="appointment-day">
+                          {new Date(appointment.appointment_date).getDate()}
+                        </span>
+                        <span className="appointment-month">
+                          {new Date(appointment.appointment_date).toLocaleDateString('en', { month: 'short' })}
+                        </span>
+                      </div>
+                      <div className="appointment-info">
+                        <div className="appointment-title">
+                          {appointment.doctor ? 
+                            `Dr. ${appointment.doctor.firstname} ${appointment.doctor.lastname}` : 
+                            'Medical Appointment'
+                          }
+                        </div>
+                        <div className="appointment-time">
+                          {appointment.doctor?.specialty || 'General Consultation'}
+                        </div>
+                      </div>
+                      <div className="appointment-status">
+                        <ChevronRight size={16} />
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <Calendar size={48} className="empty-icon" />
+                  <p>No upcoming appointments</p>
+                  <button 
+                    className="book-appointment-btn"
+                    onClick={() => window.location.href = '/pregnancydashboard?section=doctors'}
+                  >
+                    Book Appointment
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Pregnancy Progress */}
+          <div className="pregnancy-widget">
+            <div className="pregnancy-widget-header">
+              <h3 className="pregnancy-widget-title">Pregnancy Progress</h3>
+              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#A78BFA" }}>
+                <Target size={20} />
               </div>
-            ) : (
-              <p style={{ color: '#718096', textAlign: 'center', padding: '2rem' }}>
-                No upcoming appointments
-              </p>
-            )}
+            </div>
+            <div className="pregnancy-progress-content">
+              <div className="pregnancy-progress-main">
+                <div className="pregnancy-progress-circle">
+                  <div className="progress-ring">
+                    <div 
+                      className="progress-fill" 
+                      style={{ 
+                        transform: `rotate(${((week || 0) / 40) * 360}deg)` 
+                      }}
+                    ></div>
+                  </div>
+                  <div className="progress-center">
+                    <span className="progress-week">{week || 0}</span>
+                    <span className="progress-label">weeks</span>
+                  </div>
+                </div>
+                <div className="pregnancy-progress-info">
+                  <div className="progress-detail">
+                    <span className="progress-detail-label">Baby Size:</span>
+                    <span className="progress-detail-value">{babySize}</span>
+                  </div>
+                  <div className="progress-detail">
+                    <span className="progress-detail-label">Trimester:</span>
+                    <span className="progress-detail-value">{trimester || 'N/A'}</span>
+                  </div>
+                  <div className="progress-detail">
+                    <span className="progress-detail-label">Weeks Left:</span>
+                    <span className="progress-detail-value">{week ? 40 - week : 40}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Daily Wellness Tracker */}
+          <div className="pregnancy-widget">
+            <div className="pregnancy-widget-header">
+              <h3 className="pregnancy-widget-title">Daily Wellness</h3>
+              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#4ECDC4" }}>
+                <Droplets size={20} />
+              </div>
+            </div>
+            <div className="wellness-tracker">
+              <div className="wellness-item">
+                <div className="wellness-item-header">
+                  <Droplets size={18} />
+                  <span>Water Intake</span>
+                  <span className="wellness-count">{waterIntake}/8</span>
+                </div>
+                <div className="pregnancy-water-tracker">
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <div
+                      key={i}
+                      className={`pregnancy-water-glass ${i < waterIntake ? 'filled' : ''}`}
+                      onClick={() => setWaterIntake(i + 1)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="wellness-item">
+                <div className="wellness-item-header">
+                  <Moon size={18} />
+                  <span>Sleep Hours</span>
+                  <span className="wellness-count">{sleepHours}h</span>
+                </div>
+                <div className="wellness-slider">
+                  <input 
+                    type="range" 
+                    min="4" 
+                    max="12" 
+                    value={sleepHours}
+                    onChange={(e) => setSleepHours(parseInt(e.target.value))}
+                    className="wellness-range"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Daily Tips */}
+          <div className="pregnancy-widget">
+            <div className="pregnancy-widget-header">
+              <h3 className="pregnancy-widget-title">Today's Tips</h3>
+              <div className="pregnancy-widget-icon" style={{ backgroundColor: "#10B981" }}>
+                <Heart size={20} />
+              </div>
+            </div>
+            <div className="tips-content">
+              {tips.map((tip, index) => (
+                <div key={index} className="pregnancy-tip-card">
+                  <div className="pregnancy-tip-icon">{tip.icon}</div>
+                  <div className="pregnancy-tip-content">
+                    <h4>{tip.title}</h4>
+                    <p>{tip.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

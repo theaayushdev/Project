@@ -3,7 +3,7 @@ import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Sett
 import "../cssonly/usersidebar.css";
 import { useNavigate } from "react-router-dom";
 
-const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen }) => {
+const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen, user }) => {
   const navigate = useNavigate();
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
@@ -47,6 +47,7 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen
         </div>
         <h1>Pregnancy Care</h1>
       </div>
+      
       <div className="usersidebar-progress">
         <div className="usersidebar-progress-circle">
           <span className="usersidebar-week-number">{week !== null && week !== undefined ? week : '--'}</span>
