@@ -19,6 +19,10 @@ const Registerlogin = () => {
     confirmPassword: ""
   });
 
+  // Profile photo state
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState(null);
+
   // Form validation state
   const [errors, setErrors] = useState({});
   
@@ -34,6 +38,36 @@ const Registerlogin = () => {
     // Clear field-specific error when user types
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
+    }
+  };
+
+  // Handle profile photo upload
+  const handleProfilePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setErrors({ ...errors, profilePhoto: "Profile photo must be less than 5MB" });
+        return;
+      }
+      
+      if (!file.type.match(/^image\/(jpeg|jpg|png|gif)$/)) {
+        setErrors({ ...errors, profilePhoto: "Please upload a valid image file (JPEG, PNG, GIF)" });
+        return;
+      }
+      
+      setProfilePhoto(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePhotoPreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+      
+      // Clear photo error if any
+      if (errors.profilePhoto) {
+        setErrors({ ...errors, profilePhoto: "" });
+      }
     }
   };
 
@@ -114,15 +148,25 @@ const Registerlogin = () => {
     setIsSubmitting(true);
     setMessage({ text: "", type: "" });
     
-    // Create a copy of formData without confirmPassword for API submission
-    const submissionData = { ...formData };
-    delete submissionData.confirmPassword;
-    
     try {
+      // Create FormData for file upload
+      const submissionData = new FormData();
+      
+      // Add form fields
+      Object.keys(formData).forEach(key => {
+        if (key !== 'confirmPassword') {
+          submissionData.append(key, formData[key]);
+        }
+      });
+      
+      // Add profile photo if selected
+      if (profilePhoto) {
+        submissionData.append('profile_photo', profilePhoto);
+      }
+      
       const res = await fetch("http://127.0.0.1:5000/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submissionData),
+        body: submissionData, // Don't set Content-Type header for FormData
       });
 
       const data = await res.json();
@@ -253,6 +297,27 @@ const Registerlogin = () => {
                   className={errors.email ? "error" : ""}
                 />
                 {errors.email && <span className="error-text">{errors.email}</span>}
+              </div>
+              
+              {/* Profile Photo Upload */}
+              <div className="form-group">
+                <label htmlFor="profile_photo">Profile Photo (Optional)</label>
+                <input
+                  type="file"
+                  id="profile_photo"
+                  name="profile_photo"
+                  accept="image/*"
+                  onChange={handleProfilePhotoChange}
+                  className={errors.profilePhoto ? "error" : ""}
+                />
+                {errors.profilePhoto && <span className="error-text">{errors.profilePhoto}</span>}
+                
+                {profilePhotoPreview && (
+                  <div className="photo-preview">
+                    <img src={profilePhotoPreview} alt="Profile Preview" className="preview-image" />
+                    <p className="preview-text">Profile Photo Preview</p>
+                  </div>
+                )}
               </div>
               
               <div className="form-group">
@@ -533,6 +598,62 @@ const Registerlogin = () => {
           padding: 15px;
           border-radius: 8px;
           margin-bottom: 25px;
+          font-weight: 500;
+          border: 1px solid transparent;
+        }
+        
+        .message.success {
+          background-color: #d4edda;
+          color: #155724;
+          border-color: #c3e6cb;
+        }
+        
+        .message.error {
+          background-color: #f8d7da;
+          color: #721c24;
+          border-color: #f5c6cb;
+        }
+        
+        /* Profile Photo Preview Styles */
+        .photo-preview {
+          margin-top: 10px;
+          text-align: center;
+        }
+        
+        .preview-image {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 3px solid #3498db;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-text {
+          margin-top: 8px;
+          font-size: 14px;
+          color: #666;
+        }
+        
+        /* File input styling */
+        input[type="file"] {
+          padding: 8px;
+          border: 2px dashed #ddd;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+          cursor: pointer;
+          transition: border-color 0.3s ease;
+        }
+        
+        input[type="file"]:hover {
+          border-color: #3498db;
+        }
+        
+        input[type="file"]:focus {
+          outline: none;
+          border-color: #3498db;
+          box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
           font-weight: 500;
           text-align: center;
         }

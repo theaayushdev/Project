@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ChatModal from '../components/Chat/ChatModal';
 import '../cssonly/doctordashboard-single.css';
 
 const DoctorDashboardApp = () => {
@@ -16,11 +17,7 @@ const DoctorDashboardApp = () => {
   const [messages, setMessages] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   
-  // Chat states
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const [chatMessages, setChatMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [sendingMessage, setSendingMessage] = useState(false);
+  // Chat states - removed, now using ChatModal
   
   // Profile states
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -28,6 +25,7 @@ const DoctorDashboardApp = () => {
   
   // Modal states
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [newAppointmentData, setNewAppointmentData] = useState({
@@ -42,8 +40,7 @@ const DoctorDashboardApp = () => {
   const [filteredPatients, setFilteredPatients] = useState([]);
   
   const navigate = useNavigate();
-  const messagesEndRef = useRef(null);
-  const chatPollingRef = useRef(null);
+  // Refs - removed chat refs, now using ChatModal
 
   // Test backend connectivity
   useEffect(() => {
@@ -167,74 +164,7 @@ const DoctorDashboardApp = () => {
     }
   }, [searchQuery, patients]);
 
-  // Chat functionality
-  useEffect(() => {
-    if (!doctor || !selectedPatient) return;
-    const fetchChatMessages = async () => {
-      try {
-        // Use the new chat endpoints
-        const response = await fetch(
-          `http://127.0.0.1:5000/chat/messages?sender_id=${doctor.id}&receiver_id=${selectedPatient.id}&sender_type=doctor&receiver_type=user`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setChatMessages(Array.isArray(data) ? data : []);
-        }
-      } catch (err) {
-        console.error('Error fetching chat messages:', err);
-      }
-    };
-
-    fetchChatMessages();
-    chatPollingRef.current = setInterval(fetchChatMessages, 2000);
-
-    return () => {
-      if (chatPollingRef.current) {
-        clearInterval(chatPollingRef.current);
-      }
-    };
-  }, [doctor, selectedPatient]);
-
-  // Auto scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !doctor || !selectedPatient) return;
-
-    setSendingMessage(true);
-    try {
-      const formData = new FormData();
-      formData.append('content', newMessage.trim());
-      formData.append('sender_id', doctor.id);
-      formData.append('receiver_id', selectedPatient.id);
-      formData.append('sender_type', 'doctor');
-      formData.append('receiver_type', 'user');
-
-      const response = await fetch('http://127.0.0.1:5000/chat/send', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        setNewMessage('');
-        // Immediately fetch messages after sending
-        const messagesResponse = await fetch(
-          `http://127.0.0.1:5000/chat/messages?sender_id=${doctor.id}&receiver_id=${selectedPatient.id}&sender_type=doctor&receiver_type=user`
-        );
-        if (messagesResponse.ok) {
-          const data = await messagesResponse.json();
-          setChatMessages(Array.isArray(data) ? data : []);
-        }
-      }
-    } catch (err) {
-      console.error('Error sending message:', err);
-    } finally {
-      setSendingMessage(false);
-    }
-  };
+  // Chat functionality removed - now using ChatModal
 
   const handleLogout = () => {
     localStorage.removeItem('doctorData');
@@ -311,12 +241,7 @@ const DoctorDashboardApp = () => {
     setActiveSection(section);
   };
 
-  // Helper functions
-  const formatTime = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  };
+  // formatTime removed - was only used for chat
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -452,8 +377,8 @@ const DoctorDashboardApp = () => {
             </li>
             <li>
               <button
-                onClick={() => setActiveSection('chat')}
-                className={`doctordas-sidebar-link ${activeSection === 'chat' ? 'active' : ''}`}
+                onClick={() => setIsChatOpen(true)}
+                className="doctordas-sidebar-link"
               >
                 <span>💬</span>
                 <div>
@@ -914,114 +839,6 @@ const DoctorDashboardApp = () => {
             </div>
           )}
 
-          {/* Chat Section */}
-          {activeSection === 'chat' && (
-            <div className="doctordas-chat">
-              <div className="doctordas-chat-sidebar">
-                <div className="doctordas-chat-sidebar-header">
-                  <h3>Patients</h3>
-                  <p>Select a patient to start chatting</p>
-                </div>
-                <div className="doctordas-chat-patients">
-                  {patients.length === 0 ? (
-                    <div className="doctordas-empty-state">
-                      <span>👥</span>
-                      <p>No patients found</p>
-                    </div>
-                  ) : (
-                    patients.map((patient) => (
-                      <button
-                        key={patient.id}
-                        onClick={() => setSelectedPatient(patient)}
-                        className={`doctordas-chat-patient ${selectedPatient?.id === patient.id ? 'active' : ''}`}
-                      >
-                        <div className="doctordas-avatar">
-                          {patient.firstname?.[0]}{patient.lastname?.[0]}
-                        </div>
-                        <div className="doctordas-chat-patient-info">
-                          <p>{patient.firstname} {patient.lastname}</p>
-                          <span>{patient.email}</span>
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              <div className="doctordas-chat-main">
-                {selectedPatient ? (
-                  <>
-                    <div className="doctordas-chat-header">
-                      <div className="doctordas-avatar">
-                        {selectedPatient.firstname?.[0]}{selectedPatient.lastname?.[0]}
-                      </div>
-                      <div>
-                        <h3>{selectedPatient.firstname} {selectedPatient.lastname}</h3>
-                        <p>Patient</p>
-                      </div>
-                    </div>
-
-                    <div className="doctordas-chat-messages">
-                      {chatMessages.length === 0 ? (
-                        <div className="doctordas-empty-state">
-                          <span>💬</span>
-                          <h4>No messages yet</h4>
-                          <p>Start the conversation!</p>
-                        </div>
-                      ) : (
-                        chatMessages.map((message, index) => (
-                          <div
-                            key={index}
-                            className={`doctordas-chat-message ${message.sender_type === 'doctor' ? 'doctordas-chat-message-sent' : 'doctordas-chat-message-received'}`}
-                          >
-                            <div className="doctordas-chat-message-content">
-                              <p>{message.content}</p>
-                              <span>{formatTime(message.timestamp)}</span>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                      <div ref={messagesEndRef} />
-                    </div>
-
-                    <form onSubmit={handleSendMessage} className="doctordas-chat-input">
-                      <div className="doctordas-chat-input-container">
-                        <div className="doctordas-chat-input-actions">
-                          <button type="button" className="doctordas-chat-input-action">
-                            😊
-                          </button>
-                          <button type="button" className="doctordas-chat-input-action">
-                            📎
-                          </button>
-                        </div>
-                        <input
-                          type="text"
-                          value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder="Type your message..."
-                          disabled={sendingMessage}
-                        />
-                      </div>
-                      <button 
-                        type="submit" 
-                        className="doctordas-chat-send-btn"
-                        disabled={sendingMessage || !newMessage.trim()}
-                      >
-                        {sendingMessage ? 'Sending...' : 'Send'}
-                      </button>
-                    </form>
-                  </>
-                ) : (
-                  <div className="doctordas-chat-placeholder">
-                    <span>💬</span>
-                    <h3>Select a Patient</h3>
-                    <p>Choose a patient from the list to start messaging</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Profile Section */}
           {activeSection === 'profile' && (
             <div className="doctordas-section">
@@ -1282,6 +1099,14 @@ const DoctorDashboardApp = () => {
           </div>
         </div>
       )}
+      
+      {/* Chat Modal */}
+      <ChatModal 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        userType="doctor"
+        userId={doctor?.id}
+      />
     </div>
   );
 };

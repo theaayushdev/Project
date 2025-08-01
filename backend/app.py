@@ -42,6 +42,15 @@ migrate = Migrate(app, db)
 def home():
     return "Welcome to Pregnify!"
 
+# Create user profile photos upload directory
+USER_UPLOAD_FOLDER = 'uploads/user_photos'
+os.makedirs(USER_UPLOAD_FOLDER, exist_ok=True)
+
+# Route to serve uploaded user photos
+@app.route('/uploads/user_photos/<filename>')
+def uploaded_user_photo(filename):
+    return send_from_directory(USER_UPLOAD_FOLDER, filename)
+
 # Route to serve uploaded doctor photos
 @app.route('/uploads/doctor_photos/<filename>')
 def uploaded_file(filename):
@@ -72,33 +81,61 @@ def get_doctor(doctor_id):
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.json
-    email = data.get('email')
-    password = data.get('password')
+    try:
+        # Handle profile photo upload if present
+        profile_photo_url = None
+        if 'profile_photo' in request.files:
+            file = request.files['profile_photo']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                # Add timestamp to avoid filename conflicts
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f"user_{timestamp}_{filename}"
+                file_path = os.path.join(USER_UPLOAD_FOLDER, filename)
+                file.save(file_path)
+                profile_photo_url = f"http://127.0.0.1:5000/uploads/user_photos/{filename}"
 
-    if not email or not password:
-        return jsonify({'error': 'Email and password are required.'}), 400
+        # Get form data (works with both form-data and JSON)
+        if request.content_type and 'multipart/form-data' in request.content_type:
+            # Form data with file upload
+            data = request.form.to_dict()
+        else:
+            # JSON data (backward compatibility)
+            data = request.json or {}
+            
+        email = data.get('email')
+        password = data.get('password')
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({'error': 'User with this email already exists.'}), 409
+        if not email or not password:
+            return jsonify({'error': 'Email and password are required.'}), 400
 
-    new_user = User(
-        firstname=data.get('firstname'),
-        lastname=data.get('lastname'),
-        contact=data.get('contact'),
-        location=data.get('location'),
-        age=data.get('age'),
-        guardian_name=data.get('guardian_name'),
-        guardian_contact=data.get('guardian_contact'),
-        bloodtype=data.get('bloodtype'),
-        email=email,
-        password=password,
-        status='active'
-    )
-    db.session.add(new_user)
-    db.session.commit()
+        if User.query.filter_by(email=email).first():
+            return jsonify({'error': 'User with this email already exists.'}), 409
 
-    return jsonify({'message': 'User registered successfully.'}), 201
+        new_user = User(
+            firstname=data.get('firstname'),
+            lastname=data.get('lastname'),
+            contact=data.get('contact'),
+            location=data.get('location'),
+            age=int(data.get('age')) if data.get('age') else None,
+            guardian_name=data.get('guardian_name'),
+            guardian_contact=data.get('guardian_contact'),
+            bloodtype=data.get('bloodtype'),
+            email=email,
+            password=password,
+            profile_photo=profile_photo_url,
+            status='active'
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            'message': 'User registered successfully.',
+            'profile_photo': profile_photo_url
+        }), 201
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -299,7 +336,8 @@ def get_doctor_patients(doctor_id):
                 'email': p.email,
                 'contact': p.contact,
                 'age': p.age,
-                'bloodtype': p.bloodtype
+                'bloodtype': p.bloodtype,
+                'profile_photo': p.profile_photo
             }
             for p in patients
         ]
@@ -437,6 +475,7 @@ def user_dashboard():
         'guardian_contact': user.guardian_contact,
         'bloodtype': user.bloodtype,
         'email': user.email,
+        'profile_photo': user.profile_photo,
         'status': user.status
     }
 
@@ -459,7 +498,8 @@ def get_user_doctors(user_id):
                 'lastname': d.lastname,
                 'email': d.email,
                 'specialty': d.specialty,
-                'department': d.department
+                'department': d.department,
+                'profile_photo': d.profile_photo
             }
             for d in doctors
         ]
@@ -519,11 +559,13 @@ def get_doctor_recent_messages(doctor_id):
         
         message_list = []
         for msg in messages:
-            # Get sender info
+            # Get sender info with profile photo
             if msg.sender_type == 'doctor':
                 sender = db.session.query(Doctor).filter(Doctor.id == msg.sender_id).first()
+                profile_photo = sender.profile_photo if sender else None
             else:
-                sender = db.session.query(User).filter(User.id == msg.sender_id).first()
+                sender = db.session.query(User).filter(User.patient_id == msg.sender_id).first()
+                profile_photo = sender.profile_photo if sender else None
             
             message_data = {
                 'id': msg.id,
@@ -532,9 +574,10 @@ def get_doctor_recent_messages(doctor_id):
                 'is_read': msg.is_read,
                 'sender_type': msg.sender_type,
                 'sender': {
-                    'id': sender.id,
-                    'firstname': sender.firstname,
-                    'lastname': sender.lastname
+                    'id': sender.id if sender else None,
+                    'firstname': sender.firstname if sender else None,
+                    'lastname': sender.lastname if sender else None,
+                    'profile_photo': profile_photo
                 } if sender else None
             }
             message_list.append(message_data)
@@ -618,13 +661,13 @@ def get_chat_conversations(user_type, user_id):
             
         else:  # doctor
             # Get all users this doctor has chatted with
-            conversations = db.session.query(Message.receiver_id, User.firstname, User.lastname, User.email)\
+            conversations = db.session.query(Message.receiver_id, User.firstname, User.lastname, User.email, User.profile_photo)\
                 .join(User, Message.receiver_id == User.patient_id)\
                 .filter(Message.sender_id == user_id, Message.sender_type == 'doctor', Message.receiver_type == 'user')\
                 .distinct().all()
             
             # Also get users who have sent messages to this doctor
-            incoming_conversations = db.session.query(Message.sender_id, User.firstname, User.lastname, User.email)\
+            incoming_conversations = db.session.query(Message.sender_id, User.firstname, User.lastname, User.email, User.profile_photo)\
                 .join(User, Message.sender_id == User.patient_id)\
                 .filter(Message.receiver_id == user_id, Message.receiver_type == 'doctor', Message.sender_type == 'user')\
                 .distinct().all()
@@ -644,10 +687,11 @@ def get_chat_conversations(user_type, user_id):
                         'type': 'doctor'
                     }
                 else:
+                    avatar_url = f'/uploads/user_photos/{conv[4]}' if conv[4] else '/assets/default-avatar.png'
                     all_conversations[conv_id] = {
                         'id': conv_id,
                         'name': f"{conv[1]} {conv[2]}",
-                        'avatar': "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face",
+                        'avatar': avatar_url,
                         'email': conv[3] if len(conv) > 3 else '',
                         'type': 'user'
                     }
