@@ -14,6 +14,7 @@ class User(db.Model):
     bloodtype = db.Column(db.String(3))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(255), nullable=False)
+    profile_photo = db.Column(db.String(255))  # Store file path or URL for user profile photo
     status = db.Column(db.String(10), default='active')
 
     __table_args__ = {'sqlite_autoincrement': True}
