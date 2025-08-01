@@ -512,6 +512,31 @@ const AdminDashboard = () => {
     </div>
   );
 
+  // Doctors state
+
+
+  useEffect(() => {
+    // Fetch doctors from API
+    fetch('http://localhost:5000/doctors')
+      .then(res => res.json())
+      .then(data => setDoctors(data))
+      .catch(() => setDoctors([]));
+  }, []);
+
+  const handleRemoveDoctor = async (doctorId) => {
+    // Set doctor status to 'off' via API
+    await fetch(`http://localhost:5000/doctors/${doctorId}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'off' })
+    });
+    setDoctors(prev =>
+      prev.map(doc =>
+        doc.id === doctorId ? { ...doc, status: 'off' } : doc
+      )
+    );
+  };
+
   if (loading) {
     return (
       <div className="admin-dashboard">
@@ -547,6 +572,47 @@ const AdminDashboard = () => {
           {activeSection === 'reports' && renderReports()}
         </div>
       </div>
+
+      {/* Remove Doctors Section */}
+      <section className="remove-doctors-section" style={{ marginTop: '32px' }}>
+        <h2>Remove Doctors</h2>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '16px' }}>
+          <thead>
+            <tr>
+              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Name</th>
+              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Email</th>
+              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Status</th>
+              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {doctors.map(doctor => (
+              <tr key={doctor.id}>
+                <td style={{ padding: '8px' }}>{doctor.name}</td>
+                <td style={{ padding: '8px' }}>{doctor.email}</td>
+                <td style={{ padding: '8px' }}>{doctor.status}</td>
+                <td style={{ padding: '8px' }}>
+                  <button
+                    style={{
+                      background: '#ef4444',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      cursor: doctor.status === 'off' ? 'not-allowed' : 'pointer',
+                      opacity: doctor.status === 'off' ? 0.6 : 1
+                    }}
+                    disabled={doctor.status === 'off'}
+                    onClick={() => handleRemoveDoctor(doctor.id)}
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
 
       <style jsx>{`
         .admin-dashboard {

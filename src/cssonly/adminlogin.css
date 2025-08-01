@@ -1,0 +1,5 @@
+input[type="text"],
+input[type="password"] {
+  color: #222;
+  background: #fff;
+}
