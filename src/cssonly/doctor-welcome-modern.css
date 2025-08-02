@@ -21,29 +21,6 @@
   background: linear-gradient(90deg, #3b82f6, #1d4ed8, #7c3aed);
 }
 
-/* Dashboard Layout */
-.doctordas-dashboard {
-  padding: 20px;
-}
-
-.doctordas-app {
-  display: flex;
-  min-height: 100vh;
-  background: #f8fafc;
-}
-
-.doctordas-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.doctordas-main {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
 /* Professional Doctor Profile Header */
 .doctor-profile-header {
   margin-bottom: 32px;
