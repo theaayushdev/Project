@@ -26,6 +26,10 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen
       navigate('/pregnancydashboard?section=doctors');
     } else if (id === 'articles') {
       navigate('/pregnancydashboard?section=articles');
+    } else if (id === 'baby') {
+      navigate('/pregnancydashboard?section=babygrowth');
+    } else if (id === 'health') {
+      navigate('/healthtracker');
     } else if (id === 'reports') {
       navigate('/reports');
     } else if (id === 'chat') {
