@@ -18,6 +18,7 @@ import DoctorDashboardApp from "./pages/doctordashboard";
 import MoodTracker from "./pages/moodtracker";
 import HydrationTracker from "./pages/hydration";
 import PregnancyDashboard from "./pages/pregnancydashboard";
+import ArticleDetail from "./pages/ArticleDetail";
 import DueDateCalculator from "./pages/duedatecalc";
 import AppointmentForm from './pages/appointment';
 import Removedoctor from './pages/removedoctor';
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="/AddDoctorform" element={<AddDoctorForm />} /> 
         <Route path="/doctordashboard" element={<DoctorDashboardApp />} />
         <Route path="/pregnancydashboard" element={<PregnancyDashboard />} />
+        <Route path="/article-detail" element={<ArticleDetail />} />
         <Route path="/appointment" element={<AppointmentForm />} />
         <Route path="/mood" element={<MoodTracker />} /> 
         <Route path="/additionalinformation" element={<PregnancyForm />} />

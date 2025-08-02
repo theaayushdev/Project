@@ -69,11 +69,8 @@ const DoctorDashboardApp = () => {
       try {
         setLoading(true);
         const doctorData = localStorage.getItem('doctorData');
-        console.log('Doctor data from localStorage:', doctorData);
-        
         if (doctorData) {
           const parsedDoctor = JSON.parse(doctorData);
-          console.log('Parsed doctor data:', parsedDoctor);
           
           // Verify doctor data with backend and get the complete data
           const response = await fetch(`http://127.0.0.1:5000/doctors`);
@@ -83,7 +80,6 @@ const DoctorDashboardApp = () => {
           
           // Get the full doctor data from the backend including profile_photo
           const allDoctors = await response.json();
-          console.log('All doctors from backend:', allDoctors);
           const fullDoctorData = allDoctors.find(d => d.id === parsedDoctor.id);
           if (fullDoctorData) {
             console.log("Full doctor data from backend:", fullDoctorData);
@@ -102,27 +98,8 @@ const DoctorDashboardApp = () => {
             department: parsedDoctor.department || ''
           });
         } else {
-          console.log('No doctor data found, creating demo data');
-          // For demo purposes, let's create a sample doctor
-          const demoDoctor = {
-            id: 1,
-            firstname: 'John',
-            lastname: 'Smith',
-            email: 'john.smith@hospital.com',
-            phone_number: '+1234567890',
-            specialty: 'Gynecology',
-            department: 'Women\'s Health',
-            profile_photo: null
-          };
-          setDoctor(demoDoctor);
-          setProfileData({
-            firstname: demoDoctor.firstname,
-            lastname: demoDoctor.lastname,
-            email: demoDoctor.email,
-            phone_number: demoDoctor.phone_number,
-            specialty: demoDoctor.specialty,
-            department: demoDoctor.department
-          });
+          navigate('/doctorlogin');
+          return;
         }
       } catch (err) {
         console.error('Error fetching doctor data:', err);
@@ -142,166 +119,40 @@ const DoctorDashboardApp = () => {
 
     const fetchDashboardData = async () => {
       try {
-        console.log('Fetching dashboard data for doctor:', doctor.id);
-        
         // Fetch stats
-        try {
-          const statsResponse = await fetch(`http://127.0.0.1:5000/doctor/stats/${doctor.id}`);
-          if (statsResponse.ok) {
-            const statsData = await statsResponse.json();
-            setStats(statsData);
-          } else {
-            // Demo stats
-            setStats({
-              total_patients: 45,
-              today_appointments: 8,
-              unread_messages: 3
-            });
-          }
-        } catch (err) {
-          console.log('Using demo stats data');
-          setStats({
-            total_patients: 45,
-            today_appointments: 8,
-            unread_messages: 3
-          });
+        const statsResponse = await fetch(`http://127.0.0.1:5000/doctor/stats/${doctor.id}`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setStats(statsData);
         }
 
         // Fetch appointments
-        try {
-          const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
-          if (appointmentsResponse.ok) {
-            const appointmentsData = await appointmentsResponse.json();
-            setAppointments(appointmentsData);
-          } else {
-            // Demo appointments
-            setAppointments([
-              {
-                id: 1,
-                appointment_date: new Date().toISOString(),
-                purpose: 'Prenatal Checkup',
-                status: 'confirmed',
-                user: {
-                  firstname: 'Sarah',
-                  lastname: 'Johnson',
-                  contact: '+1234567890'
-                }
-              },
-              {
-                id: 2,
-                appointment_date: new Date(Date.now() + 86400000).toISOString(),
-                purpose: 'Ultrasound',
-                status: 'pending',
-                user: {
-                  firstname: 'Emma',
-                  lastname: 'Davis',
-                  contact: '+1234567891'
-                }
-              }
-            ]);
-          }
-        } catch (err) {
-          console.log('Using demo appointments data');
-          setAppointments([
-            {
-              id: 1,
-              appointment_date: new Date().toISOString(),
-              purpose: 'Prenatal Checkup',
-              status: 'confirmed',
-              user: {
-                firstname: 'Sarah',
-                lastname: 'Johnson',
-                contact: '+1234567890'
-              }
-            }
-          ]);
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
         }
 
         // Fetch patients
-        try {
-          const patientsResponse = await fetch(`http://127.0.0.1:5000/doctor/patients/${doctor.id}`);
-          if (patientsResponse.ok) {
-            const patientsData = await patientsResponse.json();
-            setPatients(patientsData);
-            setFilteredPatients(patientsData);
-          } else {
-            // Demo patients
-            const demoPatients = [
-              {
-                id: 1,
-                firstname: 'Sarah',
-                lastname: 'Johnson',
-                email: 'sarah.johnson@email.com',
-                age: 28,
-                contact: '+1234567890',
-                due_date: '2025-12-15',
-                pregnancy_week: 24
-              },
-              {
-                id: 2,
-                firstname: 'Emma',
-                lastname: 'Davis',
-                email: 'emma.davis@email.com',
-                age: 32,
-                contact: '+1234567891',
-                due_date: '2025-11-20',
-                pregnancy_week: 28
-              }
-            ];
-            setPatients(demoPatients);
-            setFilteredPatients(demoPatients);
-          }
-        } catch (err) {
-          console.log('Using demo patients data');
-          const demoPatients = [
-            {
-              id: 1,
-              firstname: 'Sarah',
-              lastname: 'Johnson',
-              email: 'sarah.johnson@email.com',
-              age: 28,
-              contact: '+1234567890'
-            }
-          ];
-          setPatients(demoPatients);
-          setFilteredPatients(demoPatients);
+        const patientsResponse = await fetch(`http://127.0.0.1:5000/doctor/patients/${doctor.id}`);
+        if (patientsResponse.ok) {
+          const patientsData = await patientsResponse.json();
+          setPatients(patientsData);
+          setFilteredPatients(patientsData);
         }
 
-        // Fetch recent messages from real chat system
-        try {
-          // First, try to get messages from the chat system
-          const chatMessagesResponse = await fetch(`http://127.0.0.1:5000/api/chat/doctor/${doctor.id}/recent`);
-          if (chatMessagesResponse.ok) {
-            const chatMessages = await chatMessagesResponse.json();
-            setMessages(chatMessages);
-          } else {
-            // Fallback to general messages endpoint
-            const messagesResponse = await fetch(`http://127.0.0.1:5000/doctor/recent-messages/${doctor.id}`);
-            if (messagesResponse.ok) {
-              const messagesData = await messagesResponse.json();
-              setMessages(messagesData);
-            } else {
-              // If no real messages, show empty state
-              setMessages([]);
-            }
-          }
-        } catch (err) {
-          console.log('No real messages available, showing empty state');
-          setMessages([]);
+        // Fetch recent messages
+        const messagesResponse = await fetch(`http://127.0.0.1:5000/doctor/recent-messages/${doctor.id}`);
+        if (messagesResponse.ok) {
+          const messagesData = await messagesResponse.json();
+          setMessages(messagesData);
         }
 
         // Fetch calendar events
-        try {
-          const calendarResponse = await fetch(`http://127.0.0.1:5000/doctor/calendar-events/${doctor.id}`);
-          if (calendarResponse.ok) {
-            const calendarData = await calendarResponse.json();
-            setCalendarEvents(calendarData);
-          } else {
-            setCalendarEvents([]);
-          }
-        } catch (err) {
-          console.log('Using demo calendar data');
-          setCalendarEvents([]);
+        const calendarResponse = await fetch(`http://127.0.0.1:5000/doctor/calendar-events/${doctor.id}`);
+        if (calendarResponse.ok) {
+          const calendarData = await calendarResponse.json();
+          setCalendarEvents(calendarData);
         }
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -803,20 +654,17 @@ const DoctorDashboardApp = () => {
                             <div className="message-avatar-modern" style={{
                               background: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]
                             }}>
-                              {message.sender?.firstname?.[0] || message.user?.firstname?.[0] || 'P'}
+                              {message.sender?.firstname?.[0] || message.user?.firstname?.[0] || '?'}
                             </div>
                             <div className="message-info-modern">
                               <div className="message-header-modern">
-                                <h4>
-                                  {message.sender?.firstname || message.user?.firstname || 'Patient'} {' '}
-                                  {message.sender?.lastname || message.user?.lastname || ''}
-                                </h4>
+                                <h4>{message.sender?.firstname || message.user?.firstname || 'Patient'} {message.sender?.lastname || message.user?.lastname || ''}</h4>
                                 <span className="message-time-modern">
                                   {message.timestamp ? new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Now'}
                                 </span>
                               </div>
                               <p className="message-preview">
-                                {message.content?.substring(0, 80) || 'New message'}...
+                                {message.content?.substring(0, 80) || message.message?.substring(0, 80) || 'New message'}...
                               </p>
                               {!message.is_read && (
                                 <div className="unread-indicator">
