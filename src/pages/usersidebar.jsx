@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Settings, LogOut, ChevronRight, Sparkles } from "lucide-react";
+import { Home, Calendar, Activity, Baby, BookOpen, MessageCircle, FileText, Settings, ChevronRight, Sparkles } from "lucide-react";
 import "../cssonly/usersidebar.css";
 import { useNavigate } from "react-router-dom";
 
@@ -9,11 +9,11 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen
     { id: 'dashboard', icon: Home, label: 'Dashboard' },
     { id: 'appointments', icon: Calendar, label: 'Appointments' },
     { id: 'doctors', icon: Activity, label: 'Doctors' },
+    { id: 'chat', icon: MessageCircle, label: 'Chat' },
     { id: 'health', icon: Activity, label: 'Health Tracker' },
     { id: 'baby', icon: Baby, label: 'Baby Growth' },
     { id: 'babynames', icon: Sparkles, label: 'Baby Names' },
     { id: 'articles', icon: BookOpen, label: 'Articles' },
-    { id: 'chat', icon: MessageCircle, label: 'Chat' },
     { id: 'reports', icon: FileText, label: 'Reports' },
   ];
 
@@ -93,10 +93,6 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen
         <button className="usersidebar-link" style={{ width: "100%", marginBottom: 8 }}>
           <span className="icon"><Settings size={18} /></span>
           <span>Settings</span>
-        </button>
-        <button className="usersidebar-link" style={{ width: "100%" }}>
-          <span className="icon"><LogOut size={18} /></span>
-          <span>Logout</span>
         </button>
       </div>
     </aside>
