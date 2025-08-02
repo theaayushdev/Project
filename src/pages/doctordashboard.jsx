@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Users, Activity, Stethoscope, Award, Clock, Phone, Mail, MessageCircle, User, Calendar as CalendarIcon, MessageSquare, Heart } from 'lucide-react';
+import { Calendar, Users, Activity, Stethoscope, Award, Clock, Phone, Mail, MessageCircle, User, Calendar as CalendarIcon, MessageSquare, Heart, Plus } from 'lucide-react';
 import ChatModal from '../components/Chat/ChatModal';
 import '../cssonly/doctordashboard-single.css';
 import '../cssonly/doctor-welcome-modern.css';
@@ -40,6 +40,7 @@ const DoctorDashboardApp = () => {
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPatients, setFilteredPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   
   const navigate = useNavigate();
   // Refs - removed chat refs, now using ChatModal
@@ -552,235 +553,204 @@ const DoctorDashboardApp = () => {
                 </div>
               </div>
 
-              {/* Stats Cards */}
-              <div className="doctordas-stats-grid">
-                <div className="doctordas-stat-card">
-                  <div className="doctordas-stat-icon">👥</div>
-                  <div className="doctordas-stat-content">
-                    <h3>{stats?.total_patients || 0}</h3>
-                    <p>Total Patients</p>
-                    <span>+12%</span>
+              {/* Modern Dashboard Content */}
+              <div className="modern-dashboard-grid">
+                {/* Top Patients Section */}
+                <div className="modern-card">
+                  <div className="modern-card-header">
+                    <div className="card-header-content">
+                      <h3>Top Patients</h3>
+                      <span className="patient-count">{patients.length} total patients</span>
+                    </div>
                   </div>
-                </div>
-                <div className="doctordas-stat-card">
-                  <div className="doctordas-stat-icon">📅</div>
-                  <div className="doctordas-stat-content">
-                    <h3>{stats?.today_appointments || 0}</h3>
-                    <p>Today's Appointments</p>
-                    <span>{stats?.pending_appointments || 0} pending</span>
-                  </div>
-                </div>
-                <div className="doctordas-stat-card">
-                  <div className="doctordas-stat-icon">💬</div>
-                  <div className="doctordas-stat-content">
-                    <h3>{stats?.unread_messages || 0}</h3>
-                    <p>New Messages</p>
-                    <span>5 unread</span>
-                  </div>
-                </div>
-                <div className="doctordas-stat-card">
-                  <div className="doctordas-stat-icon">📊</div>
-                  <div className="doctordas-stat-content">
-                    <h3>{stats?.total_patients || 0}</h3>
-                    <p>Active Cases</p>
-                    <span>+3 this week</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Main Grid */}
-              <div className="doctordas-grid">
-                {/* Top Patients */}
-                <div className="doctordas-card">
-                  <div className="doctordas-card-header">
-                    <h3>👥 Top Patients</h3>
-                    <span>{patients.length} patients</span>
-                  </div>
-                  <div className="doctordas-card-content">
+                  <div className="modern-card-content">
                     {patients.length === 0 ? (
-                      <div className="doctordas-empty-state">
-                        <span>👥</span>
+                      <div className="empty-state">
+                        <Users size={48} className="empty-icon" />
                         <h4>No patients found</h4>
-                        <p>Start by booking appointments</p>
+                        <p>Start by booking appointments with patients</p>
                       </div>
                     ) : (
-                      patients.slice(0, 4).map((patient) => {
-                        const progress = getRandomProgress();
-                        return (
+                      <div className="patients-list">
+                        {patients.slice(0, 5).map((patient) => (
                           <div 
                             key={patient.id} 
-                            className="doctordas-patient-item"
-                            onClick={() => handleDashboardClick('patients')}
-                            style={{ cursor: 'pointer' }}
+                            className="patient-card-modern"
+                            onClick={() => setActiveSection('patients')}
                           >
-                            <div className="doctordas-avatar">
+                            <div className="patient-avatar-modern">
                               {patient.firstname?.[0]}{patient.lastname?.[0]}
                             </div>
-                            <div className="doctordas-patient-info">
-                              <div className="doctordas-patient-header">
-                                <p>{patient.firstname} {patient.lastname}</p>
-                                <span>{progress}%</span>
+                            <div className="patient-info-modern">
+                              <div className="patient-header-modern">
+                                <h4>{patient.firstname} {patient.lastname}</h4>
+                                <span className="patient-age">{patient.age || 'N/A'} yrs</span>
                               </div>
-                              <div className="doctordas-patient-details">
-                                <span>{patient.age || 'N/A'} yrs</span>
-                                <span>•</span>
-                                <span>Pregnancy</span>
-                              </div>
-                              <div className="doctordas-progress">
-                                <div 
-                                  className="doctordas-progress-bar"
-                                  style={{ width: `${progress}%` }}
-                                ></div>
+                              <div className="patient-details-modern">
+                                <div className="patient-detail-item">
+                                  <Mail size={14} />
+                                  <span>{patient.email}</span>
+                                </div>
+                                <div className="patient-detail-item">
+                                  <Phone size={14} />
+                                  <span>{patient.contact || 'Not provided'}</span>
+                                </div>
+                                {patient.due_date && (
+                                  <div className="patient-detail-item due-date">
+                                    <Calendar size={14} />
+                                    <span>Due: {new Date(patient.due_date).toLocaleDateString()}</span>
+                                  </div>
+                                )}
+                                {patient.pregnancy_week && (
+                                  <div className="patient-detail-item pregnancy-week">
+                                    <Heart size={14} />
+                                    <span>Week {patient.pregnancy_week}</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
+                            <div className="patient-actions-modern">
+                              <button 
+                                className="action-btn primary"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsChatOpen(true);
+                                }}
+                              >
+                                <MessageCircle size={16} />
+                                Chat
+                              </button>
+                            </div>
                           </div>
-                        );
-                      })
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Recent Messages */}
-                <div className="doctordas-card">
-                  <div className="doctordas-card-header">
-                    <h3>💬 Recent Messages</h3>
-                    <span>{messages.length} messages</span>
+                {/* Recent Messages Section */}
+                <div className="modern-card">
+                  <div className="modern-card-header">
+                    <div className="card-header-content">
+                      <h3>Recent Messages</h3>
+                      <span className="message-count">{messages.length} conversations</span>
+                    </div>
                   </div>
-                  <div className="doctordas-card-content">
+                  <div className="modern-card-content">
                     {messages.length === 0 ? (
-                      <div className="doctordas-empty-state">
-                        <span>💬</span>
+                      <div className="empty-state">
+                        <MessageCircle size={48} className="empty-icon" />
                         <h4>No messages yet</h4>
                         <p>Start a conversation with your patients</p>
                       </div>
                     ) : (
-                      messages.slice(0, 4).map((message) => (
-                        <div 
-                          key={message.id} 
-                          className="doctordas-message-item"
-                          onClick={() => handleDashboardClick('chat')}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <div className="doctordas-avatar">
-                            {message.sender?.firstname?.[0]}{message.sender?.lastname?.[0]}
-                          </div>
-                          <div className="doctordas-message-info">
-                            <div className="doctordas-message-header">
-                              <p>{message.sender?.firstname} {message.sender?.lastname}</p>
-                              <span>{formatTime(message.timestamp)}</span>
+                      <div className="messages-list">
+                        {messages.slice(0, 5).map((message, index) => (
+                          <div 
+                            key={message.id || index} 
+                            className="message-card-modern"
+                            onClick={() => setIsChatOpen(true)}
+                          >
+                            <div className="message-avatar-modern" style={{
+                              background: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]
+                            }}>
+                              {message.sender?.firstname?.[0] || message.user?.firstname?.[0] || '?'}
                             </div>
-                            <p className="doctordas-message-content">
-                              {message.content?.substring(0, 50)}...
-                            </p>
-                            {!message.is_read && (
-                              <div className="doctordas-message-unread">
-                                <span></span>
-                                <span>New</span>
+                            <div className="message-info-modern">
+                              <div className="message-header-modern">
+                                <h4>{message.sender?.firstname || message.user?.firstname || 'Patient'} {message.sender?.lastname || message.user?.lastname || ''}</h4>
+                                <span className="message-time-modern">
+                                  {message.timestamp ? new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Now'}
+                                </span>
                               </div>
-                            )}
+                              <p className="message-preview">
+                                {message.content?.substring(0, 80) || message.message?.substring(0, 80) || 'New message'}...
+                              </p>
+                              {!message.is_read && (
+                                <div className="unread-indicator">
+                                  <span className="unread-dot"></span>
+                                  <span className="unread-text">New</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Bottom Grid */}
-              <div className="doctordas-grid">
-                {/* Appointments */}
-                <div className="doctordas-card">
-                  <div className="doctordas-card-header">
-                    <h3>📅 Upcoming Appointments</h3>
-                    <button 
-                      className="doctordas-btn doctordas-btn-primary"
-                      onClick={handleNewAppointment}
-                    >
-                      <span>+</span>
-                      <span>New</span>
-                    </button>
+              {/* Upcoming Appointments Section */}
+              <div className="modern-card appointments-card">
+                <div className="modern-card-header">
+                  <div className="card-header-content">
+                    <h3>Upcoming Appointments</h3>
+                    <span className="appointment-count">{appointments.length} scheduled</span>
                   </div>
-                  <div className="doctordas-card-content">
-                    {appointments.length === 0 ? (
-                      <div className="doctordas-empty-state">
-                        <span>📅</span>
-                        <h4>No appointments scheduled</h4>
-                        <p>All clear for now!</p>
-                      </div>
-                    ) : (
-                      appointments.slice(0, 5).map((appointment) => (
-                        <div key={appointment.id} className="doctordas-appointment-item">
-                          <div className="doctordas-avatar">
-                            {appointment.user?.firstname?.[0]}{appointment.user?.lastname?.[0]}
+                  <button 
+                    className="add-appointment-btn"
+                    onClick={handleNewAppointment}
+                  >
+                    <Plus size={16} />
+                    New Appointment
+                  </button>
+                </div>
+                <div className="modern-card-content">
+                  {appointments.length === 0 ? (
+                    <div className="empty-state">
+                      <Calendar size={48} className="empty-icon" />
+                      <h4>No appointments scheduled</h4>
+                      <p>Your schedule is clear for now</p>
+                    </div>
+                  ) : (
+                    <div className="appointments-list">
+                      {appointments.slice(0, 6).map((appointment) => (
+                        <div 
+                          key={appointment.id} 
+                          className="appointment-card-modern"
+                          onClick={() => handleViewAppointment(appointment)}
+                        >
+                          <div className="appointment-date-section">
+                            <div className="appointment-day">
+                              {new Date(appointment.appointment_date).getDate()}
+                            </div>
+                            <div className="appointment-month">
+                              {new Date(appointment.appointment_date).toLocaleDateString('en-US', { month: 'short' })}
+                            </div>
                           </div>
-                          <div className="doctordas-appointment-info">
-                            <p>{appointment.user?.firstname} {appointment.user?.lastname}</p>
-                            <div className="doctordas-appointment-details">
-                              <span>{formatDate(appointment.appointment_date)}</span>
-                              {appointment.purpose && (
-                                <span className="doctordas-appointment-purpose">{appointment.purpose}</span>
+                          <div className="appointment-info-section">
+                            <div className="appointment-patient">
+                              <h4>{appointment.user?.firstname} {appointment.user?.lastname}</h4>
+                              <div className="appointment-time">
+                                <Clock size={14} />
+                                <span>{new Date(appointment.appointment_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              </div>
+                            </div>
+                            <div className="appointment-details">
+                              <span className="appointment-purpose">{appointment.purpose || 'General Consultation'}</span>
+                              {appointment.notes && (
+                                <p className="appointment-notes">{appointment.notes.substring(0, 50)}...</p>
                               )}
                             </div>
                           </div>
-                          <div className="doctordas-appointment-actions">
-                            <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
-                              {appointment.status}
+                          <div className="appointment-status-section">
+                            <span className={`status-badge ${appointment.status?.toLowerCase() || 'pending'}`}>
+                              {appointment.status || 'Pending'}
                             </span>
-                            <button 
-                              className="doctordas-btn-link"
-                              onClick={() => handleViewAppointment(appointment)}
-                            >
-                              View
-                            </button>
+                            <div className="appointment-contact">
+                              <Phone size={14} />
+                              <span>{appointment.user?.contact || 'N/A'}</span>
+                            </div>
                           </div>
                         </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                {/* Calendar */}
-                <div className="doctordas-card">
-                  <div className="doctordas-card-header">
-                    <h3>📅 Appointment Calendar</h3>
-                    <span>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-                  </div>
-                  <div className="doctordas-card-content">
-                    <div className="doctordas-calendar">
-                      <div className="doctordas-calendar-header">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                          <div key={day} className="doctordas-calendar-day-header">{day}</div>
-                        ))}
-                      </div>
-                      <div className="doctordas-calendar-grid">
-                        {Array.from({ length: 42 }, (_, i) => {
-                          const day = i + 1;
-                          const hasEvents = calendarEvents.some(event => {
-                            const eventDate = new Date(event.appointment_date);
-                            return eventDate.getDate() === day && 
-                                   eventDate.getMonth() === new Date().getMonth() &&
-                                   eventDate.getFullYear() === new Date().getFullYear();
-                          });
-                          
-                          return (
-                            <div
-                              key={i}
-                              className={`doctordas-calendar-day ${day === new Date().getDate() ? 'doctordas-calendar-today' : ''} ${hasEvents ? 'doctordas-calendar-has-events' : ''}`}
-                            >
-                              {day <= 31 ? day : ''}
-                              {hasEvents && <span className="doctordas-calendar-event-dot"></span>}
-                            </div>
-                          );
-                        })}
-                      </div>
+                      ))}
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
           )}
-
-          {/* Appointments Section */}
           {activeSection === 'appointments' && (
             <div className="doctordas-section">
               <div className="doctordas-section-header">
