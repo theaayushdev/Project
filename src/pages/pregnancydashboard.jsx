@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import UserNavbar from "./Usernavbar"; // Top navigation bar for user
 import UserSidebar from "./usersidebar"; // Sidebar navigation for user
 import ChatModal from "../components/Chat/ChatModal"; // Chat modal component
+import BabyNameGeneratorClean from "../components/BabyNameGeneratorClean"; // Clean baby name generator
 import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target, Users, BookOpen, ArrowLeft, Brain, Eye, Zap, Scale } from "lucide-react";
 import "../cssonly/pregnancydashboard.css";
+import "../cssonly/babynamegenerator.css";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function getPregnancyWeek(lmc) {
@@ -1864,6 +1866,60 @@ function UserPregnancyDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render baby names section if requested
+  if (section === 'babynames') {
+    return (
+      <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
+        <UserSidebar 
+          week={week} 
+          trimester={trimester} 
+          activeTab="babynames" 
+          onChatOpen={() => setIsChatOpen(true)}
+        />
+        <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+          <UserNavbar user={user} />
+          
+          <div className="pregnancy-dashboard-header">
+            <div className="pregnancy-header-content">
+              <div className="pregnancy-welcome-section">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                  <button 
+                    onClick={() => window.location.href = '/pregnancydashboard'}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem 1rem',
+                      background: '#667eea',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => e.target.style.background = '#5a67d8'}
+                    onMouseOut={(e) => e.target.style.background = '#667eea'}
+                  >
+                    <ArrowLeft size={16} />
+                    Back to Dashboard
+                  </button>
+                </div>
+                <h1>Baby Names Generator</h1>
+                <p className="pregnancy-due-date">Discover beautiful Nepali and Sanskrit names for your little one</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="baby-names-main-section">
+            <BabyNameGeneratorClean />
           </div>
         </div>
       </div>
