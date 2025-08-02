@@ -48,6 +48,466 @@
 
 .pregnify-brand {
   font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+/* Hotline Section Styles */
+.hotline-section {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  margin-right: 2rem;
+}
+
+.hotline-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.hotline-trigger-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+}
+
+.hotline-text {
+  font-weight: 600;
+}
+
+.hotline-pulse {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: #dc2626;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+/* Hotline Modal Styles */
+.hotline-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hotline-modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hotline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.hotline-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hotline-icon {
+  color: #dc2626;
+}
+
+.hotline-title h3 {
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.hotline-close {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.hotline-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.hotline-content {
+  padding: 1.5rem 2rem 2rem 2rem;
+}
+
+/* Emergency Numbers Section */
+.emergency-numbers-section {
+  margin-bottom: 2rem;
+}
+
+.emergency-numbers-section h4 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emergency-numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.emergency-card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.emergency-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e5e7eb, #e5e7eb);
+  transition: all 0.3s ease;
+}
+
+.emergency-card.urgent::before {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.emergency-card:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.emergency-icon {
+  flex-shrink: 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emergency-info h5 {
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.emergency-number {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0.5rem 0;
+  letter-spacing: 2px;
+}
+
+.emergency-info p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.call-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Health Tips Section */
+.health-tips-section {
+  margin-bottom: 2rem;
+}
+
+.health-tips-section h4 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+}
+
+.health-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.health-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+}
+
+.tip-icon {
+  color: #3b82f6;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.health-tip-item span {
+  color: #374151;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Quick Actions Section */
+.quick-actions-section {
+  margin-bottom: 2rem;
+}
+
+.quick-actions-section h4 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.quick-action-btn.emergency {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.quick-action-btn.doctor {
+  border-color: #f9a8d4;
+  background: #fdf2f8;
+  color: #be185d;
+}
+
+.quick-action-btn.support {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-btn span {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.quick-action-btn small {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Additional Information */
+.additional-info {
+  margin-top: 2rem;
+}
+
+.info-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.info-card h5 {
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+.info-card ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #4b5563;
+}
+
+.info-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-navbar-modern {
+    padding: 0 1rem;
+    height: 60px;
+  }
+  
+  .hotline-section {
+    margin-right: 1rem;
+  }
+  
+  .hotline-trigger-btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .hotline-text {
+    display: none;
+  }
+  
+  .hotline-modal {
+    margin: 1rem;
+    max-height: 85vh;
+  }
+  
+  .hotline-header {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .hotline-title h3 {
+    font-size: 1.25rem;
+  }
+  
+  .hotline-content {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .emergency-numbers-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .emergency-card {
+    padding: 1.25rem;
+  }
+  
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hotline-modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .emergency-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .emergency-number {
+    font-size: 1.75rem;
+  }
+}
+
+.pregnify-brand {
   font-size: 28px;
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
