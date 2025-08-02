@@ -5961,3 +5961,151 @@
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+/* Baby Names Section Enhanced Styles */
+.baby-names-main-section {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.baby-names-main-section .baby-name-generator-modern {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  margin: 0;
+  max-width: none;
+}
+
+.baby-names-main-section .generator-header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 2rem;
+  margin: -20px -20px 30px -20px;
+  border-radius: 16px 16px 0 0;
+}
+
+.baby-names-main-section .generator-header h3 {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  background: none !important;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.baby-names-main-section .generator-header p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+}
+
+.baby-names-main-section .view-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.baby-names-main-section .view-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.baby-names-main-section .view-toggle.active {
+  background: white;
+  border-color: white;
+  color: #667eea;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
+}
+
+/* Enhanced name cards for pregnancy dashboard */
+.baby-names-main-section .name-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.baby-names-main-section .name-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.baby-names-main-section .name-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.15);
+  border-color: #667eea;
+}
+
+.baby-names-main-section .name-card:hover::before {
+  transform: scaleX(1);
+}
+
+.baby-names-main-section .name-nepali {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+}
+
+.baby-names-main-section .name-english {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #667eea;
+  letter-spacing: 0.5px;
+}
+
+.baby-names-main-section .meaning-text {
+  color: #4b5563;
+  line-height: 1.6;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* Generate button enhancement */
+.baby-names-main-section .generate-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.baby-names-main-section .generate-btn:hover {
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4);
+}
+
+/* Filter buttons enhancement */
+.baby-names-main-section .filter-btn.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #667eea;
+}
+
+/* Responsive adjustments for baby names */
+@media (max-width: 768px) {
+  .baby-names-main-section .baby-name-generator-modern {
+    padding: 16px;
+    margin: 0 -1rem;
+  }
+  
+  .baby-names-main-section .generator-header {
+    padding: 1.5rem;
+    margin: -16px -16px 24px -16px;
+  }
+  
+  .baby-names-main-section .generator-header h3 {
+    font-size: 1.5rem;
+  }
+  
+  .baby-names-main-section .name-card {
+    padding: 1.25rem;
+  }
+}
