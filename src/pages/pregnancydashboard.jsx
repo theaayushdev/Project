@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import UserNavbar from "./Usernavbar"; // Top navigation bar for user
 import UserSidebar from "./usersidebar"; // Sidebar navigation for user
 import ChatModal from "../components/Chat/ChatModal"; // Chat modal component
-import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target, Users, BookOpen, ArrowLeft } from "lucide-react";
+import { Calendar, Heart, Baby, Droplets, Moon, Weight, Activity, Plus, ChevronRight, Star, Target, Users, BookOpen, ArrowLeft, Brain, Eye, Zap, Scale } from "lucide-react";
 import "../cssonly/pregnancydashboard.css";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,12 @@ function getPregnancyWeek(lmc) {
   const now = new Date();
   const diff = now - lmcDate;
   const week = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
-  return week > 0 ? week : 0;
+  
+  // Ensure week is within valid pregnancy range (0-42 weeks)
+  if (week < 0) return 0;
+  if (week > 42) return 42; // Post-term pregnancy
+  
+  return week;
 }
 
 function getDueDate(lmc) {
@@ -31,6 +36,755 @@ function getBabySize(week) {
   if (week > 40) week = 40;
   return babySizes[week - 1] || "Baby";
 }
+
+// Comprehensive weekly development data with working YouTube links and uplifting free story books
+const weeklyDevelopmentData = {
+  4: {
+    baby: {
+      appearance: "Tiny embryo with basic body shape forming",
+      size: "Size of a poppy seed (2-4mm)"
+    },
+    mother: {
+      care: "Start prenatal vitamins, stay hydrated, get rest"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "Gentle Pregnancy Yoga for Beginners",
+          url: "https://www.youtube.com/watch?v=8U4sWPqK0hY",
+          duration: "15 min",
+          type: "Prenatal Yoga",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "10 Minute First Trimester Pregnancy Workout",
+          url: "https://www.youtube.com/watch?v=VGqQ0g_TQPQ",
+          duration: "10 min",
+          type: "Safe Cardio",
+          channel: "MadFit"
+        }
+      ],
+      books: [
+        {
+          title: "The Little Prince - Free Online Reading",
+          author: "Antoine de Saint-Exupéry",
+          url: "https://www.gutenberg.org/files/525/525-h/525-h.htm",
+          description: "A beautiful, uplifting story about love, friendship, and seeing the world with wonder - perfect for expecting mothers"
+        },
+        {
+          title: "Anne of Green Gables - Free Online Novel",
+          author: "L.M. Montgomery",
+          url: "https://www.gutenberg.org/files/45/45-h/45-h.htm",
+          description: "Heartwarming story of hope, dreams, and new beginnings that will lift your spirits during pregnancy"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Essential Folic Acid",
+          content: "Take 400-800mcg daily to prevent neural tube defects",
+          source: "CDC Guidelines"
+        },
+        {
+          title: "Morning Sickness Relief",
+          content: "Ginger tea, small frequent meals, avoid empty stomach",
+          source: "Mayo Clinic"
+        }
+      ],
+      symptoms: [
+        "Missed period - primary early sign",
+        "Breast tenderness and enlargement",
+        "Fatigue and drowsiness",
+        "Mild nausea may begin"
+      ],
+      tips: [
+        "Start taking 400-800mcg folic acid daily immediately",
+        "Eliminate alcohol, smoking, and illicit drugs completely",
+        "Begin tracking symptoms in a pregnancy journal",
+        "Schedule appointment with healthcare provider",
+        "Start eating smaller, more frequent meals",
+        "Avoid raw or undercooked foods, deli meats, soft cheeses"
+      ]
+    }
+  },
+  5: {
+    baby: {
+      appearance: "Heart begins beating, arm and leg buds appear",
+      size: "Size of a sesame seed (4-6mm)"
+    },
+    mother: {
+      care: "Eat small frequent meals, avoid strong odors"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "5 Minute Morning Pregnancy Stretches",
+          url: "https://www.youtube.com/watch?v=sTANio_2E0Q",
+          duration: "5 min",
+          type: "Morning Stretches",
+          channel: "Prenatal Yoga Center"
+        },
+        {
+          title: "Pregnancy Workout - First Trimester",
+          url: "https://www.youtube.com/watch?v=WLEH0QE9PuU",
+          duration: "20 min",
+          type: "Full Body Workout",
+          channel: "Jessica Smith TV"
+        }
+      ],
+      books: [
+        {
+          title: "Pride and Prejudice - Free Online Reading",
+          author: "Jane Austen",
+          url: "https://www.gutenberg.org/files/1342/1342-h/1342-h.htm",
+          description: "A delightful romance that will keep you entertained and smiling throughout your pregnancy journey"
+        },
+        {
+          title: "The Secret Garden - Free Online Story",
+          author: "Frances Hodgson Burnett",
+          url: "https://www.gutenberg.org/files/113/113-h/113-h.htm",
+          description: "An inspiring tale of growth, healing, and new life - perfect for expecting mothers"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Combat Morning Sickness",
+          content: "Eat crackers before getting up, avoid empty stomach, try ginger supplements",
+          source: "American Pregnancy Association"
+        },
+        {
+          title: "Hydration Focus",
+          content: "Drink 8-10 glasses water daily, add lemon for nausea relief",
+          source: "ACOG Guidelines"
+        }
+      ],
+      symptoms: [
+        "Morning sickness may intensify",
+        "Increased urination frequency",
+        "Food aversions developing",
+        "Heightened sense of smell"
+      ],
+      tips: [
+        "Keep crackers by bedside for morning nausea",
+        "Eat protein snacks every 2-3 hours",
+        "Avoid cooking smells that trigger nausea",
+        "Get 8-9 hours of sleep nightly",
+        "Consider vitamin B6 for nausea (consult doctor first)",
+        "Start documenting symptoms for first prenatal visit"
+      ]
+    }
+  },
+  8: {
+    baby: {
+      appearance: "Fingers and toes forming, more human-like shape",
+      size: "Size of a kidney bean (14-20mm)"
+    },
+    mother: {
+      care: "Eat high-fiber foods, gentle exercise like walking"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "Prenatal Pilates - 8 Week Safe Workout",
+          url: "https://www.youtube.com/watch?v=OadQ4xA9F_c",
+          duration: "25 min",
+          type: "Prenatal Pilates",
+          channel: "Move with Nicole"
+        },
+        {
+          title: "First Trimester Cardio Workout",
+          url: "https://www.youtube.com/watch?v=tXlne6rbBHM",
+          duration: "15 min",
+          type: "Low Impact Cardio",
+          channel: "FitnessBlender"
+        }
+      ],
+      books: [
+        {
+          title: "Little Women - Free Online Classic",
+          author: "Louisa May Alcott",
+          url: "https://www.gutenberg.org/files/514/514-h/514-h.htm",
+          description: "A heartwarming story about family bonds, love, and growing up that will warm your heart"
+        },
+        {
+          title: "Winnie-the-Pooh - Free Online Stories",
+          author: "A.A. Milne",
+          url: "https://www.gutenberg.org/files/67098/67098-h/67098-h.htm",
+          description: "Gentle, whimsical stories that will bring joy and prepare you for reading to your little one"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Fiber for Digestion",
+          content: "Add fruits, vegetables, whole grains to prevent constipation",
+          source: "Academy of Nutrition and Dietetics"
+        },
+        {
+          title: "Iron Absorption",
+          content: "Combine iron-rich foods with vitamin C sources",
+          source: "National Institutes of Health"
+        }
+      ],
+      symptoms: [
+        "Constipation may develop",
+        "Breast growth continues",
+        "Possible mood swings",
+        "Clear vaginal discharge normal"
+      ],
+      tips: [
+        "Add 25-35g fiber daily through whole foods",
+        "Take gentle walks after meals to aid digestion",
+        "Schedule first prenatal appointment (8-10 weeks)",
+        "Begin researching health insurance coverage",
+        "Start thinking about work maternity leave policies",
+        "Consider joining online pregnancy support groups"
+      ]
+    }
+  },
+  12: {
+    baby: {
+      appearance: "Fully formed baby, reflexes developing",
+      size: "Size of a plum (5-6cm, 14g)"
+    },
+    mother: {
+      care: "Continue vitamins, start maternity clothes shopping"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "12 Week Pregnancy Strength Training",
+          url: "https://www.youtube.com/watch?v=Y0nO2JWYxtE",
+          duration: "30 min",
+          type: "Strength Training",
+          channel: "Tone and Tighten"
+        },
+        {
+          title: "Second Trimester Prep Yoga Flow",
+          url: "https://www.youtube.com/watch?v=usIAGBdvn8c",
+          duration: "20 min",
+          type: "Prenatal Yoga",
+          channel: "Yoga with Adriene"
+        }
+      ],
+      books: [
+        {
+          title: "Jane Eyre - Free Online Romance",
+          author: "Charlotte Brontë",
+          url: "https://www.gutenberg.org/files/1260/1260-h/1260-h.htm",
+          description: "An inspiring story of independence and love that will captivate and empower you"
+        },
+        {
+          title: "Peter Pan - Free Online Adventure",
+          author: "J.M. Barrie",
+          url: "https://www.gutenberg.org/files/16/16-h/16-h.htm",
+          description: "A magical tale about childhood wonder and imagination - perfect for future mothers"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Protein Increase",
+          content: "Aim for 75-100g protein daily for baby's growth",
+          source: "American Dietetic Association"
+        },
+        {
+          title: "Calcium Requirements",
+          content: "1000mg daily from dairy, leafy greens, fortified foods",
+          source: "National Academy of Sciences"
+        }
+      ],
+      symptoms: [
+        "Energy levels may improve",
+        "Morning sickness often decreases",
+        "Visible belly growth begins",
+        "Possible skin changes (darkening)"
+      ],
+      tips: [
+        "Schedule nuchal translucency screening (11-14 weeks)",
+        "Start shopping for comfortable, supportive bras",
+        "Begin thinking about maternity clothes",
+        "Share pregnancy news with close family if desired",
+        "Take weekly bump photos for memories",
+        "Research prenatal genetic testing options",
+        "Start planning for maternity leave from work"
+      ]
+    }
+  },
+  16: {
+    baby: {
+      appearance: "Hair and nails growing, more defined features",
+      size: "Size of an avocado (11cm, 100g)"
+    },
+    mother: {
+      care: "Get maternity clothes, use pregnancy pillow"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "16 Week Prenatal Strength Workout",
+          url: "https://www.youtube.com/watch?v=b-eh8TLohJI",
+          duration: "25 min",
+          type: "Strength Training",
+          channel: "Fitness Blender"
+        },
+        {
+          title: "Pelvic Floor Exercises for Pregnancy",
+          url: "https://www.youtube.com/watch?v=Uy2ZgOgAL7Q",
+          duration: "12 min",
+          type: "Pelvic Floor",
+          channel: "Physiotherapy"
+        }
+      ],
+      books: [
+        {
+          title: "Alice's Adventures in Wonderland - Free Online",
+          author: "Lewis Carroll",
+          url: "https://www.gutenberg.org/files/11/11-h/11-h.htm",
+          description: "A whimsical adventure that will spark your imagination and bring smiles during pregnancy"
+        },
+        {
+          title: "Emma - Free Online Romance",
+          author: "Jane Austen",
+          url: "https://www.gutenberg.org/files/158/158-h/158-h.htm",
+          description: "A delightful romantic comedy that will entertain and uplift your spirits"
+        }
+      ],
+      nutrition: [
+        {
+          title: "DHA for Brain Development",
+          content: "200-300mg daily from fish, walnuts, or supplements",
+          source: "International Society for the Study of Fatty Acids"
+        },
+        {
+          title: "Balanced Energy",
+          content: "Complex carbohydrates for sustained energy throughout day",
+          source: "Dietitians of Canada"
+        }
+      ],
+      symptoms: [
+        "Possible first baby movements (flutters)",
+        "Increased appetite returns",
+        "Round ligament pain may begin",
+        "Nasal congestion common"
+      ],
+      tips: [
+        "Invest in supportive maternity bras and pregnancy pillow",
+        "Begin prenatal massage therapy for comfort",
+        "Start researching childcare options early",
+        "Schedule anatomy scan ultrasound (18-22 weeks)",
+        "Begin baby registry planning and research",
+        "Consider maternity support belts for back comfort",
+        "Start thinking about baby names and nursery themes"
+      ]
+    }
+  },
+  20: {
+    baby: {
+      appearance: "Protective skin coating, strong bones forming",
+      size: "Size of a banana (16cm, 300g)"
+    },
+    mother: {
+      care: "Sleep on side, wear comfortable shoes"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "20 Week Pregnancy Swimming Exercises",
+          url: "https://www.youtube.com/watch?v=w5LmG6c9RsU",
+          duration: "30 min",
+          type: "Water Exercise",
+          channel: "Swimming for Fitness"
+        },
+        {
+          title: "Mid-Pregnancy Strength & Balance",
+          url: "https://www.youtube.com/watch?v=Wz6WjQ3e3FA",
+          duration: "25 min",
+          type: "Balance Training",
+          channel: "FitnessBlender"
+        }
+      ],
+      books: [
+        {
+          title: "The Wonderful Wizard of Oz - Free Online",
+          author: "L. Frank Baum",
+          url: "https://www.gutenberg.org/files/55/55-h/55-h.htm",
+          description: "A magical journey of courage and friendship that will fill you with hope and wonder"
+        },
+        {
+          title: "A Little Princess - Free Online Story",
+          author: "Frances Hodgson Burnett",
+          url: "https://www.gutenberg.org/files/146/146-h/146-h.htm",
+          description: "An inspiring tale of resilience and kindness that will touch your heart"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Anatomy Scan Preparation",
+          content: "Stay well hydrated before ultrasound, eat normally",
+          source: "Radiological Society of North America"
+        },
+        {
+          title: "Increased Caloric Needs",
+          content: "Add 300-350 healthy calories daily in second trimester",
+          source: "Institute of Medicine"
+        }
+      ],
+      symptoms: [
+        "Regular baby movements felt",
+        "Possible back pain from posture changes",
+        "Increased appetite and energy",
+        "Possible heartburn begins"
+      ],
+      tips: [
+        "Sleep on left side for optimal blood flow to baby",
+        "Wear supportive, comfortable shoes with good arch support",
+        "Schedule detailed anatomy scan ultrasound (18-22 weeks)",
+        "Start serious baby name discussions and research",
+        "Consider professional maternity photography session",
+        "Begin researching birthing classes in your area",
+        "Start planning nursery layout and baby-proofing needs"
+      ]
+    }
+  },
+  24: {
+    baby: {
+      appearance: "Eyes can respond to light, hearing develops",
+      size: "Size of an ear of corn (30cm, 600g)"
+    },
+    mother: {
+      care: "Back pain management, regular movement"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "24 Week Prenatal Yoga Flow",
+          url: "https://www.youtube.com/watch?v=QJJgC7xBKK8",
+          duration: "35 min",
+          type: "Yoga Practice",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "Second Trimester Gentle Workout",
+          url: "https://www.youtube.com/watch?v=VQBeD1YiuP8",
+          duration: "20 min",
+          type: "Low Impact",
+          channel: "Jessica Smith TV"
+        }
+      ],
+      books: [
+        {
+          title: "The Secret Garden - Free Uplifting Story",
+          author: "Frances Hodgson Burnett",
+          url: "https://www.gutenberg.org/files/113/113-h/113-h.htm",
+          description: "A beautiful story of healing, growth, and new beginnings perfect for expectant mothers"
+        },
+        {
+          title: "Pollyanna - Free Feel-Good Story",
+          author: "Eleanor H. Porter",
+          url: "https://www.gutenberg.org/files/1450/1450-h/1450-h.htm",
+          description: "An optimistic tale that will fill you with joy and positive thinking"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Glucose Test Prep",
+          content: "Eat normally before test, avoid excessive sugar day before",
+          source: "American Diabetes Association"
+        },
+        {
+          title: "Anti-Inflammatory Foods",
+          content: "Include berries, leafy greens, fatty fish to reduce swelling",
+          source: "Harvard School of Public Health"
+        }
+      ],
+      symptoms: [
+        "Possible leg and foot swelling",
+        "Shortness of breath with activity",
+        "Lower back pain may intensify",
+        "Frequent urination returns"
+      ],
+      tips: [
+        "Wear compression socks to reduce swelling",
+        "Schedule glucose screening test (24-28 weeks)",
+        "Start researching and interviewing pediatricians",
+        "Begin serious consideration of maternity photography",
+        "Enroll in childbirth education classes",
+        "Start preparing older children for new baby",
+        "Research and plan for maternity leave details"
+      ]
+    }
+  },
+  28: {
+    baby: {
+      appearance: "Eyes open and close, more chubby appearance",
+      size: "Size of an eggplant (35cm, 1kg)"
+    },
+    mother: {
+      care: "Use pregnancy belt, eat frequent small meals"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "Third Trimester Prenatal Yoga",
+          url: "https://www.youtube.com/watch?v=8tUeJdJGWuY",
+          duration: "30 min",
+          type: "Third Trimester Yoga",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "Third Trimester Safe Workout",
+          url: "https://www.youtube.com/watch?v=OJNcjXTqnLw",
+          duration: "25 min",
+          type: "Low Impact Exercise",
+          channel: "FitnessBlender"
+        }
+      ],
+      books: [
+        {
+          title: "Heidi - Free Heartwarming Story",
+          author: "Johanna Spyri",
+          url: "https://www.gutenberg.org/files/1448/1448-h/1448-h.htm",
+          description: "A heartwarming tale of love, nature, and healing that will bring you peace"
+        },
+        {
+          title: "Eight Cousins - Free Uplifting Story",
+          author: "Louisa May Alcott",
+          url: "https://www.gutenberg.org/files/1765/1765-h/1765-h.htm",
+          description: "A charming story of family, growth, and happiness perfect for relaxing reading"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Small Frequent Meals",
+          content: "Eat 6 smaller meals to manage heartburn and maintain energy",
+          source: "American Pregnancy Association"
+        },
+        {
+          title: "DHA Importance Peaks",
+          content: "Ensure 200-300mg DHA daily for rapid brain development",
+          source: "International Society for Fat Research"
+        }
+      ],
+      symptoms: [
+        "Braxton Hicks contractions begin",
+        "Increased heartburn and indigestion",
+        "Difficulty finding comfortable sleep positions",
+        "Leg cramps, especially at night"
+      ],
+      tips: [
+        "Use pregnancy support belt for back and belly comfort",
+        "Eat smaller, more frequent meals to manage heartburn",
+        "Start attending regular prenatal classes",
+        "Finalize maternity leave plans with employer",
+        "Begin preparing nursery and organizing baby items",
+        "Practice relaxation and breathing techniques daily",
+        "Start thinking about postpartum support system"
+      ]
+    }
+  },
+  32: {
+    baby: {
+      appearance: "Fat layers developing, getting chubbier",
+      size: "Size of a large jicama (40cm, 1.7kg)"
+    },
+    mother: {
+      care: "Use multiple pillows for comfort, small portions"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "32 Week Gentle Prenatal Yoga",
+          url: "https://www.youtube.com/watch?v=b5FInF0BKi0",
+          duration: "30 min",
+          type: "Gentle Yoga",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "Third Trimester Breathing & Stretches",
+          url: "https://www.youtube.com/watch?v=QNz8A8WSeWM",
+          duration: "20 min",
+          type: "Breathing & Stretching",
+          channel: "Move with Nicole"
+        }
+      ],
+      books: [
+        {
+          title: "What Katy Did - Free Inspiring Story",
+          author: "Susan Coolidge",
+          url: "https://www.gutenberg.org/files/574/574-h/574-h.htm",
+          description: "An inspiring story of resilience and hope that will uplift your spirits"
+        },
+        {
+          title: "Rebecca of Sunnybrook Farm - Free Story",
+          author: "Kate Douglas Wiggin",
+          url: "https://www.gutenberg.org/files/574/574-h/574-h.htm",
+          description: "A cheerful tale of optimism and joy perfect for peaceful reading moments"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Iron Absorption Optimization",
+          content: "Combine iron-rich foods with vitamin C, avoid calcium during iron intake",
+          source: "National Institutes of Health"
+        },
+        {
+          title: "Comfort Food Focus",
+          content: "Choose easy-to-digest, nutrient-dense foods for comfort",
+          source: "Academy of Nutrition and Dietetics"
+        }
+      ],
+      symptoms: [
+        "Significant increase in back pain",
+        "Shortness of breath from baby's position",
+        "Very frequent urination",
+        "Possible hemorrhoids developing"
+      ],
+      tips: [
+        "Use multiple pillows for comfortable sleep positioning",
+        "Monitor baby's movements daily - track patterns",
+        "Start preparing detailed hospital bag checklist",
+        "Finalize nursery setup and baby gear organization",
+        "Complete interviews and select pediatrician",
+        "Discuss birth plan details with healthcare provider",
+        "Prepare meals for freezing for postpartum period"
+      ]
+    }
+  },
+  36: {
+    baby: {
+      appearance: "Chubby baby appearance, nearly ready",
+      size: "Size of a romaine lettuce (45cm, 2.6kg)"
+    },
+    mother: {
+      care: "Prepare hospital bag, practice relaxation"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "Late Pregnancy Stretches & Relaxation",
+          url: "https://www.youtube.com/watch?v=3nJ6K9l-zlw",
+          duration: "25 min",
+          type: "Gentle Stretching",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "36 Week Pregnancy Exercise Routine",
+          url: "https://www.youtube.com/watch?v=YA_QE0HlEdc",
+          duration: "20 min",
+          type: "Gentle Exercise",
+          channel: "Jessica Smith TV"
+        }
+      ],
+      books: [
+        {
+          title: "The Tale of Two Cities - Free Classic",
+          author: "Charles Dickens",
+          url: "https://www.gutenberg.org/files/98/98-h/98-h.htm",
+          description: "A powerful story of love, sacrifice, and hope that will inspire you"
+        },
+        {
+          title: "Persuasion - Free Romance Classic",
+          author: "Jane Austen",
+          url: "https://www.gutenberg.org/files/105/105-h/105-h.htm",
+          description: "A gentle love story perfect for peaceful reading in your final weeks"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Energy Foods for Labor",
+          content: "Stock up on dates, bananas, energy balls for natural labor fuel",
+          source: "Evidence Based Birth"
+        },
+        {
+          title: "Final Nutrition Push",
+          content: "Maximize nutrient intake for labor strength and recovery",
+          source: "International Childbirth Education Association"
+        }
+      ],
+      symptoms: [
+        "Baby 'dropping' (lightening) may occur",
+        "Increased pelvic pressure and discomfort",
+        "Strong nesting instincts emerge",
+        "Possible loss of mucus plug"
+      ],
+      tips: [
+        "Pack and recheck hospital bag - keep ready",
+        "Practice breathing and relaxation techniques daily",
+        "Install car seat and have it professionally inspected",
+        "Prepare and freeze postpartum meal plan",
+        "Finalize birth plan preferences with healthcare team",
+        "Arrange childcare for older children during labor",
+        "Complete final work tasks and handover procedures"
+      ]
+    }
+  },
+  40: {
+    baby: {
+      appearance: "Fully developed baby ready for birth",
+      size: "Full-term baby (50cm, 3.3kg)"
+    },
+    mother: {
+      care: "Final preparations, stay calm and ready"
+    },
+    resources: {
+      exercises: [
+        {
+          title: "Final Preparation Birth Positions",
+          url: "https://www.youtube.com/watch?v=3nJ6K9l-zlw",
+          duration: "15 min",
+          type: "Labor Preparation",
+          channel: "Yoga with Adriene"
+        },
+        {
+          title: "Full Term Gentle Movement",
+          url: "https://www.youtube.com/watch?v=YA_QE0HlEdc",
+          duration: "12 min",
+          type: "Gentle Movement",
+          channel: "Jessica Smith TV"
+        }
+      ],
+      books: [
+        {
+          title: "Sense and Sensibility - Free Classic",
+          author: "Jane Austen",
+          url: "https://www.gutenberg.org/files/161/161-h/161-h.htm",
+          description: "A beautiful story of love and wisdom to read as you await your baby's arrival"
+        },
+        {
+          title: "Anne of the Island - Free Story",
+          author: "L.M. Montgomery",
+          url: "https://www.gutenberg.org/files/544/544-h/544-h.htm",
+          description: "A heartwarming continuation of Anne's journey, perfect for your final days of pregnancy"
+        }
+      ],
+      nutrition: [
+        {
+          title: "Labor Energy Snacks",
+          content: "Prepare light, easily digestible foods for early labor energy",
+          source: "American Pregnancy Association"
+        },
+        {
+          title: "Postpartum Nutrition Prep",
+          content: "Stock freezer with nutritious, easy-prep meals for recovery",
+          source: "International Lactation Consultant Association"
+        }
+      ],
+      symptoms: [
+        "Regular contractions may begin",
+        "Water breaking is possible",
+        "Bloody show may appear",
+        "Intense nesting urges and energy bursts"
+      ],
+      tips: [
+        "Stay calm and trust your body's natural process",
+        "Know and watch for true signs of labor onset",
+        "Keep emergency contacts and hospital information ready",
+        "Prepare mentally and physically for postpartum recovery period",
+        "Keep fully packed hospital bag by the door",
+        "Ensure all baby gear is assembled and ready",
+        "Have support person on standby for labor assistance"
+      ]
+    }
+  }
+};
 
 function UserPregnancyDashboard() {
   const [user, setUser] = useState(null);
@@ -52,6 +806,7 @@ function UserPregnancyDashboard() {
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const section = searchParams.get('section');
+  const viewWeek = searchParams.get('week'); // Get week parameter for baby growth section
 
   // Pregnancy articles data - Real medical sources
   const pregnancyArticles = [
@@ -343,14 +1098,22 @@ function UserPregnancyDashboard() {
 
   let week = pregnancyInfo && pregnancyInfo.lmc ? getPregnancyWeek(pregnancyInfo.lmc) : null;
   let dueDate = pregnancyInfo && pregnancyInfo.lmc ? getDueDate(pregnancyInfo.lmc) : null;
-  let babySize = getBabySize(week);
+  
+  // For baby growth section, use viewWeek if provided, otherwise use calculated week
+  let displayWeek = week;
+  if (section === 'babygrowth' && viewWeek) {
+    displayWeek = parseInt(viewWeek);
+  }
+  
+  let babySize = getBabySize(displayWeek);
 
-  // Calculate trimester
+  // Calculate trimester based on display week
   let trimester = null;
-  if (week !== null) {
-    if (week < 13) trimester = '1st Trimester';
-    else if (week < 27) trimester = '2nd Trimester';
-    else trimester = '3rd Trimester';
+  if (displayWeek !== null) {
+    if (displayWeek < 13) trimester = '1st Trimester';
+    else if (displayWeek < 27) trimester = '2nd Trimester';
+    else if (displayWeek <= 40) trimester = '3rd Trimester';
+    else trimester = 'Post-term'; // Beyond 40 weeks
   }
 
   const healthStats = [
@@ -743,6 +1506,362 @@ function UserPregnancyDashboard() {
                 <BookOpen size={48} className="articles-empty-icon" />
                 <h3>No articles found</h3>
                 <p>Try adjusting your search or filter criteria</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render baby growth section if requested
+  if (section === 'babygrowth') {
+    // Use the user's actual current week from their LMC
+    const currentWeek = week;
+    const currentWeekData = weeklyDevelopmentData[currentWeek] || weeklyDevelopmentData[40]; // Fallback to week 40 for post-term
+
+    return (
+      <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafc" }}>
+        <UserSidebar 
+          week={week} 
+          trimester={trimester} 
+          activeTab="baby" 
+          onChatOpen={() => setIsChatOpen(true)}
+        />
+        <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+          <UserNavbar user={user} />
+          
+          <div className="pregnancy-dashboard-header">
+            <div className="pregnancy-header-content">
+              <div className="pregnancy-welcome-section">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                  <button 
+                    onClick={() => window.location.href = '/pregnancydashboard'}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem 1rem',
+                      background: '#667eea',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => e.target.style.background = '#5a67d8'}
+                    onMouseOut={(e) => e.target.style.background = '#667eea'}
+                  >
+                    <ArrowLeft size={16} />
+                    Back to Dashboard
+                  </button>
+                </div>
+                <h1>Baby Growth Development</h1>
+                <p className="pregnancy-due-date">Your personalized weekly development tracking</p>
+                {currentWeek && (
+                  <div className="week-summary-badge">
+                    <span className="week-text">Week {currentWeek} of Pregnancy</span>
+                    <span className="size-text">Baby is {currentWeekData.baby.size}</span>
+                    <span className="trimester-text">{trimester}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="baby-growth-main-section">
+            {currentWeek !== null && currentWeek >= 4 && currentWeekData ? (
+              <div className="baby-growth-content">
+                {/* Hero Section with 3D Visual */}
+                <div className="baby-growth-hero">
+                  <div className="hero-background">
+                    <div className="floating-elements">
+                      <div className="floating-heart">💗</div>
+                      <div className="floating-star">✨</div>
+                      <div className="floating-baby">👶</div>
+                    </div>
+                  </div>
+                  <div className="hero-content">
+                    <div className="hero-left">
+                      <div className="week-badge">
+                        <span className="week-number">{currentWeek}</span>
+                        <span className="week-label">WEEKS</span>
+                      </div>
+                      <h1 className="hero-title">Your Baby This Week</h1>
+                      <p className="hero-subtitle">
+                        Your baby is the size of a <strong>{currentWeekData.baby.size}</strong>
+                      </p>
+                      <div className="hero-stats">
+                        <div className="hero-stat">
+                          <div className="stat-icon">📅</div>
+                          <div className="stat-info">
+                            <span className="stat-label">Due Date</span>
+                            <span className="stat-value">{dueDate}</span>
+                          </div>
+                        </div>
+                        <div className="hero-stat">
+                          <div className="stat-icon">⏰</div>
+                          <div className="stat-info">
+                            <span className="stat-label">Weeks Left</span>
+                            <span className="stat-value">{Math.max(0, 40 - currentWeek)}</span>
+                          </div>
+                        </div>
+                        <div className="hero-stat">
+                          <div className="stat-icon">🎯</div>
+                          <div className="stat-info">
+                            <span className="stat-label">Trimester</span>
+                            <span className="stat-value">{trimester}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="hero-right">
+                      <div className="baby-size-visual">
+                        <div className="size-comparison">
+                          <div className="size-circle-large">
+                            <Baby size={80} className="baby-icon-large" />
+                          </div>
+                          <div className="size-label-container">
+                            <span className="size-current">{currentWeekData.baby.size}</span>
+                            <span className="size-description">Current Size</span>
+                          </div>
+                        </div>
+                        <div className="growth-indicator">
+                          <div className="progress-ring">
+                            <svg className="progress-ring-svg" width="120" height="120">
+                              <circle
+                                className="progress-ring-background"
+                                stroke="#e5e7eb"
+                                strokeWidth="8"
+                                fill="transparent"
+                                r="52"
+                                cx="60"
+                                cy="60"
+                              />
+                              <circle
+                                className="progress-ring-progress"
+                                stroke="url(#gradient)"
+                                strokeWidth="8"
+                                fill="transparent"
+                                r="52"
+                                cx="60"
+                                cy="60"
+                                strokeDasharray="326.726"
+                                strokeDashoffset={326.726 - (currentWeek / 40) * 326.726}
+                              />
+                              <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                  <stop offset="0%" stopColor="#667eea" />
+                                  <stop offset="100%" stopColor="#764ba2" />
+                                </linearGradient>
+                              </defs>
+                            </svg>
+                            <div className="progress-text">
+                              <span className="progress-percent">{Math.round((currentWeek / 40) * 100)}%</span>
+                              <span className="progress-label">Complete</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Baby Development This Week */}
+                <div className="development-timeline">
+                  <div className="timeline-header">
+                    <h2>Your Baby This Week</h2>
+                    <p>How your baby looks and what's happening</p>
+                  </div>
+                  <div className="timeline-content">
+                    <div className="timeline-item active">
+                      <div className="timeline-marker">
+                        <Baby size={24} />
+                      </div>
+                      <div className="timeline-card">
+                        <div className="timeline-icon organ-icon">
+                          <Baby size={32} />
+                        </div>
+                        <h3>Baby's Appearance</h3>
+                        <p>{currentWeekData.baby.appearance}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="timeline-item active">
+                      <div className="timeline-marker">
+                        <Scale size={24} />
+                      </div>
+                      <div className="timeline-card">
+                        <div className="timeline-icon growth-icon">
+                          <Scale size={32} />
+                        </div>
+                        <h3>Size & Weight</h3>
+                        <p>{currentWeekData.baby.size}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mother's Care Tips */}
+                <div className="mother-wellness-section">
+                  <div className="wellness-header">
+                    <div className="header-content">
+                      <h2>Essential Care for You</h2>
+                      <p>Important things to focus on this week</p>
+                    </div>
+                    <div className="wellness-avatar">
+                      <div className="avatar-circle">
+                        <Heart size={40} className="wellness-heart" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="wellness-grid">
+                    {/* Care Tips Card */}
+                    <div className="wellness-card tips-card full-width">
+                      <div className="card-header">
+                        <div className="card-icon-wrapper tips-icon">
+                          <Star size={24} />
+                        </div>
+                        <h3>What to Do This Week</h3>
+                      </div>
+                      <div className="card-body">
+                        <p className="tips-main">{currentWeekData.mother.care}</p>
+                        
+                        {/* Additional Tips */}
+                        {currentWeekData.resources?.tips && (
+                          <div className="additional-tips">
+                            <h4>Week {currentWeek} Essential Tips:</h4>
+                            <ul className="tips-list">
+                              {currentWeekData.resources.tips.map((tip, index) => (
+                                <li key={index} className="tip-item-list">
+                                  <span className="tip-bullet">•</span>
+                                  {tip}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Weekly Resources Section */}
+                {currentWeekData.resources && (
+                  <div className="weekly-resources-section">
+                    <div className="resources-header">
+                      <h2>Week {currentWeek} Resources</h2>
+                      <p>Curated exercises, books, and guidance for your pregnancy journey</p>
+                    </div>
+
+                    <div className="resource-cards-container">
+                      {/* Exercise Videos */}
+                      {currentWeekData.resources.exercises && (
+                        <div className="resource-card exercise-card">
+                          <div className="resource-header">
+                            <div className="resource-icon exercise-icon">
+                              <Activity size={28} />
+                            </div>
+                            <h4>🏃‍♀️ Safe Exercise Videos</h4>
+                            <p>Perfect workouts for week {currentWeek}</p>
+                          </div>
+                          <div className="resource-content">
+                            {currentWeekData.resources.exercises.map((exercise, index) => (
+                              <div key={index} className="exercise-item">
+                                <h5>{exercise.title}</h5>
+                                <div className="exercise-meta">
+                                  <span className="meta-tag">{exercise.duration}</span>
+                                  <span className="meta-tag">{exercise.type}</span>
+                                  <span className="meta-tag">{exercise.channel}</span>
+                                </div>
+                                <a 
+                                  href={exercise.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="exercise-link"
+                                >
+                                  <span>▶️</span>
+                                  Watch Video
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recommended Books */}
+                      {currentWeekData.resources.books && (
+                        <div className="resource-card books-card">
+                          <div className="resource-header">
+                            <div className="resource-icon books-icon">
+                              <BookOpen size={28} />
+                            </div>
+                            <h4>📚 Uplifting Stories</h4>
+                            <p>Free cheerful books to brighten your day</p>
+                          </div>
+                          <div className="resource-content">
+                            {currentWeekData.resources.books.map((book, index) => (
+                              <div key={index} className="book-item">
+                                <h5>{book.title}</h5>
+                                <p className="book-author">by {book.author}</p>
+                                <p className="book-description">{book.description}</p>
+                                <a 
+                                  href={book.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="book-link"
+                                >
+                                  <span>�</span>
+                                  Read Free Online
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            ) : currentWeek < 4 ? (
+              <div className="early-pregnancy-info">
+                <Baby size={64} className="early-pregnancy-icon" />
+                <h3>Early Pregnancy Stage</h3>
+                <p>You're in the very early stages of pregnancy (Week {currentWeek || 0}). Detailed development tracking begins from week 4.</p>
+                <div className="early-pregnancy-stats">
+                  <div className="stat-item">
+                    <span className="stat-label">Current Week</span>
+                    <span className="stat-value">Week {currentWeek || 0}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Due Date</span>
+                    <span className="stat-value">{dueDate || 'Calculating...'}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-label">Weeks to Go</span>
+                    <span className="stat-value">{40 - (currentWeek || 0)} weeks</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="no-pregnancy-info">
+                <Baby size={64} className="no-info-icon" />
+                <h3>Loading Your Pregnancy Information</h3>
+                <p>We're calculating your pregnancy week based on your LMC date. Please wait a moment.</p>
+                
+                {/* Debug information */}
+                <div className="pregnancy-debug-info">
+                  <p><strong>Debug Information:</strong></p>
+                  <p>LMC Date: {pregnancyInfo?.lmc || 'Not provided'}</p>
+                  <p>Calculated Week: {week || 'Not calculated'}</p>
+                  <p>Current Week: {currentWeek || 'Not set'}</p>
+                  <p>Has Week Data: {currentWeekData ? 'Yes' : 'No'}</p>
+                  <p>Due Date: {dueDate || 'Not calculated'}</p>
+                </div>
               </div>
             )}
           </div>
