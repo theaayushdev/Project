@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Calendar, Users, Activity, Stethoscope, Award, Clock, Phone, Mail, MessageCircle, User, Calendar as CalendarIcon, MessageSquare, Heart } from 'lucide-react';
 import ChatModal from '../components/Chat/ChatModal';
 import '../cssonly/doctordashboard-single.css';
+import '../cssonly/doctor-welcome-modern.css';
 
 const DoctorDashboardApp = () => {
   const [doctor, setDoctor] = useState(null);
@@ -68,12 +70,21 @@ const DoctorDashboardApp = () => {
         const doctorData = localStorage.getItem('doctorData');
         if (doctorData) {
           const parsedDoctor = JSON.parse(doctorData);
-          setDoctor(parsedDoctor);
           
-          // Verify doctor data with backend
-          const response = await fetch(`http://127.0.0.1:5000/doctor/${parsedDoctor.id}`);
+          // Verify doctor data with backend and get the complete data
+          const response = await fetch(`http://127.0.0.1:5000/doctors`);
           if (!response.ok) {
             throw new Error('Doctor data verification failed');
+          }
+          
+          // Get the full doctor data from the backend including profile_photo
+          const allDoctors = await response.json();
+          const fullDoctorData = allDoctors.find(d => d.id === parsedDoctor.id);
+          if (fullDoctorData) {
+            console.log("Full doctor data from backend:", fullDoctorData);
+            setDoctor(fullDoctorData); // Use the complete backend data with all fields
+          } else {
+            setDoctor(parsedDoctor); // Fallback to localStorage data
           }
           
           // Initialize profile data
@@ -454,19 +465,90 @@ const DoctorDashboardApp = () => {
           {/* Dashboard Section */}
           {activeSection === 'dashboard' && (
             <div className="doctordas-dashboard">
-              {/* Welcome */}
-              <div className="doctordas-welcome">
-                <h1>Welcome back, Dr. {doctor?.firstname} {doctor?.lastname}</h1>
-                <p>Here's what's happening with your patients today.</p>
-                <div className="doctordas-welcome-stats">
-                  <span className="doctordas-status-online">🟢 Online</span>
-                  <span>•</span>
-                  <span>{new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</span>
+              {/* Modern Doctor Profile Header */}
+              <div className="doctor-profile-header">
+                <div className="doctor-profile-card">
+                  <div className="doctor-profile-main">
+                    <div className="doctor-avatar-section">
+                      <img
+                        src={doctor?.profile_photo ? (doctor.profile_photo.startsWith('http') ? doctor.profile_photo : `http://127.0.0.1:5000/uploads/doctor_photos/${doctor.profile_photo}`) : 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face'}
+                        alt={`Dr. ${doctor?.firstname} ${doctor?.lastname}`}
+                        className="doctor-avatar-image"
+                        onError={e => { 
+                          console.log("Image failed to load:", doctor?.profile_photo);
+                          e.target.src = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face'; 
+                        }}
+                      />
+                      <div className="doctor-status-indicator">
+                        <span className="status-dot-active"></span>
+                      </div>
+                    </div>
+                    
+                    <div className="doctor-info-section">
+                      <div className="doctor-name-title">
+                        <h1>Dr. {doctor?.firstname} {doctor?.lastname}</h1>
+                        <div className="doctor-credentials">
+                          <span className="specialty-badge">{doctor?.specialty || 'Medical Specialist'}</span>
+                          {doctor?.years_of_experience && (
+                            <span className="experience-text">{doctor.years_of_experience} years experience</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="doctor-details-professional">
+                        <div className="detail-row">
+                          <Mail size={16} />
+                          <span className="detail-label">Email:</span>
+                          <span className="detail-text">{doctor?.email || 'Not available'}</span>
+                        </div>
+                        <div className="detail-row">
+                          <Phone size={16} />
+                          <span className="detail-label">Phone:</span>
+                          <span className="detail-text">{doctor?.phone_number || 'Not available'}</span>
+                        </div>
+                        <div className="detail-row">
+                          <Stethoscope size={16} />
+                          <span className="detail-label">Department:</span>
+                          <span className="detail-text">{doctor?.department || 'General'}</span>
+                        </div>
+                        <div className="detail-row">
+                          <Award size={16} />
+                          <span className="detail-label">License:</span>
+                          <span className="detail-text">{doctor?.medical_license_number?.substring(0, 12) || 'Not available'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="doctor-stats-professional">
+                    <div className="stat-card-pro">
+                      <div className="stat-icon-pro patients-stat">
+                        <Users size={20} />
+                      </div>
+                      <div className="stat-info">
+                        <div className="stat-number-pro">{stats?.total_patients || 0}</div>
+                        <div className="stat-label-pro">Total Patients</div>
+                      </div>
+                    </div>
+                    <div className="stat-card-pro">
+                      <div className="stat-icon-pro calendar-stat">
+                        <Calendar size={20} />
+                      </div>
+                      <div className="stat-info">
+                        <div className="stat-number-pro">{stats?.today_appointments || 0}</div>
+                        <div className="stat-label-pro">Today's Appointments</div>
+                      </div>
+                    </div>
+                    <div className="stat-card-pro">
+                      <div className="stat-icon-pro activity-stat">
+                        <Activity size={20} />
+                      </div>
+                      <div className="stat-info">
+                        <div className="stat-number-pro">{stats?.unread_messages || 0}</div>
+                        <div className="stat-label-pro">New Messages</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
