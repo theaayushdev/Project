@@ -1,5 +1,6 @@
 from flask import Flask
 from extensions import db
+from datetime import datetime, date
 
 
 class User(db.Model):
@@ -98,3 +99,36 @@ class Message(db.Model):
 
     def __repr__(self):
         return f'<Message from {self.sender_type}:{self.sender_id} to {self.receiver_type}:{self.receiver_id}>'
+
+# Health Tracker models
+class HealthRecord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.patient_id'), nullable=False)
+    date = db.Column(db.Date, nullable=False, default=date.today)
+    
+    # Mood (1-10 scale)
+    mood_score = db.Column(db.Integer)
+    mood_notes = db.Column(db.String(255))
+    
+    # Water intake (glasses)
+    water_intake = db.Column(db.Integer, default=0)
+    
+    # Sleep (hours)
+    sleep_hours = db.Column(db.Float)
+    sleep_quality = db.Column(db.Integer)  # 1-5 scale
+    
+    # Heart rate (bpm)
+    heart_rate = db.Column(db.Integer)
+    
+    # Blood pressure
+    systolic_bp = db.Column(db.Integer)
+    diastolic_bp = db.Column(db.Integer)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    user = db.relationship('User', backref='health_records')
+    
+    def __repr__(self):
+        return f'<HealthRecord user_id={self.user_id} date={self.date}>'

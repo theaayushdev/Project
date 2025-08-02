@@ -3,10 +3,17 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
 from model import User, Doctor, Appointment, PregnancyInfo, Message, Admin
+from reports_api import reports_bp
+from health_tracker_api import health_tracker_bp
 from datetime import datetime
 import os 
 from sqlalchemy import func, or_, and_
 from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
+app.register_blueprint(reports_bp)
+app.register_blueprint(health_tracker_bp)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
