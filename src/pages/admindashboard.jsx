@@ -12,9 +12,11 @@ const AdminSidebar = ({ activeSection, setActiveSection }) => {
     { id: 'users', label: 'User Analytics', icon: Users },
     { id: 'doctors', label: 'Doctor Analytics', icon: UserCheck },
     { id: 'add-doctor', label: 'Add Doctor', icon: UserPlus },
+     { id: 'remove-doctors', label: 'Remove Doctor', icon: UserCheck },
     { id: 'appointments', label: 'Appointments', icon: Calendar },
     { id: 'pregnancy', label: 'Pregnancy Data', icon: Activity },
-    { id: 'reports', label: 'Reports', icon: TrendingUp }
+    { id: 'reports', label: 'Reports', icon: TrendingUp },
+   
   ];
 
   return (
@@ -511,6 +513,55 @@ const AdminDashboard = () => {
       <AddDoctorForm />
     </div>
   );
+  const renderRemoveDoctors = () => (
+  <div className="analytics-section">
+    <div className="section-header">
+      <h2>Remove Doctors</h2>
+      <p>Disable doctors from being active in the system</p>
+    </div>
+
+    <div className="data-table">
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {doctors.map(doctor => (
+              <tr key={doctor.id}>
+                <td>Dr. {doctor.firstname} {doctor.lastname}</td>
+                <td>{doctor.email}</td>
+                <td>{doctor.status}</td>
+                <td>
+                  <button
+                    style={{
+                      background: '#ef4444',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      cursor: doctor.status === 'off' ? 'not-allowed' : 'pointer',
+                      opacity: doctor.status === 'off' ? 0.6 : 1
+                    }}
+                    disabled={doctor.status === 'off'}
+                    onClick={() => handleRemoveDoctor(doctor.id)}
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
 
   // Doctors state
 
@@ -570,49 +621,11 @@ const AdminDashboard = () => {
           {activeSection === 'appointments' && renderAppointments()}
           {activeSection === 'pregnancy' && renderPregnancyData()}
           {activeSection === 'reports' && renderReports()}
+          {activeSection === 'remove-doctors' && renderRemoveDoctors()}
         </div>
       </div>
 
-      {/* Remove Doctors Section */}
-      <section className="remove-doctors-section" style={{ marginTop: '32px' }}>
-        <h2>Remove Doctors</h2>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '16px' }}>
-          <thead>
-            <tr>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Name</th>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Email</th>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Status</th>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {doctors.map(doctor => (
-              <tr key={doctor.id}>
-                <td style={{ padding: '8px' }}>{doctor.name}</td>
-                <td style={{ padding: '8px' }}>{doctor.email}</td>
-                <td style={{ padding: '8px' }}>{doctor.status}</td>
-                <td style={{ padding: '8px' }}>
-                  <button
-                    style={{
-                      background: '#ef4444',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '6px 12px',
-                      borderRadius: '4px',
-                      cursor: doctor.status === 'off' ? 'not-allowed' : 'pointer',
-                      opacity: doctor.status === 'off' ? 0.6 : 1
-                    }}
-                    disabled={doctor.status === 'off'}
-                    onClick={() => handleRemoveDoctor(doctor.id)}
-                  >
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      
 
       <style jsx>{`
         .admin-dashboard {
