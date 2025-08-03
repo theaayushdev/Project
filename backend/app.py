@@ -16,9 +16,6 @@ CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localh
 app.register_blueprint(reports_bp)
 app.register_blueprint(health_tracker_bp)
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
-
 # File upload configuration
 UPLOAD_FOLDER = 'uploads/doctor_photos'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -276,18 +273,76 @@ def get_all_doctors():
 @app.route('/appointment', methods=['POST'])
 def create_appointment():
     data = request.get_json()
+    
+    # Validation
+    if not data.get('user_id'):
+        return jsonify({'error': 'User ID is required'}), 400
+    if not data.get('doctor_id'):
+        return jsonify({'error': 'Doctor ID is required'}), 400
+    if not data.get('appointment_date'):
+        return jsonify({'error': 'Appointment date is required'}), 400
+    if not data.get('appointment_time'):
+        return jsonify({'error': 'Appointment time is required'}), 400
+    
     try:
-        appointment_date = datetime.strptime(data['appointment_date'], '%Y-%m-%d').date()
+        # Parse appointment date and time
+        appointment_date_str = data['appointment_date']
+        appointment_time_str = data['appointment_time']
+        
+        # Combine date and time into a datetime object
+        appointment_datetime_str = f"{appointment_date_str} {appointment_time_str}:00"
+        appointment_datetime = datetime.strptime(appointment_datetime_str, '%Y-%m-%d %H:%M:%S')
+        
+        # Validate that appointment datetime is not in the past
+        if appointment_datetime < datetime.now():
+            return jsonify({'error': 'Appointment date and time cannot be in the past'}), 400
+        
+        # Check if user exists
+        user = User.query.get(data['user_id'])
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Check if doctor exists and is active
+        doctor = Doctor.query.get(data['doctor_id'])
+        if not doctor:
+            return jsonify({'error': 'Doctor not found'}), 404
+        if doctor.status != 'on':
+            return jsonify({'error': 'Doctor is not available'}), 400
+        
+        # Check for conflicting appointments (same doctor, same date and time)
+        existing_appointment = Appointment.query.filter_by(
+            doctor_id=data['doctor_id'],
+            appointment_date=appointment_datetime
+        ).first()
+        
+        if existing_appointment:
+            return jsonify({'error': 'An appointment already exists for this date and time with this doctor'}), 409
+        
         new_appointment = Appointment(
             user_id=data['user_id'],
             doctor_id=data['doctor_id'],
-            appointment_date=appointment_date,
+            appointment_date=appointment_datetime,
             status=data.get('status', 'pending')
         )
         db.session.add(new_appointment)
         db.session.commit()
-        return jsonify({'message': 'Appointment created successfully'}), 201
+        
+        return jsonify({
+            'message': 'Appointment created successfully',
+            'appointment': {
+                'id': new_appointment.id,
+                'appointment_date': new_appointment.appointment_date.strftime('%Y-%m-%d'),
+                'appointment_time': new_appointment.appointment_date.strftime('%H:%M'),
+                'appointment_datetime': new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'status': new_appointment.status,
+                'doctor_name': f"Dr. {doctor.firstname} {doctor.lastname}",
+                'user_name': f"{user.firstname} {user.lastname}"
+            }
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': 'Invalid date or time format. Use YYYY-MM-DD for date and HH:MM for time'}), 400
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 # ✅ New Route to handle pregnancy info
@@ -344,7 +399,9 @@ def get_appointments():
         'id': a.id,
         'user_id': a.user_id,
         'doctor_id': a.doctor_id,
-        'appointment_date': a.appointment_date.strftime('%Y-%m-%d'),
+        'appointment_date': a.appointment_date.strftime('%Y-%m-%d') if a.appointment_date else None,
+        'appointment_time': a.appointment_date.strftime('%H:%M') if a.appointment_date else None,
+        'appointment_datetime': a.appointment_date.strftime('%Y-%m-%d %H:%M:%S') if a.appointment_date else None,
         'status': a.status
     } for a in all_appointments]
     return jsonify(result)

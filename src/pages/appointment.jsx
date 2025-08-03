@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import * as Yup from 'yup';
 import UserNavbar from './Usernavbar';
 import UserSidebar from './usersidebar';
 
@@ -13,8 +14,15 @@ function getPregnancyWeek(lmc) {
 }
 
 const AppointmentForm = () => {
+
+  const validationSchema = Yup.object().shape({
+    appointmentDate: Yup.date().required('Appointment Date is required'),
+    appointmentTime: Yup.string().required('Appointment Time is required'),
+    selectedDoctorId: Yup.string().required('Please select a doctor.')
+  });
   const [user, setUser] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState('');
+  const [appointmentTime, setAppointmentTime] = useState('');
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,6 +30,9 @@ const AppointmentForm = () => {
   const [success, setSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('appointments');
   const [pregnancyInfo, setPregnancyInfo] = useState(null);
+
+  // New state for preselected doctor name from URL
+  const [preselectedDoctorName, setPreselectedDoctorName] = useState('');
 
   // Inline styles object
   const styles = {
@@ -148,6 +159,15 @@ useEffect(() => {
         setLoading(false);
       }
     };
+
+    // Parse URL parameters to preselect doctor
+    const params = new URLSearchParams(window.location.search);
+    const preselectedDoctorId = params.get('doctorId');
+    const preselectedDoctorName = params.get('doctorName');
+    if (preselectedDoctorId) {
+      setSelectedDoctorId(preselectedDoctorId);
+      setPreselectedDoctorName(preselectedDoctorName ? decodeURIComponent(preselectedDoctorName) : '');
+    }
     
     fetchUser();
     fetchDoctors();
@@ -155,9 +175,16 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+setLoading(true);
     setError('');
     setSuccess('');
+    
+    const valid = await validationSchema.isValid({ appointmentDate, appointmentTime, selectedDoctorId });
+    if (!valid) {
+      setError('Validation failed. Ensure all fields are filled correctly.');
+      setLoading(false);
+      return;
+    }
     
     try {
       if (!user) {
@@ -169,11 +196,15 @@ useEffect(() => {
       if (!appointmentDate) {
         throw new Error('Please select an appointment date.');
       }
+      if (!appointmentTime) {
+        throw new Error('Please select an appointment time.');
+      }
 
       const payload = {
         user_id: user.patient_id,
         doctor_id: selectedDoctorId,
         appointment_date: appointmentDate,
+        appointment_time: appointmentTime,
         status: 'pending'
       };
 
@@ -182,6 +213,7 @@ useEffect(() => {
 
       setSelectedDoctorId('');
       setAppointmentDate('');
+      setAppointmentTime('');
     } catch (err) {
       setError(err.message || 'Failed to submit appointment. Please try again.');
     } finally {
@@ -221,13 +253,30 @@ useEffect(() => {
 
             <div style={styles.formGroup}>
               <label style={styles.label}>Select Doctor:</label>
+              {preselectedDoctorName && (
+                <div style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#e6fffa',
+                  border: '1px solid #38b2ac',
+                  borderRadius: '5px',
+                  marginBottom: '8px',
+                  fontSize: '14px',
+                  color: '#234e52'
+                }}>
+                  ✓ Pre-selected: {preselectedDoctorName}
+                </div>
+              )}
               <select 
-                style={styles.select}
+                style={{
+                  ...styles.select,
+                  backgroundColor: selectedDoctorId ? '#f0fff4' : 'white',
+                  borderColor: selectedDoctorId ? '#38a169' : '#e2e8f0'
+                }}
                 value={selectedDoctorId} 
                 onChange={(e) => setSelectedDoctorId(e.target.value)}
                 required
               >
-                <option value="">Choose a doctor</option>
+                <option value="">{preselectedDoctorName ? 'Change doctor if needed' : 'Choose a doctor'}</option>
                 {doctors.map((doc) => (
                   <option key={doc.id} value={doc.id}>
                     Dr. {doc.firstname} {doc.lastname} ({doc.specialty})
@@ -244,8 +293,31 @@ useEffect(() => {
                 value={appointmentDate} 
                 onChange={(e) => setAppointmentDate(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
+                max={(() => {
+                  const maxDate = new Date();
+                  maxDate.setMonth(maxDate.getMonth() + 2);
+                  return maxDate.toISOString().split('T')[0];
+                })()}
                 required 
               />
+              <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                Appointments can be booked up to 2 months in advance
+              </p>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Appointment Time:</label>
+              <select 
+                style={styles.select}
+                value={appointmentTime} 
+                onChange={(e) => setAppointmentTime(e.target.value)}
+                required
+              >
+                <option value="">Choose a time</option>
+                <option value="08:30">8:30 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="15:00">3:00 PM</option>
+              </select>
             </div>
 
             <button 

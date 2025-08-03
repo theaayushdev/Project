@@ -9,6 +9,7 @@ function DoctorLogin() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -127,17 +128,37 @@ function DoctorLogin() {
             <label htmlFor="password" className="doctor-form-label">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={`doctor-form-input ${
-                errors.password ? 'error' : ''
-              }`}
-              placeholder="Enter your password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`doctor-form-input ${
+                  errors.password ? 'error' : ''
+                }`}
+                placeholder="Enter your password"
+                style={{ paddingRight: '45px' }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer', 
+                  fontSize: '18px',
+                  color: '#666'
+                }}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             {errors.password && (
               <p className="doctor-form-error">{errors.password}</p>
             )}

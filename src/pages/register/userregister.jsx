@@ -29,6 +29,18 @@ const Registerlogin = () => {
   // UI feedback state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+  
+  // Password visibility state
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  const toggleShowPassword = (field) => {
+    if (field === 'password') {
+      setShowPassword(!showPassword);
+    } else if (field === 'confirmPassword') {
+      setShowConfirmPassword(!showConfirmPassword);
+    }
+  };
 
   // Handle input changes
   const handleChange = (e) => {
@@ -373,27 +385,67 @@ const Registerlogin = () => {
               
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={errors.password ? "error" : ""}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={errors.password ? "error" : ""}
+                    style={{ paddingRight: '45px' }}
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => toggleShowPassword('password')} 
+                    style={{ 
+                      position: 'absolute', 
+                      right: '10px', 
+                      top: '50%', 
+                      transform: 'translateY(-50%)', 
+                      background: 'none', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      fontSize: '18px',
+                      color: '#666'
+                    }}
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
                 {errors.password && <span className="error-text">{errors.password}</span>}
               </div>
               
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={errors.confirmPassword ? "error" : ""}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className={errors.confirmPassword ? "error" : ""}
+                    style={{ paddingRight: '45px' }}
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => toggleShowPassword('confirmPassword')} 
+                    style={{ 
+                      position: 'absolute', 
+                      right: '10px', 
+                      top: '50%', 
+                      transform: 'translateY(-50%)', 
+                      background: 'none', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      fontSize: '18px',
+                      color: '#666'
+                    }}
+                  >
+                    {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
                 {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
               </div>
             </div>

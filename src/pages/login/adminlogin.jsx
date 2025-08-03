@@ -10,6 +10,7 @@ function AdminLogin() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -116,16 +117,35 @@ function AdminLogin() {
             <label htmlFor="password" className="form-label">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={`form-input ${errors.password ? 'error' : ''}`}
-              placeholder="Enter your password"
-              style={{ color: '#222', background: '#fff' }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`form-input ${errors.password ? 'error' : ''}`}
+                placeholder="Enter your password"
+                style={{ color: '#222', background: '#fff', paddingRight: '45px' }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer', 
+                  fontSize: '18px',
+                  color: '#666'
+                }}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             {errors.password && (
               <p className="error-message">{errors.password}</p>
             )}
