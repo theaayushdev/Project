@@ -856,7 +856,6 @@ const handlePatientClick = async (patient) => {
             </div>
           )}
 
-          // Replace your existing Patients Section with this:
 {/* Patients Section */}
 {activeSection === 'patients' && (
   <div className="doctordas-section">
