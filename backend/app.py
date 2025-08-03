@@ -896,6 +896,35 @@ def get_chat_messages():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/send-message', methods=['POST'])
+def send_message_simple():
+    """Send a new message (simple text only)"""
+    try:
+        data = request.get_json()
+        
+        # Create new message
+        message = Message(
+            sender_id=data['sender_id'],
+            receiver_id=data['receiver_id'],
+            sender_type=data['sender_type'],
+            receiver_type=data['receiver_type'],
+            content=data['content'],
+            message_type='text'
+        )
+        
+        db.session.add(message)
+        db.session.commit()
+        
+        return jsonify({
+            'id': message.id,
+            'content': message.content,
+            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'sender_id': message.sender_id,
+            'sender_type': message.sender_type
+        }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/chat/send', methods=['POST'])
 def send_message():
     """Send a new message"""
