@@ -706,10 +706,34 @@
 
 .doctordas-appointment-details {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
   font-size: 0.875rem;
   color: #64748b;
+}
+
+.doctordas-appointment-date {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.doctordas-appointment-contact,
+.doctordas-appointment-age,
+.doctordas-appointment-blood {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.doctordas-patient-name {
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
 }
 
 .doctordas-appointment-purpose {
