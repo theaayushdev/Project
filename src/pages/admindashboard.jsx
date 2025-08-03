@@ -84,7 +84,7 @@ const AdminDashboard = () => {
       try {
         const [usersRes, doctorsRes, appointmentsRes, pregnancyRes] = await Promise.all([
           axios.get('http://localhost:5000/users'),
-          axios.get('http://localhost:5000/doctors'),
+          axios.get('http://localhost:5000/all-doctors'), // Get all doctors regardless of status
           axios.get('http://localhost:5000/appointments'),
           axios.get('http://localhost:5000/pregnancy-info')
         ]);
@@ -514,78 +514,74 @@ const AdminDashboard = () => {
     </div>
   );
   const renderRemoveDoctors = () => (
-  <div className="analytics-section">
-    <div className="section-header">
-      <h2>Remove Doctors</h2>
-      <p>Disable doctors from being active in the system</p>
-    </div>
+    <div className="analytics-section">
+      <div className="section-header">
+        <h2>Remove Doctors</h2>
+        <p>Disable doctors from being active in the system</p>
+      </div>
 
-    <div className="data-table">
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {doctors.map(doctor => (
-              <tr key={doctor.id}>
-                <td>Dr. {doctor.firstname} {doctor.lastname}</td>
-                <td>{doctor.email}</td>
-                <td>{doctor.status}</td>
-                <td>
-                  <button
-                    style={{
-                      background: '#ef4444',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '6px 12px',
-                      borderRadius: '4px',
-                      cursor: doctor.status === 'off' ? 'not-allowed' : 'pointer',
-                      opacity: doctor.status === 'off' ? 0.6 : 1
-                    }}
-                    disabled={doctor.status === 'off'}
-                    onClick={() => handleRemoveDoctor(doctor.id)}
-                  >
-                    Remove
-                  </button>
-                </td>
+      <div className="data-table">
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {doctors.map(doctor => (
+                <tr key={doctor.id}>
+                  <td>Dr. {doctor.firstname} {doctor.lastname}</td>
+                  <td>{doctor.email}</td>
+                  <td>{doctor.status}</td>
+                  <td>
+                    <button
+                      style={{
+                        background: doctor.status === 'off' ? '#10b981' : '#ef4444',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '6px 12px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onClick={() => handleToggleDoctorStatus(doctor.id)}
+                    >
+                      {doctor.status === 'off' ? 'Restore' : 'Remove'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-);
-
-  // Doctors state
+  );
 
 
-  useEffect(() => {
-    // Fetch doctors from API
-    fetch('http://localhost:5000/doctors')
-      .then(res => res.json())
-      .then(data => setDoctors(data))
-      .catch(() => setDoctors([]));
-  }, []);
 
-  const handleRemoveDoctor = async (doctorId) => {
-    // Set doctor status to 'off' via API
-    await fetch(`http://localhost:5000/doctors/${doctorId}/status`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'off' })
-    });
-    setDoctors(prev =>
-      prev.map(doc =>
-        doc.id === doctorId ? { ...doc, status: 'off' } : doc
-      )
-    );
+const handleToggleDoctorStatus = async (doctorId) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/remove_doctor/${doctorId}`);
+      alert(response.data.message);
+
+      // Update the local state with the new status returned from backend
+      setDoctors(prevDoctors =>
+        prevDoctors.map(doc =>
+          doc.id === doctorId ? { ...doc, status: response.data.new_status } : doc
+        )
+      );
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.message || 'Error toggling doctor status');
+      } else {
+        alert('Network error or server is down');
+      }
+    }
   };
 
   if (loading) {

@@ -3,10 +3,18 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from extensions import db
 from model import User, Doctor, Appointment, PregnancyInfo, Message, Admin
-from datetime import datetime
+from reports_api import reports_bp
+from health_tracker_api import health_tracker_bp
+from datetime import datetime, timedelta
 import os 
 from sqlalchemy import func, or_, and_
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
+app.register_blueprint(reports_bp)
+app.register_blueprint(health_tracker_bp)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
@@ -83,6 +91,25 @@ def get_doctor(doctor_id):
         }), 200
     else:
         return jsonify({'error': 'Doctor not found'}), 404
+    
+@app.route('/remove_doctor/<int:doctor_id>', methods=['PUT'])
+def toggle_doctor_status(doctor_id):
+    doctor = Doctor.query.get_or_404(doctor_id)
+    
+    if doctor.status == 'on':
+        doctor.status = 'off'
+        action = 'removed'
+        new_status = 'off'
+    else:
+        doctor.status = 'on'
+        action = 'restored'
+        new_status = 'on'
+    
+    db.session.commit()
+    return jsonify({
+        'message': f'Doctor {doctor.firstname} {doctor.lastname} {action} successfully',
+        'new_status': new_status
+    }), 200
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -223,7 +250,27 @@ def get_doctors():
         'years_of_experience': d.years_of_experience,
         'profile_photo': d.profile_photo,
         'gender': d.gender,
-        'medical_license_number': d.medical_license_number
+        'medical_license_number': d.medical_license_number,
+        'status': d.status
+    } for d in doctors]), 200
+
+@app.route('/all-doctors', methods=['GET'])
+def get_all_doctors():
+    doctors = Doctor.query.all()  # Get all doctors regardless of status
+    return jsonify([{
+        'id': d.id,
+        'firstname': d.firstname,
+        'lastname': d.lastname,
+        'phone_number': d.phone_number,
+        'specialty': d.specialty,
+        'department': d.department,
+        'email': d.email,
+        'age': d.age,
+        'years_of_experience': d.years_of_experience,
+        'profile_photo': d.profile_photo,
+        'gender': d.gender,
+        'medical_license_number': d.medical_license_number,
+        'status': d.status
     } for d in doctors]), 200
 
 @app.route('/appointment', methods=['POST'])
@@ -333,8 +380,14 @@ def get_doctor_patients(doctor_id):
         appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
         patient_ids = set([appt.user_id for appt in appointments])
         patients = User.query.filter(User.patient_id.in_(patient_ids)).all()
-        result = [
-            {
+        result = []
+        
+        for p in patients:
+            # Check if patient has pregnancy info
+            pregnancy_info = PregnancyInfo.query.filter_by(user_id=p.patient_id).first() 
+            has_pregnancy_info = pregnancy_info is not None
+            
+            patient_data = {
                 'id': p.patient_id,
                 'firstname': p.firstname,
                 'lastname': p.lastname,
@@ -342,10 +395,12 @@ def get_doctor_patients(doctor_id):
                 'contact': p.contact,
                 'age': p.age,
                 'bloodtype': p.bloodtype,
-                'profile_photo': p.profile_photo
+                'profile_photo': p.profile_photo,
+                'location': p.location,
+                'has_pregnancy_info': has_pregnancy_info
             }
-            for p in patients
-        ]
+            result.append(patient_data)
+            
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -504,7 +559,8 @@ def get_user_doctors(user_id):
                 'email': d.email,
                 'specialty': d.specialty,
                 'department': d.department,
-                'profile_photo': d.profile_photo
+                'profile_photo': d.profile_photo,
+                'status': d.status
             }
             for d in doctors
         ]
@@ -857,6 +913,268 @@ def get_available_doctors():
         return jsonify(doctor_list), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/pregnancy-info/<int:user_id>', methods=['GET'])
+def fetch_user_pregnancy_info(user_id):
+    """Get pregnancy information for a specific user"""
+    try:
+        pregnancy_info = PregnancyInfo.query.filter_by(user_id=user_id).first()
+        
+        if not pregnancy_info:
+            return jsonify({
+                'success': False,
+                'message': 'No pregnancy information found for this user'
+            }), 404
+        
+        # Calculate weeks pregnant from LMC (Last Menstrual Cycle)
+        if pregnancy_info.lmc:
+            today = datetime.now().date()
+            weeks_pregnant = (today - pregnancy_info.lmc).days // 7
+            due_date = pregnancy_info.lmc + timedelta(days=280)  # 40 weeks
+            trimester = 1 if weeks_pregnant <= 12 else (2 if weeks_pregnant <= 27 else 3)
+        else:
+            weeks_pregnant = None
+            due_date = None
+            trimester = None
+        
+        pregnancy_data = {
+            'id': pregnancy_info.id,
+            'user_id': pregnancy_info.user_id,
+            'lmc': pregnancy_info.lmc.isoformat() if pregnancy_info.lmc else None,
+            'height': pregnancy_info.height,
+            'weight': pregnancy_info.weight,
+            'profession': pregnancy_info.profession,
+            'gravida': pregnancy_info.gravida,
+            'allergies': pregnancy_info.allergies,
+            'conditions': pregnancy_info.conditions,
+            'notes': pregnancy_info.notes,
+            'weeks_pregnant': weeks_pregnant,
+            'due_date': due_date.isoformat() if due_date else None,
+            'trimester': trimester,
+            'user': {
+                'firstname': pregnancy_info.user.firstname,
+                'lastname': pregnancy_info.user.lastname,
+                'email': pregnancy_info.user.email,
+                'contact': pregnancy_info.user.contact,
+                'age': pregnancy_info.user.age
+            } if pregnancy_info.user else None
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': pregnancy_data
+        }), 200
+        
+    except Exception as e:
+        print(f"Error fetching pregnancy info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'Internal server error'
+        }), 500
+
+@app.route('/doctor/patients-with-pregnancy/<int:doctor_id>', methods=['GET'])
+def get_patients_with_pregnancy_info(doctor_id):
+    """Get all patients for a doctor with their pregnancy information"""
+    try:
+        # Get all appointments for this doctor to find patients
+        appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+        patient_ids = list(set([apt.user_id for apt in appointments]))
+        
+        patients_with_pregnancy = []
+        
+        for patient_id in patient_ids:
+            # Get patient info
+            patient = User.query.get(patient_id)
+            if not patient:
+                continue
+            
+            # Get pregnancy info if exists
+            pregnancy_info = PregnancyInfo.query.filter_by(user_id=patient_id).first()
+            
+            patient_data = {
+                'id': patient.patient_id,
+                'firstname': patient.firstname,
+                'lastname': patient.lastname,
+                'email': patient.email,
+                'contact': patient.contact,
+                'age': patient.age,
+                'location': patient.location,
+                'has_pregnancy_info': pregnancy_info is not None,
+                'pregnancy_info': None
+            }
+            
+            if pregnancy_info:
+                # Calculate weeks pregnant and due date
+                weeks_pregnant = None
+                due_date = None
+                trimester = None
+                if pregnancy_info.lmc:
+                    today = datetime.now().date()
+                    weeks_pregnant = (today - pregnancy_info.lmc).days // 7
+                    due_date = pregnancy_info.lmc + timedelta(days=280)
+                    trimester = 1 if weeks_pregnant <= 12 else (2 if weeks_pregnant <= 27 else 3)
+                
+                patient_data['pregnancy_info'] = {
+                    'id': pregnancy_info.id,
+                    'lmc': pregnancy_info.lmc.isoformat() if pregnancy_info.lmc else None,
+                    'height': pregnancy_info.height,
+                    'weight': pregnancy_info.weight,
+                    'profession': pregnancy_info.profession,
+                    'gravida': pregnancy_info.gravida,
+                    'allergies': pregnancy_info.allergies,
+                    'conditions': pregnancy_info.conditions,
+                    'notes': pregnancy_info.notes,
+                    'weeks_pregnant': weeks_pregnant,
+                    'due_date': due_date.isoformat() if due_date else None,
+                    'trimester': trimester
+                }
+            
+            patients_with_pregnancy.append(patient_data)
+        
+        return jsonify({
+            'success': True,
+            'data': patients_with_pregnancy
+        }), 200
+        
+    except Exception as e:
+        print(f"Error fetching patients with pregnancy info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'Internal server error'
+        }), 500
+
+@app.route('/pregnancy-info', methods=['POST'])
+def create_pregnancy_info():
+    """Create new pregnancy information"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['user_id', 'lmc', 'height', 'weight', 'profession', 'gravida']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    'success': False,
+                    'message': f'Missing required field: {field}'
+                }), 400
+        
+        # Check if pregnancy info already exists for this user
+        existing_info = PregnancyInfo.query.filter_by(user_id=data['user_id']).first()
+        if existing_info:
+            return jsonify({
+                'success': False,
+                'message': 'Pregnancy information already exists for this user'
+            }), 400
+        
+        # Parse LMC date
+        try:
+            lmc_date = datetime.strptime(data['lmc'], '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid LMC date format. Use YYYY-MM-DD'
+            }), 400
+        
+        # Create new pregnancy info
+        pregnancy_info = PregnancyInfo(
+            user_id=data['user_id'],
+            lmc=lmc_date,
+            height=float(data['height']),
+            weight=float(data['weight']),
+            profession=data['profession'],
+            gravida=int(data['gravida']),
+            allergies=data.get('allergies', ''),
+            conditions=data.get('conditions', ''),
+            notes=data.get('notes', '')
+        )
+        
+        db.session.add(pregnancy_info)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Pregnancy information created successfully',
+            'data': {
+                'id': pregnancy_info.id,
+                'user_id': pregnancy_info.user_id
+            }
+        }), 201
+        
+    except ValueError as e:
+        return jsonify({
+            'success': False,
+            'message': f'Invalid data type: {str(e)}'
+        }), 400
+    except Exception as e:
+        print(f"Error creating pregnancy info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'Internal server error'
+        }), 500
+
+@app.route('/pregnancy-info/<int:user_id>', methods=['PUT'])
+def update_pregnancy_info(user_id):
+    """Update pregnancy information for a specific user"""
+    try:
+        pregnancy_info = PregnancyInfo.query.filter_by(user_id=user_id).first()
+        
+        if not pregnancy_info:
+            return jsonify({
+                'success': False,
+                'message': 'No pregnancy information found for this user'
+            }), 404
+        
+        data = request.get_json()
+        
+        # Update fields if provided
+        if 'lmc' in data:
+            try:
+                pregnancy_info.lmc = datetime.strptime(data['lmc'], '%Y-%m-%d').date()
+            except ValueError:
+                return jsonify({
+                    'success': False,
+                    'message': 'Invalid LMC date format. Use YYYY-MM-DD'
+                }), 400
+        
+        if 'height' in data:
+            pregnancy_info.height = float(data['height'])
+        
+        if 'weight' in data:
+            pregnancy_info.weight = float(data['weight'])
+        
+        if 'profession' in data:
+            pregnancy_info.profession = data['profession']
+        
+        if 'gravida' in data:
+            pregnancy_info.gravida = int(data['gravida'])
+        
+        if 'allergies' in data:
+            pregnancy_info.allergies = data['allergies']
+        
+        if 'conditions' in data:
+            pregnancy_info.conditions = data['conditions']
+        
+        if 'notes' in data:
+            pregnancy_info.notes = data['notes']
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Pregnancy information updated successfully'
+        }), 200
+        
+    except ValueError as e:
+        return jsonify({
+            'success': False,
+            'message': f'Invalid data type: {str(e)}'
+        }), 400
+    except Exception as e:
+        print(f"Error updating pregnancy info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'Internal server error'
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

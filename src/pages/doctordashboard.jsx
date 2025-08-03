@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Users, Activity, Stethoscope, Award, Clock, Phone, Mail, MessageCircle, User, Calendar as CalendarIcon, MessageSquare, Heart, Plus } from 'lucide-react';
+import { Calendar, Users, Activity, Stethoscope, Award, Clock, Phone, Mail, MessageCircle, User, Calendar as CalendarIcon, MessageSquare, Heart, Plus, MapPin, Baby } from 'lucide-react';
 import ChatModal from '../components/Chat/ChatModal';
 import '../cssonly/doctordashboard-single.css';
 import '../cssonly/doctor-welcome-modern.css';
+import '../cssonly/pregnancy-modal.css';
 
 const DoctorDashboardApp = () => {
   const [doctor, setDoctor] = useState(null);
@@ -62,6 +63,36 @@ const DoctorDashboardApp = () => {
     };
     testBackend();
   }, []);
+  const [showPregnancyModal, setShowPregnancyModal] = useState(false);
+const [selectedPatientPregnancy, setSelectedPatientPregnancy] = useState(null);
+const [pregnancyInfo, setPregnancyInfo] = useState(null);
+const [loadingPregnancy, setLoadingPregnancy] = useState(false);
+
+// Add this function to fetch pregnancy info
+const fetchPregnancyInfo = async (patientId) => {
+  setLoadingPregnancy(true);
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/pregnancy-info/${patientId}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      setPregnancyInfo(data.data);
+    } else {
+      setPregnancyInfo(null);
+    }
+  } catch (error) {
+    console.error('Error fetching pregnancy info:', error);
+    setPregnancyInfo(null);
+  } finally {
+    setLoadingPregnancy(false);
+  }
+};
+// Add this function to handle patient card click
+const handlePatientClick = async (patient) => {
+  setSelectedPatientPregnancy(patient);
+  setShowPregnancyModal(true);
+  await fetchPregnancyInfo(patient.id);
+};
 
   // Fetch doctor data and verify
   useEffect(() => {
@@ -808,89 +839,133 @@ const DoctorDashboardApp = () => {
             </div>
           )}
 
-          {/* Patients Section */}
-          {activeSection === 'patients' && (
-            <div className="doctordas-section">
-              <div className="doctordas-section-header">
-                <div>
-                  <h2>My Patients</h2>
-                  <p>View and manage your patient list</p>
-                </div>
-                <div className="doctordas-search-results">
-                  {searchQuery && (
-                    <p>Showing {filteredPatients.length} results for "{searchQuery}"</p>
+          // Replace your existing Patients Section with this:
+{/* Patients Section */}
+{activeSection === 'patients' && (
+  <div className="doctordas-section">
+    <div className="doctordas-section-header">
+      <div>
+        <h2>My Patients</h2>
+        <p>View and manage your patient list</p>
+      </div>
+      <div className="doctordas-search-results">
+        {searchQuery && (
+          <p>Showing {filteredPatients.length} results for "{searchQuery}"</p>
+        )}
+      </div>
+    </div>
+    <div className="doctordas-patients-grid">
+      {filteredPatients.length === 0 ? (
+        <div className="doctordas-empty-state">
+          <span>👥</span>
+          <h4>No patients found</h4>
+          <p>{searchQuery ? 'Try a different search term' : 'Start by booking appointments'}</p>
+        </div>
+      ) : (
+        filteredPatients.map((patient) => {
+          return (
+            <div 
+              key={patient.id} 
+              className="doctordas-patient-card"
+              onClick={() => handlePatientClick(patient)}
+              style={{ cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = 'none';
+              }}
+            >
+              <div className="doctordas-patient-photo">
+                {patient.firstname?.[0]}{patient.lastname?.[0]}
+              </div>
+              <div className="doctordas-patient-info">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <h4>{patient.firstname} {patient.lastname}</h4>
+                  {patient.has_pregnancy_info && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 8px',
+                      background: '#fdf2f8',
+                      color: '#be185d',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '500'
+                    }}>
+                      <Baby size={14} />
+                      <span>Pregnancy Info</span>
+                    </div>
                   )}
                 </div>
-              </div>
-              <div className="doctordas-patients-grid">
-                {filteredPatients.length === 0 ? (
-                  <div className="doctordas-empty-state">
-                    <span>👥</span>
-                    <h4>No patients found</h4>
-                    <p>{searchQuery ? 'Try a different search term' : 'Start by booking appointments'}</p>
+                <div className="doctordas-patient-details">
+                  <div className="doctordas-patient-detail">
+                    <Mail size={16} />
+                    <span>{patient.email}</span>
                   </div>
-                ) : (
-                  filteredPatients.map((patient) => {
-                    const progress = getRandomProgress();
-                    return (
-                      <div key={patient.id} className="doctordas-patient-card">
-                        <div className="doctordas-patient-photo">
-                          {patient.firstname?.[0]}{patient.lastname?.[0]}
-                        </div>
-                        <div className="doctordas-patient-info">
-                          <h4>{patient.firstname} {patient.lastname}</h4>
-                          <div className="doctordas-patient-details">
-                            <div className="doctordas-patient-detail">
-                              <span>📧</span>
-                              <span>{patient.email}</span>
-                            </div>
-                            <div className="doctordas-patient-detail">
-                              <span>📱</span>
-                              <span>{patient.contact || 'N/A'}</span>
-                            </div>
-                            <div className="doctordas-patient-detail">
-                              <span>🎂</span>
-                              <span>{patient.age || 'N/A'} years old</span>
-                            </div>
-                            <div className="doctordas-patient-detail">
-                              <span>📍</span>
-                              <span>{patient.location || 'N/A'}</span>
-                            </div>
-                          </div>
-                          <div className="doctordas-patient-actions">
-                            <button 
-                              className="doctordas-btn-patient doctordas-btn-patient-primary"
-                              onClick={() => {
-                                setSelectedPatient(patient);
-                                setActiveSection('chat');
-                              }}
-                            >
-                              <span>💬</span>
-                              <span>Message</span>
-                            </button>
-                            <button 
-                              className="doctordas-btn-patient doctordas-btn-patient-secondary"
-                              onClick={() => {
-                                setNewAppointmentData({
-                                  ...newAppointmentData,
-                                  patient_id: patient.id
-                                });
-                                setShowNewAppointmentModal(true);
-                              }}
-                            >
-                              <span>📅</span>
-                              <span>Book Appointment</span>
-                            </button>
-                          </div>
-                        </div>
+                  <div className="doctordas-patient-detail">
+                    <Phone size={16} />
+                    <span>{patient.contact || 'N/A'}</span>
+                  </div>
+                  <div className="doctordas-patient-detail">
+                    <User size={16} />
+                    <span>{patient.age || 'N/A'} years old</span>
+                  </div>
+                  <div className="doctordas-patient-detail">
+                    <MapPin size={16} />
+                    <span>{patient.location || 'N/A'}</span>
+                  </div>
+                  {patient.pregnancy_info && (
+                    <>
+                      <div className="doctordas-patient-detail" style={{ color: '#ec4899', fontWeight: '500' }}>
+                        <Heart size={16} />
+                        <span>Week {patient.pregnancy_info.weeks_pregnant || 'N/A'}</span>
                       </div>
-                    );
-                  })
-                )}
+                      <div className="doctordas-patient-detail" style={{ color: '#ec4899', fontWeight: '500' }}>
+                        <Calendar size={16} />
+                        <span>Due: {patient.pregnancy_info.due_date ? new Date(patient.pregnancy_info.due_date).toLocaleDateString() : 'N/A'}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="doctordas-patient-actions" onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    className="doctordas-btn-patient doctordas-btn-patient-primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPatient(patient);
+                      setIsChatOpen(true);
+                    }}
+                  >
+                    <span>💬</span>
+                    <span>Message</span>
+                  </button>
+                  <button 
+                    className="doctordas-btn-patient doctordas-btn-patient-secondary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setNewAppointmentData({
+                        ...newAppointmentData,
+                        patient_id: patient.id
+                      });
+                      setShowNewAppointmentModal(true);
+                    }}
+                  >
+                    <span>📅</span>
+                    <span>Book Appointment</span>
+                  </button>
+                </div>
               </div>
             </div>
-          )}
-
+          );
+        })
+      )}
+    </div>
+  </div>
+)}
           {/* Profile Section */}
           {activeSection === 'profile' && (
             <div className="doctordas-section">
@@ -1147,6 +1222,128 @@ const DoctorDashboardApp = () => {
                   Create Appointment
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Pregnancy Info Modal */}
+      {showPregnancyModal && selectedPatientPregnancy && (
+        <div className="doctordas-modal-overlay" onClick={() => setShowPregnancyModal(false)}>
+          <div className="doctordas-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div className="doctordas-modal-header">
+              <h3 className="doctordas-modal-title">
+                <Baby size={20} style={{ marginRight: '8px', color: '#ec4899' }} />
+                Pregnancy Information - {selectedPatientPregnancy.firstname} {selectedPatientPregnancy.lastname}
+              </h3>
+              <button 
+                className="doctordas-modal-close"
+                onClick={() => setShowPregnancyModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="doctordas-pregnancy-info-modal">
+              {loadingPregnancy ? (
+                <div className="doctordas-loading" style={{ padding: '40px', textAlign: 'center' }}>
+                  <div className="doctordas-loading-spinner" style={{ width: '40px', height: '40px', margin: '0 auto 16px' }}></div>
+                  <p>Loading pregnancy information...</p>
+                </div>
+              ) : pregnancyInfo ? (
+                <div className="pregnancy-details-grid">
+                  <div className="pregnancy-detail-card">
+                    <div className="pregnancy-detail-header">
+                      <Heart size={18} style={{ color: '#ec4899' }} />
+                      <h4>Basic Information</h4>
+                    </div>
+                    <div className="pregnancy-detail-content">
+                      <div className="pregnancy-detail-row">
+                        <strong>Weeks Pregnant:</strong>
+                        <span className="pregnancy-weeks">{pregnancyInfo.weeks_pregnant || 'Not specified'}</span>
+                      </div>
+                      <div className="pregnancy-detail-row">
+                        <strong>Due Date:</strong>
+                        <span>{pregnancyInfo.due_date ? new Date(pregnancyInfo.due_date).toLocaleDateString() : 'Not specified'}</span>
+                      </div>
+                      <div className="pregnancy-detail-row">
+                        <strong>Height:</strong>
+                        <span>{pregnancyInfo.height ? `${pregnancyInfo.height} cm` : 'Not specified'}</span>
+                      </div>
+                      <div className="pregnancy-detail-row">
+                        <strong>Weight:</strong>
+                        <span>{pregnancyInfo.weight ? `${pregnancyInfo.weight} kg` : 'Not specified'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="pregnancy-detail-card">
+                    <div className="pregnancy-detail-header">
+                      <User size={18} style={{ color: '#3b82f6' }} />
+                      <h4>Personal Information</h4>
+                    </div>
+                    <div className="pregnancy-detail-content">
+                      <div className="pregnancy-detail-row">
+                        <strong>Profession:</strong>
+                        <span>{pregnancyInfo.profession || 'Not specified'}</span>
+                      </div>
+                      <div className="pregnancy-detail-row">
+                        <strong>Gravida:</strong>
+                        <span>{pregnancyInfo.gravida || 'Not specified'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {(pregnancyInfo.allergies || pregnancyInfo.conditions) && (
+                    <div className="pregnancy-detail-card">
+                      <div className="pregnancy-detail-header">
+                        <Activity size={18} style={{ color: '#f59e0b' }} />
+                        <h4>Medical Information</h4>
+                      </div>
+                      <div className="pregnancy-detail-content">
+                        {pregnancyInfo.allergies && (
+                          <div className="pregnancy-detail-row">
+                            <strong>Allergies:</strong>
+                            <span>{pregnancyInfo.allergies}</span>
+                          </div>
+                        )}
+                        {pregnancyInfo.conditions && (
+                          <div className="pregnancy-detail-row">
+                            <strong>Conditions:</strong>
+                            <span>{pregnancyInfo.conditions}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {pregnancyInfo.notes && (
+                    <div className="pregnancy-detail-card" style={{ gridColumn: '1 / -1' }}>
+                      <div className="pregnancy-detail-header">
+                        <MessageSquare size={18} style={{ color: '#10b981' }} />
+                        <h4>Additional Notes</h4>
+                      </div>
+                      <div className="pregnancy-detail-content">
+                        <p style={{ 
+                          padding: '12px',
+                          background: '#f8fafc',
+                          borderRadius: '8px',
+                          lineHeight: '1.5',
+                          color: '#475569',
+                          margin: 0
+                        }}>
+                          {pregnancyInfo.notes}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="doctordas-empty-state" style={{ padding: '40px', textAlign: 'center' }}>
+                  <Baby size={48} style={{ color: '#d1d5db', marginBottom: '16px' }} />
+                  <h4>No Pregnancy Information</h4>
+                  <p>No pregnancy information has been recorded for this patient yet.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

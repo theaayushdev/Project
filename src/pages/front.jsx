@@ -184,14 +184,6 @@ const Front = () => {
               <span>Login as Doctor</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button
-              className="front15"
-              onClick={() => navigate("/test")}
-            >
-              <Stethoscope className="w-6 h-6" />
-              <span>Test</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
           </div>
         </div>
 

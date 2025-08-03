@@ -74,6 +74,16 @@ const UserNavbar = ({ user }) => {
           <div className="user-avatar-modern">
             {user && user.firstname ? user.firstname[0] : 'U'}
           </div>
+          <button
+            className="user-navbar-logout-btn"
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = '/';
+            }}
+            title="Logout"
+          >
+            Log Out
+          </button>
         </div>
       </nav>
 
