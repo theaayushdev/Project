@@ -1562,6 +1562,17 @@
   background: #e2e8f0;
 }
 
+.doctordas-btn-success {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.doctordas-btn-success:hover {
+  background: #fde68a;
+  color: #78350f;
+}
+
 .doctordas-btn-link {
   background: none;
   border: none;

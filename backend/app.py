@@ -431,6 +431,48 @@ def get_doctor_appointments(doctor_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/appointment/<int:appointment_id>/complete', methods=['PUT'])
+def complete_appointment(appointment_id):
+    try:
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            return jsonify({'error': 'Appointment not found'}), 404
+
+        appointment.status = 'completed'
+        db.session.commit()
+        return jsonify({'message': 'Appointment marked as completed', 'new_status': appointment.status}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/appointment/<int:appointment_id>', methods=['GET'])
+def get_appointment_details(appointment_id):
+    try:
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            return jsonify({'error': 'Appointment not found'}), 404
+
+        user = User.query.get(appointment.user_id)
+        doctor = Doctor.query.get(appointment.doctor_id)
+
+        appointment_details = {
+            'id': appointment.id,
+            'appointment_date': appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S') if appointment.appointment_date else None,
+            'status': appointment.status,
+            'doctor': {
+                'firstname': doctor.firstname,
+                'lastname': doctor.lastname
+            } if doctor else None,
+            'patient': {
+                'firstname': user.firstname,
+                'lastname': user.lastname,
+                'email': user.email,
+                'contact': user.contact
+            } if user else None
+        }
+        return jsonify(appointment_details), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/doctor/patients/<int:doctor_id>', methods=['GET'])
 def get_doctor_patients(doctor_id):
     try:

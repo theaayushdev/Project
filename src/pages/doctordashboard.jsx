@@ -280,6 +280,35 @@ const handlePatientClick = async (patient) => {
     }
   };
 
+  const handleCompleteAppointment = async (appointmentId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/appointment/${appointmentId}/complete`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (response.ok) {
+        // Refresh appointments to show updated status
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
+        }
+        // Also refresh stats to update pending count
+        const statsResponse = await fetch(`http://127.0.0.1:5000/doctor/stats/${doctor.id}`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setStats(statsData);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('Error completing appointment:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error completing appointment:', error);
+    }
+  };
+
   const handleDashboardClick = (section) => {
     setActiveSection(section);
   };
@@ -809,24 +838,33 @@ const handlePatientClick = async (patient) => {
                     appointments.map((appointment) => (
                       <div key={appointment.id} className="doctordas-appointment-item">
                         <div className="doctordas-avatar">
-                          {appointment.user?.firstname?.[0]}{appointment.user?.lastname?.[0]}
+                          {appointment.patient?.firstname?.[0]}{appointment.patient?.lastname?.[0]}
                         </div>
                         <div className="doctordas-appointment-info">
-                          <p>{appointment.user?.firstname} {appointment.user?.lastname}</p>
+                          <p><strong>{appointment.patient?.firstname} {appointment.patient?.lastname}</strong></p>
                           <div className="doctordas-appointment-details">
-                            <span>{formatDate(appointment.appointment_date)}</span>
-                            {appointment.purpose && (
-                              <span className="doctordas-appointment-purpose">{appointment.purpose}</span>
-                            )}
+                            <span>📅 {formatDate(appointment.appointment_date)}</span>
+                            <span>📧 {appointment.patient?.email}</span>
+                            <span>📞 {appointment.patient?.contact}</span>
                           </div>
                         </div>
                         <div className="doctordas-appointment-actions">
                           <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
                             {appointment.status}
                           </span>
+                          {appointment.status === 'pending' && (
+                            <button
+                              className="doctordas-btn doctordas-btn-success"
+                              onClick={() => handleCompleteAppointment(appointment.id)}
+                              style={{ marginLeft: '8px', padding: '4px 8px', fontSize: '12px' }}
+                            >
+                              Complete
+                            </button>
+                          )}
                           <button
                             className="doctordas-btn-link"
                             onClick={() => handleViewAppointment(appointment)}
+                            style={{ marginLeft: '8px' }}
                           >
                             View
                           </button>
@@ -1106,7 +1144,7 @@ const handlePatientClick = async (patient) => {
             <div className="doctordas-appointment-details-modal">
               <div className="doctordas-appointment-detail-row">
                 <strong>Patient:</strong>
-                <span>{selectedAppointment.user?.firstname} {selectedAppointment.user?.lastname}</span>
+                <span>{selectedAppointment.patient?.firstname || selectedAppointment.user?.firstname} {selectedAppointment.patient?.lastname || selectedAppointment.user?.lastname}</span>
               </div>
               <div className="doctordas-appointment-detail-row">
                 <strong>Date & Time:</strong>
@@ -1130,11 +1168,19 @@ const handlePatientClick = async (patient) => {
               )}
               <div className="doctordas-appointment-detail-row">
                 <strong>Contact:</strong>
-                <span>{selectedAppointment.user?.contact || 'N/A'}</span>
+                <span>{selectedAppointment.patient?.contact || selectedAppointment.user?.contact || 'N/A'}</span>
               </div>
               <div className="doctordas-appointment-detail-row">
                 <strong>Email:</strong>
-                <span>{selectedAppointment.user?.email || 'N/A'}</span>
+                <span>{selectedAppointment.patient?.email || selectedAppointment.user?.email || 'N/A'}</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Age:</strong>
+                <span>{selectedAppointment.patient?.age || selectedAppointment.user?.age || 'N/A'} years</span>
+              </div>
+              <div className="doctordas-appointment-detail-row">
+                <strong>Blood Type:</strong>
+                <span>{selectedAppointment.patient?.bloodtype || selectedAppointment.user?.bloodtype || 'N/A'}</span>
               </div>
             </div>
           </div>
