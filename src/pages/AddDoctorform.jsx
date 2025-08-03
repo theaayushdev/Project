@@ -266,15 +266,30 @@ const AddDoctorForm = () => {
                 required
                 style={{ width: '100%', marginBottom: 16, padding: 12, borderRadius: 4, border: '1px solid #ccc', fontSize: 18 }}
               >
-                <option value="">Select specialty</option>
-                <option value="Obstetrician">Obstetrician</option>
-                <option value="Gynecologist">Gynecologist</option>
-                <option value="Maternal-Fetal Medicine">Maternal-Fetal Medicine</option>
-                <option value="Perinatologist">Perinatologist</option>
-                <option value="Midwife">Midwife</option>
-                <option value="Reproductive Endocrinologist">Reproductive Endocrinologist</option>
-                <option value="Family Medicine">Family Medicine</option>
-                <option value="Internal Medicine">Internal Medicine</option>
+             <option value="">Select specialty</option>
+<option value="Obstetrician">Obstetrician</option>
+<option value="Gynecologist">Gynecologist</option>
+<option value="Obstetrician-Gynecologist (OB/GYN)">Obstetrician-Gynecologist (OB/GYN)</option>
+<option value="Maternal-Fetal Medicine">Maternal-Fetal Medicine</option>
+<option value="Perinatologist">Perinatologist</option>
+<option value="Midwife">Midwife</option>
+<option value="Certified Nurse Midwife">Certified Nurse Midwife</option>
+<option value="Reproductive Endocrinologist">Reproductive Endocrinologist</option>
+<option value="Fertility Specialist">Fertility Specialist</option>
+<option value="Family Medicine">Family Medicine</option>
+<option value="Internal Medicine">Internal Medicine</option>
+<option value="Women's Health Nurse Practitioner">Women's Health Nurse Practitioner</option>
+<option value="Neonatologist">Neonatologist</option>
+<option value="Pediatrician">Pediatrician</option>
+<option value="Lactation Consultant">Lactation Consultant</option>
+<option value="Ultrasonographer">Ultrasonographer</option>
+<option value="Genetic Counselor">Genetic Counselor</option>
+<option value="Anesthesiologist (Obstetric)">Anesthesiologist (Obstetric)</option>
+<option value="Nutritionist (Prenatal)">Nutritionist (Prenatal)</option>
+<option value="Psychologist (Perinatal)">Psychologist (Perinatal)</option>
+<option value="Social Worker (Maternal Health)">Social Worker (Maternal Health)</option>
+<option value="Public Health Specialist">Public Health Specialist</option>
+<option value="Nurse Practitioner">Nurse Practitioner</option>
               </select>
             </div>
             <div style={{ flex: 1 }}>
