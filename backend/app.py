@@ -16,9 +16,6 @@ CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localh
 app.register_blueprint(reports_bp)
 app.register_blueprint(health_tracker_bp)
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5174", "http://127.0.0.1:5175"]}})
-
 # File upload configuration
 UPLOAD_FOLDER = 'uploads/doctor_photos'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -273,21 +270,132 @@ def get_all_doctors():
         'status': d.status
     } for d in doctors]), 200
 
+@app.route('/check-availability', methods=['GET'])
+def check_availability():
+    """Check available time slots for a specific doctor on a specific date"""
+    try:
+        doctor_id = request.args.get('doctor_id')
+        date = request.args.get('date')
+        
+        if not doctor_id or not date:
+            return jsonify({'error': 'doctor_id and date are required parameters'}), 400
+        
+        # Validate date format
+        try:
+            requested_date = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+        
+        # Check if doctor exists and is active
+        doctor = Doctor.query.get(doctor_id)
+        if not doctor:
+            return jsonify({'error': 'Doctor not found'}), 404
+        if doctor.status != 'on':
+            return jsonify({'error': 'Doctor is not available'}), 400
+        
+        # Define available time slots
+        all_time_slots = ['08:30', '12:00', '15:00']
+        
+        # Get existing appointments for this doctor on this date
+        existing_appointments = Appointment.query.filter(
+            Appointment.doctor_id == doctor_id,
+            func.DATE(Appointment.appointment_date) == requested_date
+        ).all()
+        
+        # Get booked time slots
+        booked_slots = []
+        for appointment in existing_appointments:
+            if appointment.appointment_date:
+                time_slot = appointment.appointment_date.strftime('%H:%M')
+                booked_slots.append(time_slot)
+        
+        # Calculate available slots
+        available_slots = [slot for slot in all_time_slots if slot not in booked_slots]
+        
+        return jsonify({
+            'doctor_id': doctor_id,
+            'date': date,
+            'available_slots': available_slots,
+            'booked_slots': booked_slots,
+            'doctor_name': f"Dr. {doctor.firstname} {doctor.lastname}"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/appointment', methods=['POST'])
 def create_appointment():
     data = request.get_json()
+    
+    # Validation
+    if not data.get('user_id'):
+        return jsonify({'error': 'User ID is required'}), 400
+    if not data.get('doctor_id'):
+        return jsonify({'error': 'Doctor ID is required'}), 400
+    if not data.get('appointment_date'):
+        return jsonify({'error': 'Appointment date is required'}), 400
+    if not data.get('appointment_time'):
+        return jsonify({'error': 'Appointment time is required'}), 400
+    
     try:
-        appointment_date = datetime.strptime(data['appointment_date'], '%Y-%m-%d').date()
+        # Parse appointment date and time
+        appointment_date_str = data['appointment_date']
+        appointment_time_str = data['appointment_time']
+        
+        # Combine date and time into a datetime object
+        appointment_datetime_str = f"{appointment_date_str} {appointment_time_str}:00"
+        appointment_datetime = datetime.strptime(appointment_datetime_str, '%Y-%m-%d %H:%M:%S')
+        
+        # Validate that appointment datetime is not in the past
+        if appointment_datetime < datetime.now():
+            return jsonify({'error': 'Appointment date and time cannot be in the past'}), 400
+        
+        # Check if user exists
+        user = User.query.get(data['user_id'])
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Check if doctor exists and is active
+        doctor = Doctor.query.get(data['doctor_id'])
+        if not doctor:
+            return jsonify({'error': 'Doctor not found'}), 404
+        if doctor.status != 'on':
+            return jsonify({'error': 'Doctor is not available'}), 400
+        
+        # Check for conflicting appointments (same doctor, same date and time)
+        existing_appointment = Appointment.query.filter_by(
+            doctor_id=data['doctor_id'],
+            appointment_date=appointment_datetime
+        ).first()
+        
+        if existing_appointment:
+            return jsonify({'error': 'An appointment already exists for this date and time with this doctor'}), 409
+        
         new_appointment = Appointment(
             user_id=data['user_id'],
             doctor_id=data['doctor_id'],
-            appointment_date=appointment_date,
+            appointment_date=appointment_datetime,
             status=data.get('status', 'pending')
         )
         db.session.add(new_appointment)
         db.session.commit()
-        return jsonify({'message': 'Appointment created successfully'}), 201
+        
+        return jsonify({
+            'message': 'Appointment created successfully',
+            'appointment': {
+                'id': new_appointment.id,
+                'appointment_date': new_appointment.appointment_date.strftime('%Y-%m-%d'),
+                'appointment_time': new_appointment.appointment_date.strftime('%H:%M'),
+                'appointment_datetime': new_appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'status': new_appointment.status,
+                'doctor_name': f"Dr. {doctor.firstname} {doctor.lastname}",
+                'user_name': f"{user.firstname} {user.lastname}"
+            }
+        }), 201
+    except ValueError as e:
+        return jsonify({'error': 'Invalid date or time format. Use YYYY-MM-DD for date and HH:MM for time'}), 400
     except Exception as e:
+        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 # ✅ New Route to handle pregnancy info
@@ -344,7 +452,9 @@ def get_appointments():
         'id': a.id,
         'user_id': a.user_id,
         'doctor_id': a.doctor_id,
-        'appointment_date': a.appointment_date.strftime('%Y-%m-%d'),
+        'appointment_date': a.appointment_date.strftime('%Y-%m-%d') if a.appointment_date else None,
+        'appointment_time': a.appointment_date.strftime('%H:%M') if a.appointment_date else None,
+        'appointment_datetime': a.appointment_date.strftime('%Y-%m-%d %H:%M:%S') if a.appointment_date else None,
         'status': a.status
     } for a in all_appointments]
     return jsonify(result)
@@ -371,6 +481,48 @@ def get_doctor_appointments(doctor_id):
                 } if user else None
             })
         return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/appointment/<int:appointment_id>/complete', methods=['PUT'])
+def complete_appointment(appointment_id):
+    try:
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            return jsonify({'error': 'Appointment not found'}), 404
+
+        appointment.status = 'completed'
+        db.session.commit()
+        return jsonify({'message': 'Appointment marked as completed', 'new_status': appointment.status}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/appointment/<int:appointment_id>', methods=['GET'])
+def get_appointment_details(appointment_id):
+    try:
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            return jsonify({'error': 'Appointment not found'}), 404
+
+        user = User.query.get(appointment.user_id)
+        doctor = Doctor.query.get(appointment.doctor_id)
+
+        appointment_details = {
+            'id': appointment.id,
+            'appointment_date': appointment.appointment_date.strftime('%Y-%m-%d %H:%M:%S') if appointment.appointment_date else None,
+            'status': appointment.status,
+            'doctor': {
+                'firstname': doctor.firstname,
+                'lastname': doctor.lastname
+            } if doctor else None,
+            'patient': {
+                'firstname': user.firstname,
+                'lastname': user.lastname,
+                'email': user.email,
+                'contact': user.contact
+            } if user else None
+        }
+        return jsonify(appointment_details), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -836,6 +988,35 @@ def get_chat_messages():
             })
         
         return jsonify(message_list), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/send-message', methods=['POST'])
+def send_message_simple():
+    """Send a new message (simple text only)"""
+    try:
+        data = request.get_json()
+        
+        # Create new message
+        message = Message(
+            sender_id=data['sender_id'],
+            receiver_id=data['receiver_id'],
+            sender_type=data['sender_type'],
+            receiver_type=data['receiver_type'],
+            content=data['content'],
+            message_type='text'
+        )
+        
+        db.session.add(message)
+        db.session.commit()
+        
+        return jsonify({
+            'id': message.id,
+            'content': message.content,
+            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'sender_id': message.sender_id,
+            'sender_type': message.sender_type
+        }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

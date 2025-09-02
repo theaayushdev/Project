@@ -32,7 +32,7 @@ const UserSidebar = ({ activeTab, setActiveTab, lmc, week, trimester, onChatOpen
     } else if (id === 'babynames') {
       navigate('/pregnancydashboard?section=babynames');
     } else if (id === 'health') {
-      navigate('/health-tracker');
+      navigate('/health-tracker-enhanced');
     } else if (id === 'reports') {
       navigate('/reports');
     } else if (id === 'chat') {

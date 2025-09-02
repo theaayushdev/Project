@@ -1211,7 +1211,7 @@ function UserPregnancyDashboard() {
         activeTab="doctors" 
         onChatOpen={() => setIsChatOpen(true)}
       />
-        <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+        <div style={{ flex: 1, marginLeft: 240, padding: "100px 40px 32px 40px" }}>
           <UserNavbar user={user} />
           
           <div className="pregnancy-dashboard-header">
@@ -1346,7 +1346,7 @@ function UserPregnancyDashboard() {
           activeTab="articles" 
           onChatOpen={() => setIsChatOpen(true)}
         />
-        <div style={{ flex: 1, marginLeft: 240, padding: "32px 40px" }}>
+        <div style={{ flex: 1, marginLeft: 240, padding: "100px 40px 32px 40px" }}>
           <UserNavbar user={user} />
           
           <div className="pregnancy-dashboard-header">

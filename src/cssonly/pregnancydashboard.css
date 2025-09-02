@@ -27,6 +27,7 @@
 }
 
 .pregnancy-dashboard-header {
+  margin-top: 90px; /* Account for fixed navbar height + padding */
   margin-bottom: 2rem;
 }
 

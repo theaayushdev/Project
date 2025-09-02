@@ -24,3 +24,27 @@ dist-ssr
 *.sln
 *.sw?
 venv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Database directories
+database/
+db/
+data/
+
+# Database backups
+*.sql
+*.dump
+*.bak
+
+# Environment files (often contain database credentials)
+.env
+.env.local
+.env.production
+.env.staging

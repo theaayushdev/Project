@@ -93,7 +93,7 @@ class Message(db.Model):
     receiver_type = db.Column(db.String(10), nullable=False)  # 'user' or 'doctor'
     content = db.Column(db.Text, nullable=True)  # Text content (can be null for image-only messages)
     image_url = db.Column(db.String(255), nullable=True)  # URL for uploaded images
-    message_type = db.Column(db.String(10), default='text')  # 'text', 'image', or 'mixed'
+    message_type = db.Column(db.String(10), default='text', server_default='text')  # 'text', 'image', or 'mixed'
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
     is_read = db.Column(db.Boolean, default=False)
 

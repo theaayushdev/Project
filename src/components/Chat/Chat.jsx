@@ -11,6 +11,8 @@ const Chat = ({ userType, userId, onClose }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [availableDoctors, setAvailableDoctors] = useState([]);
   const [showDoctorList, setShowDoctorList] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -28,6 +30,38 @@ const Chat = ({ userType, userId, onClose }) => {
       fetchAvailableDoctors();
     }
   }, [userType, userId]);
+
+  // Polling for new messages every 2 seconds when a conversation is selected
+  useEffect(() => {
+    if (!selectedConversation || !userId) return;
+    
+    const pollMessages = () => {
+      fetchMessages(selectedConversation);
+    };
+    
+    // Initial fetch
+    pollMessages();
+    
+    // Set up polling interval - more frequent for better real-time feel
+    const interval = setInterval(pollMessages, 2000);
+    
+    // Cleanup on unmount or when conversation changes
+    return () => clearInterval(interval);
+  }, [selectedConversation, userId]);
+
+  // Also poll conversations list to update last messages
+  useEffect(() => {
+    if (!userId) return;
+    
+    const pollConversations = () => {
+      fetchConversations();
+    };
+    
+    // Poll conversations every 5 seconds to update last messages
+    const interval = setInterval(pollConversations, 5000);
+    
+    return () => clearInterval(interval);
+  }, [userId]);
 
   const fetchConversations = async () => {
     try {

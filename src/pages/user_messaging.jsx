@@ -28,7 +28,7 @@ const UserMessagingPage = () => {
   useEffect(() => {
     const email = localStorage.getItem('userEmail');
     if (!email) return;
-    fetch('http://localhost:5000/users')
+    fetch('http://127.0.0.1:5000/users')
       .then(res => res.json())
       .then(users => {
         const u = users.find(u => u.email === email);
@@ -48,7 +48,7 @@ const UserMessagingPage = () => {
   useEffect(() => {
     if (!user) return;
     setLoading(true);
-    fetch(`http://localhost:5000/user/doctors/${user.patient_id}`)
+    fetch(`http://127.0.0.1:5000/user/doctors/${user.patient_id}`)
       .then(res => res.json())
       .then(data => {
         setDoctors(data);
@@ -60,18 +60,35 @@ const UserMessagingPage = () => {
       });
   }, [user]);
 
-  // Poll for new messages every 2 seconds
+  // Poll for new messages every 1.5 seconds for faster real-time updates
   useEffect(() => {
     if (!user || !selectedDoctor) return;
+    
     const fetchMessages = () => {
       // Always use user/doctor as sender/receiver for the endpoint
-      fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
+      fetch(`http://127.0.0.1:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
         .then(res => res.json())
-        .then(data => setMessages(Array.isArray(data) ? data : []));
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessages(data);
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching messages:', err);
+        });
     };
+    
+    // Initial fetch
     fetchMessages();
-    pollingRef.current = setInterval(fetchMessages, 2000);
-    return () => clearInterval(pollingRef.current);
+    
+    // Set up more frequent polling for better real-time experience
+    pollingRef.current = setInterval(fetchMessages, 1500);
+    
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
   }, [user, selectedDoctor]);
 
   // Auto scroll to bottom when new messages arrive
@@ -84,7 +101,7 @@ const UserMessagingPage = () => {
     if (!newMessage.trim() || !user || !selectedDoctor) return;
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/send-message', {
+      const res = await fetch('http://127.0.0.1:5000/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -98,7 +115,7 @@ const UserMessagingPage = () => {
       if (res.ok) {
         setNewMessage('');
         // Immediately fetch messages after sending
-        fetch(`http://localhost:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
+        fetch(`http://127.0.0.1:5000/get-messages/user/${user.patient_id}/doctor/${selectedDoctor.id}`)
           .then(res => res.json())
           .then(data => setMessages(Array.isArray(data) ? data : []));
       }

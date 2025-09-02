@@ -19,6 +19,7 @@ const AddDoctorForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -314,15 +315,33 @@ const AddDoctorForm = () => {
           </div>
           <div>
             <label>Password *</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', marginBottom: 16, padding: 12, borderRadius: 4, border: '1px solid #ccc', fontSize: 18 }}
-              placeholder="Enter secure password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                style={{ width: '100%', marginBottom: 16, padding: 12, borderRadius: 4, border: '1px solid #ccc', fontSize: 18, paddingRight: '50px' }}
+                placeholder="Enter secure password"
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '15px', 
+                  top: '12px', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer', 
+                  fontSize: '18px',
+                  color: '#666'
+                }}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
+            </div>
             <p style={{ fontSize: 14, color: '#888', marginBottom: 16 }}>
               Password should be at least 8 characters long
             </p>
@@ -355,16 +374,3 @@ const AddDoctorForm = () => {
 
 export default AddDoctorForm;
 
-// This file currently contains the AddDoctorForm component and (for demo) a mock AdminSidebar.
-// If you are seeing "Add Doctor" content in the "Remove Doctor" page, it means you are importing or rendering AddDoctorForm
-// in the wrong place, or your routing is pointing to AddDoctorForm instead of Removedoctor.
-
-// Solution:
-// 1. Make sure your "Remove Doctor" page (Removedoctor) is implemented in /src/pages/removedoctor.jsx.
-// 2. In your router (App.jsx), ensure the route for removing doctors uses Removedoctor, not AddDoctorForm.
-// Example:
-// <Route path="/removedoctor" element={<Removedoctor />} />
-
-// 3. Do not import or render AddDoctorForm in removedoctor.jsx or in the sidebar for the remove doctor section.
-
-// No code changes needed in this file unless you want to remove the mock AdminSidebar.

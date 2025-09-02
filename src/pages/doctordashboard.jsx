@@ -283,6 +283,35 @@ const handlePatientClick = async (patient) => {
     }
   };
 
+  const handleCompleteAppointment = async (appointmentId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/appointment/${appointmentId}/complete`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (response.ok) {
+        // Refresh appointments to show updated status
+        const appointmentsResponse = await fetch(`http://127.0.0.1:5000/doctor-appointments/${doctor.id}`);
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          setAppointments(appointmentsData);
+        }
+        // Also refresh stats to update pending count
+        const statsResponse = await fetch(`http://127.0.0.1:5000/doctor/stats/${doctor.id}`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setStats(statsData);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('Error completing appointment:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error completing appointment:', error);
+    }
+  };
+
   const handleDashboardClick = (section) => {
     setActiveSection(section);
   };
@@ -812,27 +841,28 @@ const handlePatientClick = async (patient) => {
                     appointments.map((appointment) => (
                       <div key={appointment.id} className="doctordas-appointment-item">
                         <div className="doctordas-avatar">
-                          {appointment.patient?.firstname?.[0] || 'P'}{appointment.patient?.lastname?.[0] || 'T'}
+                          {(appointment.patient?.firstname?.[0] || appointment.user?.firstname?.[0] || 'P')}
+                          {(appointment.patient?.lastname?.[0] || appointment.user?.lastname?.[0] || 'T')}
                         </div>
                         <div className="doctordas-appointment-info">
                           <p className="doctordas-patient-name">
-                            {appointment.patient?.firstname || 'Unknown'} {appointment.patient?.lastname || 'Patient'}
+                            {(appointment.patient?.firstname || appointment.user?.firstname || 'Unknown')} {(appointment.patient?.lastname || appointment.user?.lastname || 'Patient')}
                           </p>
                           <div className="doctordas-appointment-details">
                             <span className="doctordas-appointment-date">
                               {formatDate(appointment.appointment_date)}
                             </span>
                             <span className="doctordas-appointment-contact">
-                              📞 {appointment.patient?.contact || 'No contact'}
+                              📞 {(appointment.patient?.contact || appointment.user?.contact || 'No contact')}
                             </span>
-                            {appointment.patient?.age && (
+                            {(appointment.patient?.age || appointment.user?.age) && (
                               <span className="doctordas-appointment-age">
-                                Age: {appointment.patient.age}
+                                Age: {appointment.patient?.age || appointment.user?.age}
                               </span>
                             )}
-                            {appointment.patient?.bloodtype && (
+                            {(appointment.patient?.bloodtype || appointment.user?.bloodtype) && (
                               <span className="doctordas-appointment-blood">
-                                Blood Type: {appointment.patient.bloodtype}
+                                Blood Type: {appointment.patient?.bloodtype || appointment.user?.bloodtype}
                               </span>
                             )}
                           </div>
@@ -841,9 +871,19 @@ const handlePatientClick = async (patient) => {
                           <span className={`doctordas-status ${getStatusColor(appointment.status)}`}>
                             {appointment.status}
                           </span>
+                          {appointment.status === 'pending' && (
+                            <button
+                              className="doctordas-btn doctordas-btn-success"
+                              onClick={() => handleCompleteAppointment(appointment.id)}
+                              style={{ marginLeft: '8px', padding: '4px 8px', fontSize: '12px' }}
+                            >
+                              Complete
+                            </button>
+                          )}
                           <button
                             className="doctordas-btn-link"
                             onClick={() => handleViewAppointment(appointment)}
+                            style={{ marginLeft: '8px' }}
                           >
                             View
                           </button>
@@ -1122,7 +1162,7 @@ const handlePatientClick = async (patient) => {
             <div className="doctordas-appointment-details-modal">
               <div className="doctordas-appointment-detail-row">
                 <strong>Patient:</strong>
-                <span>{selectedAppointment.patient?.firstname || 'Unknown'} {selectedAppointment.patient?.lastname || 'Patient'}</span>
+                <span>{(selectedAppointment.patient?.firstname || selectedAppointment.user?.firstname || 'Unknown')} {(selectedAppointment.patient?.lastname || selectedAppointment.user?.lastname || 'Patient')}</span>
               </div>
               <div className="doctordas-appointment-detail-row">
                 <strong>Date & Time:</strong>
@@ -1136,28 +1176,28 @@ const handlePatientClick = async (patient) => {
               </div>
               <div className="doctordas-appointment-detail-row">
                 <strong>Contact:</strong>
-                <span>{selectedAppointment.patient?.contact || 'N/A'}</span>
+                <span>{selectedAppointment.patient?.contact || selectedAppointment.user?.contact || 'N/A'}</span>
               </div>
               <div className="doctordas-appointment-detail-row">
                 <strong>Email:</strong>
-                <span>{selectedAppointment.patient?.email || 'N/A'}</span>
+                <span>{selectedAppointment.patient?.email || selectedAppointment.user?.email || 'N/A'}</span>
               </div>
-              {selectedAppointment.patient?.age && (
+              {(selectedAppointment.patient?.age || selectedAppointment.user?.age) && (
                 <div className="doctordas-appointment-detail-row">
                   <strong>Age:</strong>
-                  <span>{selectedAppointment.patient.age} years</span>
+                  <span>{selectedAppointment.patient?.age || selectedAppointment.user?.age} years</span>
                 </div>
               )}
-              {selectedAppointment.patient?.bloodtype && (
+              {(selectedAppointment.patient?.bloodtype || selectedAppointment.user?.bloodtype) && (
                 <div className="doctordas-appointment-detail-row">
                   <strong>Blood Type:</strong>
-                  <span>{selectedAppointment.patient.bloodtype}</span>
+                  <span>{selectedAppointment.patient?.bloodtype || selectedAppointment.user?.bloodtype}</span>
                 </div>
               )}
-              {selectedAppointment.patient?.location && (
+              {(selectedAppointment.patient?.location || selectedAppointment.user?.location) && (
                 <div className="doctordas-appointment-detail-row">
                   <strong>Location:</strong>
-                  <span>{selectedAppointment.patient.location}</span>
+                  <span>{selectedAppointment.patient?.location || selectedAppointment.user?.location}</span>
                 </div>
               )}
             </div>
