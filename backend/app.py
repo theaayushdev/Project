@@ -270,6 +270,59 @@ def get_all_doctors():
         'status': d.status
     } for d in doctors]), 200
 
+@app.route('/check-availability', methods=['GET'])
+def check_availability():
+    """Check available time slots for a specific doctor on a specific date"""
+    try:
+        doctor_id = request.args.get('doctor_id')
+        date = request.args.get('date')
+        
+        if not doctor_id or not date:
+            return jsonify({'error': 'doctor_id and date are required parameters'}), 400
+        
+        # Validate date format
+        try:
+            requested_date = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+        
+        # Check if doctor exists and is active
+        doctor = Doctor.query.get(doctor_id)
+        if not doctor:
+            return jsonify({'error': 'Doctor not found'}), 404
+        if doctor.status != 'on':
+            return jsonify({'error': 'Doctor is not available'}), 400
+        
+        # Define available time slots
+        all_time_slots = ['08:30', '12:00', '15:00']
+        
+        # Get existing appointments for this doctor on this date
+        existing_appointments = Appointment.query.filter(
+            Appointment.doctor_id == doctor_id,
+            func.DATE(Appointment.appointment_date) == requested_date
+        ).all()
+        
+        # Get booked time slots
+        booked_slots = []
+        for appointment in existing_appointments:
+            if appointment.appointment_date:
+                time_slot = appointment.appointment_date.strftime('%H:%M')
+                booked_slots.append(time_slot)
+        
+        # Calculate available slots
+        available_slots = [slot for slot in all_time_slots if slot not in booked_slots]
+        
+        return jsonify({
+            'doctor_id': doctor_id,
+            'date': date,
+            'available_slots': available_slots,
+            'booked_slots': booked_slots,
+            'doctor_name': f"Dr. {doctor.firstname} {doctor.lastname}"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/appointment', methods=['POST'])
 def create_appointment():
     data = request.get_json()

@@ -109,11 +109,16 @@ const Registerlogin = () => {
     if (!formData.location.trim()) newErrors.location = "Location is required";
     
     // Age validation
-    if (!formData.age.trim()) {
-      newErrors.age = "Age is required";
-    } else if (isNaN(formData.age) || parseInt(formData.age) <= 0) {
-      newErrors.age = "Please enter a valid age";
-    }
+if (!formData.age.trim()) {
+  newErrors.age = "Age is required";
+} else if (isNaN(formData.age)) {
+  newErrors.age = "Please enter a valid number";
+} else {
+  const age = parseInt(formData.age);
+  if (age < 18 || age > 60) {
+    newErrors.age = "Age must be between 18 and 60";
+  }
+}
     
     // Guardian validations
     if (!formData.guardian_name.trim()) newErrors.guardian_name = "Guardian name is required";

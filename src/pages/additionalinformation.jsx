@@ -14,8 +14,7 @@ const PregnancyForm = () => {
     email: "",
     notes: ""
   });
-  
-  // Auto-populate email from registration session
+
   useEffect(() => {
     const registeredEmail = localStorage.getItem("registeredEmail");
     if (registeredEmail) {
@@ -39,6 +38,70 @@ const PregnancyForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+
+    // Validate height
+    if (!formData.height.trim()) {
+      newErrors.height = "Height is required";
+    } else if (isNaN(formData.height)) {
+      newErrors.height = "Please enter a valid number";
+    } else {
+      const height = parseFloat(formData.height);
+      if (height <= 0) {
+        newErrors.height = "Height must be greater than 0";
+      } else if (height < 100 || height > 300) {
+        newErrors.height = "Height must be between 100 and 300 cm";
+      }
+    }
+
+    // Validate weight
+    if (!formData.weight.trim()) {
+      newErrors.weight = "Weight is required";
+    } else if (isNaN(formData.weight)) {
+      newErrors.weight = "Please enter a valid number";
+    } else {
+      const weight = parseFloat(formData.weight);
+      if (weight <= 0) {
+        newErrors.weight = "Weight must be greater than 0";
+      } else if (weight < 30 || weight > 300) {
+        newErrors.weight = "Weight must be between 30 and 300 kg";
+      }
+    }
+
+    // Validate LMC date
+    const selectedDate = new Date(formData.lmc);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (!formData.lmc) {
+      newErrors.lmc = "Last menstrual cycle is required";
+    } else if (selectedDate > today) {
+      newErrors.lmc = "LMC cannot be a future date";
+    }
+
+    // Validate profession
+    if (!formData.profession.trim()) {
+      newErrors.profession = "Profession is required";
+    } else if (!/^[A-Za-z\s]+$/.test(formData.profession)) {
+      newErrors.profession = "Profession must contain only letters";
+    }
+
+    // Validate allergies
+    if (formData.allergies && !/^[A-Za-z\s,]+$/.test(formData.allergies)) {
+      newErrors.allergies = "Allergies must be text only";
+    }
+
+    // Validate conditions
+    if (formData.conditions && !/^[A-Za-z\s,]+$/.test(formData.conditions)) {
+      newErrors.conditions = "Conditions must be text only";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      setError(firstError);
+      return;
+    }
+
     try {
       const res = await fetch("http://127.0.0.1:5000/pregnancy-info", {
         method: "POST",
@@ -50,9 +113,7 @@ const PregnancyForm = () => {
       if (res.ok) {
         setSubmitted(true);
         setError("");
-        // Clean up registration email from localStorage
         localStorage.removeItem("registeredEmail");
-        // Redirect to login page after a brief delay
         setTimeout(() => {
           navigate('/login');
         }, 2000);
@@ -64,6 +125,8 @@ const PregnancyForm = () => {
     }
   };
 
+  const todayDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -72,7 +135,6 @@ const PregnancyForm = () => {
         {submitted && <p style={styles.success}>✔️ Submitted successfully!</p>}
         {error && <p style={styles.error}>❌ {error}</p>}
 
-        {/* Form Fields */}
         <div style={styles.fieldGroup}>
           <label style={styles.label}>Last Menstrual Cycle:</label>
           <input
@@ -81,6 +143,7 @@ const PregnancyForm = () => {
             value={formData.lmc}
             onChange={handleChange}
             required
+            max={todayDate}
             style={styles.input}
           />
         </div>
@@ -200,7 +263,6 @@ const PregnancyForm = () => {
   );
 };
 
-// CSS-in-JS styles
 const styles = {
   container: {
     maxWidth: "700px",

@@ -8,7 +8,11 @@
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  z-index: 100;
   overflow: hidden;
   border-radius: 0 0 25px 25px;
 }

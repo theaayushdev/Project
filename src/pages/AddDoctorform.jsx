@@ -374,16 +374,3 @@ const AddDoctorForm = () => {
 
 export default AddDoctorForm;
 
-// This file currently contains the AddDoctorForm component and (for demo) a mock AdminSidebar.
-// If you are seeing "Add Doctor" content in the "Remove Doctor" page, it means you are importing or rendering AddDoctorForm
-// in the wrong place, or your routing is pointing to AddDoctorForm instead of Removedoctor.
-
-// Solution:
-// 1. Make sure your "Remove Doctor" page (Removedoctor) is implemented in /src/pages/removedoctor.jsx.
-// 2. In your router (App.jsx), ensure the route for removing doctors uses Removedoctor, not AddDoctorForm.
-// Example:
-// <Route path="/removedoctor" element={<Removedoctor />} />
-
-// 3. Do not import or render AddDoctorForm in removedoctor.jsx or in the sidebar for the remove doctor section.
-
-// No code changes needed in this file unless you want to remove the mock AdminSidebar.
