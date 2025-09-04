@@ -34,7 +34,7 @@ Welcome to the Project repository! This is a modern web application designed to 
 
 ## Opening Page
 
-![Opening Page](src/cssonly/openingpage.png)
+![Opening Page](src/cssonly/images/openingpage.png)
 
 ## Screenshots
 
