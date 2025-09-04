@@ -41,8 +41,6 @@ Welcome to the Project repository! This is a modern web application designed to 
 ### Dashboard
 ![Dashboard](src/cssonly/images/userdashboard.png)
 
-### Appointment System
-![Appointment System](src/cssonly/images/doctorselection.png)
 
 ### More Screenshots
 
@@ -83,5 +81,5 @@ Welcome to the Project repository! This is a modern web application designed to 
  
  ---
  
- > Made with ❤️ by theaayushdev
+ > Made by kash, Pixiedust3 theaayushdev
 
