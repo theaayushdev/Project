@@ -34,7 +34,7 @@ Welcome to the Project repository! This is a modern web application designed to 
 
 ## Opening Page
 
-![Opening Page](src/cssonly/openingpage.png)
+![Opening Page](src/cssonly/images/openingpage.png)
 
 ## Screenshots
 
@@ -55,8 +55,7 @@ Welcome to the Project repository! This is a modern web application designed to 
 #### Chat Feature
 ![Chat Feature](src/cssonly/images/chatfeature.png)
 
-#### Cycle
-![Cycle](src/cssonly/images/cycle.jpg)
+
 
 #### Doctor Chat
 ![Doctor Chat](src/cssonly/images/doctorchat.png)
@@ -64,20 +63,13 @@ Welcome to the Project repository! This is a modern web application designed to 
 #### Doctor Dashboard
 ![Doctor Dashboard](src/cssonly/images/doctordashboard.png)
 
-#### Grown
-![Grown](src/cssonly/images/grown.jpg)
 
-#### M1
-![M1](src/cssonly/images/m1.jpg)
 
-#### New
-![New](src/cssonly/images/new.png)
 
 #### Patient List
 ![Patient List](src/cssonly/images/patientlist.png)
 
-#### Screenshot Example
-![Screenshot Example](src/cssonly/images/Screenshot%20from%202025-09-04%2012-02-36.png)
+
  
  ## Technologies Used
  
